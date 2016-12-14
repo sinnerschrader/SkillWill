@@ -7,7 +7,7 @@ export default class Header extends React.Component {
     super();
     this.state = {
       results: [],
-      currentValue: {}
+      currentValue: ""
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
