@@ -1,14 +1,101 @@
+@test: pink;
+
 html {
-    background-color: lightgray;
-    text-align: center;
+    background-color: white;
     font-family: Tahoma, sans-serif;
+
 }
 
-
-ul{
+ul {
     display: inline;
 }
 
-h4{
+h4 {
+    margin: (3px + 0);
+}
+
+.header {
+    height: 50px;
+    width: 100%;
+    background-color: #9b9b9b;
+    margin-bottom: 65px;
+}
+
+.searchbar {
+    padding-left: 25%;
+}
+
+form {
+    display: flex;
+}
+.dropdown {
+    width: 190px;
+    padding: 11px;
+    font-size: 13px;
+    display: inline-block;
+    border-radius: 3px;
+    background-color: #efefef;
+    border: solid 1px #9b9b9b;
+    text-align: center;
+}
+
+ .dropdown ul {
+    position: fixed;
+    display: none;
+    width: 190px;
+    height: auto;
+    border-radius: 3px;
+    background-color: #efefef;
+    border: solid 1px #9b9b9b;
+    list-style: none;
+    border-top: none;
+    padding: 0px;
+    margin-left: -1px;
+}
+.searchbar ul {
+    list-style: none;
+}
+
+.dropdown:hover ul {
+    display: table;
+}
+
+.inputContainer {
+    display: inline-block;
+    min-width: 429px;
+    height: 45px;
+    border-radius: 3px;
+    border: solid 1px #787878;
+}
+
+.inputContainer input {
+    padding-left: 22px;
+    display: block;
+    height: 40px;
+    font-size: 14px;
+    box-sizing: content-box;
+    border: none;
+}
+
+input:focus, button:focus {
+    outline: none;
+}
+
+button {
+    width: 59px;
+    height: 47px;
+    border-radius: 2px;
+    background-color: #787878;
+    border: none;
+    color: @test;
+}
+.skillList ul {
+    display: inline-flex;
     margin: 0;
+    padding: 0 5px;
+
+    li {
+        padding: 0 2px;
+        font-size: 12px;
+    }
 }
