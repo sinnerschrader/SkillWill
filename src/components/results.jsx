@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './header.less';
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -20,19 +19,21 @@ export default class Results extends React.Component {
                     <ul>
                         <li>ID: {data.id}</li>
                         <li>Name: {data.firstName} {data.lastName}</li>
-                        <li>
-                        {/*{data.skills.map((dataskills, i) => {
-                          return(
-                              <li key={i}>
-                              <h4>Skills:</h4>
-                                  <ul>
-                                      <li>Skillame: {dataskills.name}</li>
-                                      <li>skillLevel: {dataskills.skillLevel}</li>
-                                      <li>willLevel: {dataskills.willLevel}</li>
-                                  </ul>
-                              </li>
-                            );
-                        })} */}
+                        <li className="skillList">
+                          <h4>Skills:</h4>
+                          <ul>
+                            {data.skills.map((dataskills, i) => {
+                              return(
+                                  <li key={i}>
+                                      <ul>
+                                          <li>Skillame: {dataskills.name} </li>
+                                          <li>skillLevel: {dataskills.skillLevel} </li>
+                                          <li>willLevel: {dataskills.willLevel }</li>
+                                      </ul>
+                                  </li>
+                                );
+                            })}
+                        </ul>
                       </li>
                     </ul>
                 </li>
