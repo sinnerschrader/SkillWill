@@ -18,6 +18,8 @@
   "dependencies": {
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "preact": "^7.1.0",
+    "preact-compat": "^3.9.4",
     "react": "15.4.1",
     "react-dom": "15.4.1"
   },
