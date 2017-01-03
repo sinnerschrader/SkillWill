@@ -19,7 +19,7 @@ export default class Results extends React.Component {
                     <ul>
                         <li>ID: {data.id}</li>
                         <li>Name: {data.firstName} {data.lastName}</li>
-                        <li className="skillList">
+                        <li class="skillList">
                           <h4>Skills:</h4>
                           <ul>
                             {data.skills.map((dataskills, i) => {

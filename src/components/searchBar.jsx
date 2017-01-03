@@ -7,7 +7,8 @@ export default class SearchBar extends React.Component {
     super();
     this.state = {
       results: [],
-      currentValue: ""
+      currentValue: "",
+      searchterms: [] 
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,14 +33,18 @@ export default class SearchBar extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log("http://localhost:1337/users?search="+ this.state.currentValue);
+    this.setState({
+      searchterms: this.state.currentValue
+    });
+    console.log("searchterms :" +this.state.searchterms);
     this.requestSearch(this);
   }
 
   handleChange(e) {
     this.setState({
-      currentValue : e.target.value
+      currentValue : e.target.value,
     });
+    
   }
 
   render() {
@@ -54,10 +59,12 @@ export default class SearchBar extends React.Component {
             </ul>
           </div>
           <div className="inputContainer">
+              <div class="searchterm">{this.state.searchterms}</div>
               <input type="search"  onChange={this.handleChange} />
           </div>
           <button type="submit"> Go </button>
         </form>
+        {/* Result Component to display all results in state.results */}
         <Results results={this.state.results} />
       </div>
     )
