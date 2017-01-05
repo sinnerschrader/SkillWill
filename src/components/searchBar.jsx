@@ -8,17 +8,20 @@ export default class SearchBar extends React.Component {
     this.state = {
       results: [],
       currentValue: "",
-      searchterms: [] 
+      searchterms: [],
+      searchrequest: ""
     }
     this.handleChange = this.handleChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.requestSearch = this.requestSearch.bind(this);
 
   }
 
   requestSearch(e) {
-    fetch("http://localhost:1337/users?search="+ e.state.currentValue)
+    fetch("http://localhost:1337/users?skills="+ e.state.searchterms)
     .then(function(response) {
+      console.log("http://localhost:1337/users?skills="+ e.state.searchterms);
         return response.json();
     })
     .then(function(data) {
@@ -34,9 +37,9 @@ export default class SearchBar extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.setState({
-      searchterms: this.state.currentValue
+      searchterms: this.state.searchterms.concat([this.state.currentValue]),
+      currentValue : ""
     });
-    console.log("searchterms :" +this.state.searchterms);
     this.requestSearch(this);
   }
 
@@ -47,20 +50,56 @@ export default class SearchBar extends React.Component {
     
   }
 
+  handleClose(j) {
+    let helperArray= [];
+    this.state.searchterms.map((searchterm, i) => {
+      if(i == j) {
+        i++
+      }
+      else {
+        helperArray[i] = searchterm;
+      }
+    });
+    this.setState({
+      searchterms: helperArray
+    });
+
+    /*update searchterm, if there is an unsubmitted searchinput */
+    if(this.state.currentValue.length != 0) {
+      this.setState({
+        searchterms: helperArray.concat([this.state.currentValue]),
+        currentValue : ""
+      });
+    }
+
+    /*refresh search */
+    this.requestSearch(this);
+  }
+
   render() {
     return(
-      <div className="searchbar" id="header">
+      <div class="searchbar" id="header">
         <form onSubmit={this.handleSubmit}>
-          <div className="dropdown"> Alle Standorte
+          <div class="dropdown"> Alle Standorte
             <ul>
               <li><a href="">Hamburg</a></li>
               <li><a href="">Frankfurt</a></li>
               <li><a href="">München</a></li>
             </ul>
           </div>
-          <div className="inputContainer">
-              <div class="searchterm">{this.state.searchterms}</div>
-              <input type="search"  onChange={this.handleChange} />
+          <div class="inputContainer">
+              {
+                 /* display entered searchterms in front of the input field*/
+                this.state.searchterms.map((searchterm, i) => {
+                  return(
+                    <div class="searchterm" >
+                      {searchterm}
+                      <a class="close" href="#" key={i} onClick={this.handleClose.bind(null, i)}>X</a>
+                    </div>
+                    );
+                })
+              }
+          <input type="search" value={this.state.currentValue} onChange={this.handleChange} />
           </div>
           <button type="submit"> Go </button>
         </form>
