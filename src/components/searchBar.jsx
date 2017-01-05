@@ -36,10 +36,12 @@ export default class SearchBar extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.setState({
-      searchterms: this.state.searchterms.concat([this.state.currentValue]),
-      currentValue : ""
-    });
+    if(this.state.currentValue.length != 0) {
+      this.setState({
+        searchterms: this.state.searchterms.concat([this.state.currentValue]),
+        currentValue : ""
+      });
+    } 
     this.requestSearch(this);
   }
 
