@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './header.less';
 import Results from './results.jsx';
+import Dropdown from './dropdown.jsx';
 
 export default class SearchBar extends React.Component {
   constructor() {
@@ -8,20 +9,22 @@ export default class SearchBar extends React.Component {
     this.state = {
       results: [],
       currentValue: "",
-      searchterms: [],
-      searchrequest: ""
+      searchTerm: [],
+      searchRequest: "",
+      locationTerm: ""
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.requestSearch = this.requestSearch.bind(this);
+    this.handleDropdownChange = this.handleDropdownChange.bind(this);
 
   }
 
   requestSearch(e) {
-    fetch("http://localhost:1337/users?skills="+ e.state.searchterms)
+    fetch("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerm)
     .then(function(response) {
-      console.log("http://localhost:1337/users?skills="+ e.state.searchterms);
+      console.log("http://localhost:1337/users?skills="+ e.state.searchTerm);
         return response.json();
     })
     .then(function(data) {
@@ -38,7 +41,7 @@ export default class SearchBar extends React.Component {
     e.preventDefault();
     if(this.state.currentValue.length != 0) {
       this.setState({
-        searchterms: this.state.searchterms.concat([this.state.currentValue]),
+        searchTerm: this.state.searchTerm.concat([this.state.currentValue]),
         currentValue : ""
       });
     } 
@@ -54,7 +57,7 @@ export default class SearchBar extends React.Component {
 
   handleClose(j) {
     let helperArray= [];
-    this.state.searchterms.map((searchterm, i) => {
+    this.state.searchTerm.map((searchterm, i) => {
       if(i == j) {
         i++
       }
@@ -63,13 +66,13 @@ export default class SearchBar extends React.Component {
       }
     });
     this.setState({
-      searchterms: helperArray
+      searchTerm: helperArray
     });
 
     /*update searchterm, if there is an unsubmitted searchinput */
     if(this.state.currentValue.length != 0) {
       this.setState({
-        searchterms: helperArray.concat([this.state.currentValue]),
+        searchTerm: helperArray.concat([this.state.currentValue]),
         currentValue : ""
       });
     }
@@ -77,22 +80,29 @@ export default class SearchBar extends React.Component {
     /*refresh search */
     this.requestSearch(this);
   }
+  handleDropdownChange(location) {
+    if(location != ""){
+      this.setState({
+        locationTerm: "?location=" + location + "?"
+      });
+    } 
+    else {
+      this.setState({
+        locationTerm: ""
+      });
+    }
+  }
+
 
   render() {
     return(
       <div class="searchbar" id="header">
         <form onSubmit={this.handleSubmit}>
-          <div class="dropdown"> Alle Standorte
-            <ul>
-              <li><a href="">Hamburg</a></li>
-              <li><a href="">Frankfurt</a></li>
-              <li><a href="">München</a></li>
-            </ul>
-          </div>
+          <Dropdown onChange={this.handleDropdownChange} />
           <div class="inputContainer">
               {
-                 /* display entered searchterms in front of the input field*/
-                this.state.searchterms.map((searchterm, i) => {
+                 /* display entered searchTerm in front of the input field*/
+                this.state.searchTerm.map((searchterm, i) => {
                   return(
                     <div class="searchterm" >
                       {searchterm}
