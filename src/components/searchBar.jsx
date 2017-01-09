@@ -4,11 +4,11 @@ import Results from './results.jsx';
 import Dropdown from './dropdown.jsx';
 
 export default class SearchBar extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       results: [],
-      currentValue: "",
+      currentValue: '',
       searchTerm: [],
       searchRequest: "",
       locationTerm: ""
@@ -17,14 +17,14 @@ export default class SearchBar extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.requestSearch = this.requestSearch.bind(this);
-    this.handleDropdownChange = this.handleDropdownChange.bind(this);
+    this.handleDropdownSelect = this.handleDropdownSelect.bind(this);
 
   }
 
   requestSearch(e) {
-    fetch("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerm)
+    fetch("http://localhost:1337/users"+ e.state.locationTerm + "?skills="+ e.state.searchTerm)
     .then(function(response) {
-      console.log("http://localhost:1337/users?skills="+ e.state.searchTerm);
+        console.log("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerm);
         return response.json();
     })
     .then(function(data) {
@@ -49,10 +49,10 @@ export default class SearchBar extends React.Component {
   }
 
   handleChange(e) {
+    console.log("current: " + this.state.currentValue);
     this.setState({
-      currentValue : e.target.value,
-    });
-    
+      currentValue : e.target.value
+    });     
   }
 
   handleClose(j) {
@@ -80,16 +80,17 @@ export default class SearchBar extends React.Component {
     /*refresh search */
     this.requestSearch(this);
   }
-  handleDropdownChange(location) {
-    if(location != ""){
+
+  handleDropdownSelect(e) {
+    if(location != "all") {
       this.setState({
-        locationTerm: "?location=" + location + "?"
-      });
+        locationTerm: "?location=" + e.target.value 
+      }); 
     } 
-    else {
+    else { 
       this.setState({
         locationTerm: ""
-      });
+      }); 
     }
   }
 
@@ -98,7 +99,12 @@ export default class SearchBar extends React.Component {
     return(
       <div class="searchbar" id="header">
         <form onSubmit={this.handleSubmit}>
-          <Dropdown onChange={this.handleDropdownChange} />
+          <select class="dropdown-select" onChange={this.handleDropdownSelect}>
+          <option value="all">Alle Standorte</option>
+          <option value="Hamburg">Hamburg</option>
+          <option value="Frankfurt">Frankfurt</option>
+          <option value="München">München</option>
+          </select>
           <div class="inputContainer">
               {
                  /* display entered searchTerm in front of the input field*/
@@ -111,7 +117,7 @@ export default class SearchBar extends React.Component {
                     );
                 })
               }
-          <input type="search" value={this.state.currentValue} onChange={this.handleChange} />
+          <input type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
           </div>
           <button type="submit"> Go </button>
         </form>
