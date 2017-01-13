@@ -1,6 +1,7 @@
 import styles from './styles.less';
 import React from 'react';
 import Header from './components/header.jsx';
+import Footer from './components/footer.jsx';
 import SearchBar from './components/searchBar.jsx';
 
 export default class App extends React.Component {
@@ -8,7 +9,12 @@ export default class App extends React.Component {
     return (
       <div>
         <Header />
-        <SearchBar />
+        <div class="background-layer"></div>
+        <div class="content">
+          <h1 class="title">SkillWill</h1>
+          <SearchBar />
+        </div>
+        <Footer />
       </div>
     )
   }

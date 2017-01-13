@@ -1,4 +1,5 @@
 import React from 'react';
+import ResultItem from './result-item.jsx';
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -6,45 +7,46 @@ export default class Results extends React.Component {
     this.state = {
       resultArray: []
     }
+    this.renderUserSkills = this.renderUserSkills.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.results !== nextProps.results) {
+      return true;
+    }
+    return false;
+  }
+
+  renderUserSkills() {
+
   }
 
   render() {
-    if(this.props.results != null) {
+    if (this.props.results != null ) {
       return(
-        <ul>
-          {this.props.results.map((data, i) => {
-            return(
-                <li key={i}> 
-                  <h4>{i + 1}.</h4>
-                    <ul>
-                        <li>ID: {data.id}</li>
-                        <li>Name: {data.firstName} {data.lastName}</li>
-                        <li class="skillList">
-                          <h4>Skills:</h4>
-                          <ul>
-                            {data.skills.map((dataskills, i) => {
-                              return(
-                                  <li key={i}>
-                                      <ul>
-                                          <li>Skillame: {dataskills.name} </li>
-                                          <li>skillLevel: {dataskills.skillLevel} </li>
-                                          <li>willLevel: {dataskills.willLevel }</li>
-                                      </ul>
-                                  </li>
-                                );
-                            })}
-                        </ul>
-                      </li>
-                    </ul>
-                </li>
-            );
-          })}
-          </ul>
+        <div>
+          <div>
+            <span>{this.props.results.length} Ergebnisse</span>
+          </div>
+          <ul class="results">
+            {this.props.results.map((data, i) => {
+              return(
+                  <li class="result-item" key={i}> 
+                    <ResultItem data={data} index={i} searchTerms={this.props.searchTerms}/>
+                  </li>
+              );
+            })}
+            </ul>
+        </div>
       )
       
     }else {
        return(
-        <div> KEINE ERGEBNISSE</div>
+        <div> 
+            <div>
+              <span>Keine Ergebnisse</span>
+            </div>
+        </div>
       ) 
     }
   }

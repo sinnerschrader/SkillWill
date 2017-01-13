@@ -1,10 +1,45 @@
-.skillList ul {
-    display: inline-flex;
+.results {
+    display: block-flex;
     margin: 0;
     padding: 0 5px;
 
-    li {
-        padding: 0 2px;
-        font-size: 12px;
+    .result-item {
+        width: auto;
+        height: auto;
+        background-color: #efefef;
+        margin: 20px;
+        padding: 22px 11px;
+
+        .result-index {
+            font-size: 14px;
+        }
+        .user-img {
+            width: 68px;
+            height: 68px;
+            background-color: #9b9b9b;
+            border: solid 1px #979797;
+            border-radius: 34px;
+            float: left;
+        }
+        ul {
+                >li {
+                    display: inline-block;
+                    padding: 34px 0;
+                    font-weight: bold;
+
+                    li {
+                        display: inline-block;
+                        height: auto;
+                        padding:0;
+                        font-weight: normal;
+
+                        li {
+                            display: block;
+                        }
+                    }
+            }   
+            
+        }
     }
+    
 }
