@@ -7,11 +7,11 @@ export default class SearchBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      results: [],
+      results: null,
       currentValue: '',
-      searchTerm: [],
+      searchTerms: [],
       searchRequest: "",
-      locationTerm: ""
+      locationTerm: "?"
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -22,9 +22,10 @@ export default class SearchBar extends React.Component {
   }
 
   requestSearch(e) {
-    fetch("http://localhost:1337/users"+ e.state.locationTerm + "?skills="+ e.state.searchTerm)
+    //fetch("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms)
+    fetch("http://localhost:8888/users.json")
     .then(function(response) {
-        console.log("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerm);
+        console.log("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms);
         return response.json();
     })
     .then(function(data) {
@@ -41,7 +42,7 @@ export default class SearchBar extends React.Component {
     e.preventDefault();
     if(this.state.currentValue.length != 0) {
       this.setState({
-        searchTerm: this.state.searchTerm.concat([this.state.currentValue]),
+        searchTerms: this.state.searchTerms.concat([this.state.currentValue]),
         currentValue : ""
       });
     } 
@@ -49,7 +50,7 @@ export default class SearchBar extends React.Component {
   }
 
   handleChange(e) {
-    console.log("current: " + this.state.currentValue);
+    console.log("current: " + this.state.results);
     this.setState({
       currentValue : e.target.value
     });     
@@ -57,22 +58,22 @@ export default class SearchBar extends React.Component {
 
   handleClose(j) {
     let helperArray= [];
-    this.state.searchTerm.map((searchterm, i) => {
+    this.state.searchTerms.map((searchTerm, i) => {
       if(i == j) {
         i++
       }
       else {
-        helperArray[i] = searchterm;
+        helperArray[i] = searchTerm;
       }
     });
     this.setState({
-      searchTerm: helperArray
+      searchTerms: helperArray
     });
 
-    /*update searchterm, if there is an unsubmitted searchinput */
+    /*update searchTerms, if there is an unsubmitted searchinput */
     if(this.state.currentValue.length != 0) {
       this.setState({
-        searchTerm: helperArray.concat([this.state.currentValue]),
+        searchTerms: helperArray.concat([this.state.currentValue]),
         currentValue : ""
       });
     }
@@ -82,9 +83,9 @@ export default class SearchBar extends React.Component {
   }
 
   handleDropdownSelect(e) {
-    if(location != "all") {
+    if(e.target.value != "all") {
       this.setState({
-        locationTerm: "?location=" + e.target.value 
+        locationTerm: "location=" + e.target.value +"&"
       }); 
     } 
     else { 
@@ -107,11 +108,11 @@ export default class SearchBar extends React.Component {
           </select>
           <div class="inputContainer">
               {
-                 /* display entered searchTerm in front of the input field*/
-                this.state.searchTerm.map((searchterm, i) => {
+                 /* display entered searchTerms in front of the input field*/
+                this.state.searchTerms.map((searchTerm, i) => {
                   return(
-                    <div class="searchterm" >
-                      {searchterm}
+                    <div class="searchTerm" >
+                      {searchTerm}
                       <a class="close" href="#" key={i} onClick={this.handleClose.bind(null, i)}>X</a>
                     </div>
                     );
@@ -122,7 +123,7 @@ export default class SearchBar extends React.Component {
           <button type="submit"> Go </button>
         </form>
         {/* Result Component to display all results in state.results */}
-        <Results results={this.state.results} />
+        <Results results={this.state.results} searchTerms={this.state.searchTerms} />
       </div>
     )
   }

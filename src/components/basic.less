@@ -1,0 +1,63 @@
+
+//Colors (names adapted from the s2-website)
+@s2-black: #1e212a;
+@s2-darkblack: #16181e;
+@s2-darkgrey3: #858586;
+@s2-darkgrey2: #a3a3a3;
+@s2-darkgrey: #b3b3b3;
+@s2-grey: #f4f7fa;
+@s2-lightgrey: #f7f7f7;
+@s2-white: #fff;
+@s2-red: #ff0354;
+@s2-green: #03ffb7;
+@s2-verydarkblue: #1e212a;
+@s2-blue: #4502da;
+@s2-body: #000;
+@s2-locnav-bg: #fff;
+@s2-locnav-color: #fff;
+@s2-black-hover: #495066;
+@s2-white-fade: hsla(0,0%,100%,.25);
+
+//Fonts
+@base-font: "s2", sans-serif;
+@base-font-size: 15px;
+@base-font-color: @s2-black;
+@xl-font-size: 50px;
+
+html {
+    background: @s2-white;
+    position: relative;
+    overflow-x: hidden;
+}
+
+html, input, textarea, keygen, select, button  {
+    font-family: @base-font;
+    font-size: @base-font-size;
+    color: @base-font-color;
+}
+
+.background-layer {
+   &:after{
+    z-index: -1;
+    content:"";
+    height: 455px;
+    width: 200%;
+    background-color: @s2-grey;
+    position: absolute;
+    top: 160px;
+    left: -50%;
+    transform: rotate(-22deg);
+    overflow: hidden;
+
+   } 
+}
+
+.content {
+    z-index: 1;
+}
+
+.title {
+    font-size: @xl-font-size;
+    color: @s2-red;
+    text-align: center;
+}
