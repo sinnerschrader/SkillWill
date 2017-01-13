@@ -25,10 +25,17 @@
 @xl-font-size: 50px;
 
 html {
-    background: @s2-white;
-    position: relative;
+    background-color: @s2-white;
     overflow-x: hidden;
 }
+
+ body {
+    position: relative;
+    overflow-x: hidden; //is needed both in body and html to hide overflow in Safari
+    margin: 0;
+}
+
+
 
 html, input, textarea, keygen, select, button  {
     font-family: @base-font;
