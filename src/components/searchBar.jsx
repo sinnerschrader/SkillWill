@@ -22,8 +22,7 @@ export default class SearchBar extends React.Component {
   }
 
   requestSearch(e) {
-    //fetch("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms)
-    fetch("http://localhost:8888/users.json")
+    fetch("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms)
     .then(function(response) {
         console.log("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms);
         return response.json();
