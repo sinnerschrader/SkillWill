@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './header.less';
 import Results from './results.jsx';
 import Dropdown from './dropdown.jsx';
 
@@ -11,7 +10,7 @@ export default class SearchBar extends React.Component {
       currentValue: '',
       searchTerms: [],
       searchRequest: "",
-      locationTerm: "?"
+      locationTerm: ""
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -119,7 +118,7 @@ export default class SearchBar extends React.Component {
               }
           <input type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
           </div>
-          <button type="submit"> Go </button>
+          <button type="submit" class="search" />
         </form>
         {/* Result Component to display all results in state.results */}
         <Results results={this.state.results} searchTerms={this.state.searchTerms} />

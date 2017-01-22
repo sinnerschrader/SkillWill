@@ -5,7 +5,7 @@ export default class ResultItem extends React.Component {
     super(props);
     this.state = {
       allSkills: this.props.data.skills,
-      searchedSkills: [""]
+      searchedSkills: [],
     }
     this.state.allSkills.map((data,i) => { 
         let isASearchedSkill = this.props.searchTerms.indexOf(data.name);
@@ -20,21 +20,24 @@ export default class ResultItem extends React.Component {
   render() {
     return(
         <ul>
-            <div class="user-img"></div> {/*ToDo: add as component */}
-            <li>ID: {this.props.data.id}</li>
-            <li>Name: {this.props.data.firstName} {this.props.data.lastName}</li>
+            {/*<div class="user-img"></div> ToDo: add as component */} 
+            <li>
+                Name: {this.props.data.firstName} {this.props.data.lastName}<br/>
+                ID: {this.props.data.id}<br/>
+                {this.props.data.title}<br/>
+            </li>
             <li>{this.props.data.location}</li>
             <li class="skillList">
-                <h4>Skills:</h4>
                 <ul>
                 {this.state.searchedSkills.map((data, i) => { 
                     return(
                         <li key={i}>
                             <ul>
-                                
-                                <li>{data.name} </li>
-                                <li>skillLevel: {data.skillLevel} </li>
-                                <li>willLevel: {data.willLevel }</li>
+                                <li>
+                                    {data.name}<br/>
+                                    skillLevel: {data.skillLevel}<br/>
+                                    willLevel: {data.willLevel }
+                                </li>
                             </ul>
                         </li>
                     );

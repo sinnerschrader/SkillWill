@@ -7,19 +7,9 @@ export default class Results extends React.Component {
     this.state = {
       resultArray: []
     }
-    this.renderUserSkills = this.renderUserSkills.bind(this);
+    console.log("results" + this.props.results);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.results !== nextProps.results) {
-      return true;
-    }
-    return false;
-  }
-
-  renderUserSkills() {
-
-  }
 
   render() {
     if (this.props.results != null ) {

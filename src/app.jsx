@@ -12,6 +12,7 @@ export default class App extends React.Component {
         <div class="background-layer"></div>
         <div class="content">
           <h1 class="title">SkillWill</h1>
+          <h3 class="subtitle">Wir haben Talent</h3>
           <SearchBar />
         </div>
         <Footer />
