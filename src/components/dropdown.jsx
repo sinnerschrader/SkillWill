@@ -22,12 +22,14 @@ export default class Dropdown extends React.Component {
 
   render() {
     return(
-        <select class="dropdown-select" onChange={this.handleDropdownChange}>
-        <option value="all">Alle Standorte</option>
-        <option value="Hamburg">Hamburg</option>
-        <option value="Frankfurt">Frankfurt</option>
-        <option value="München">München</option>
-        </select>
+        <div class="dropdown">
+          <select onChange={this.handleDropdownChange}>
+          <option value="all">Alle Standorte</option>
+          <option value="Hamburg">Hamburg</option>
+          <option value="Frankfurt">Frankfurt</option>
+          <option value="München">München</option>
+          </select>
+        </div>
 
     )
   }

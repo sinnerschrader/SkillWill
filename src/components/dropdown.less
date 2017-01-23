@@ -1,12 +1,32 @@
-.dropdown-select {
-    width: 190px;
-    font-size: 13px;
-    border: none;
-    background: transparent;
-    display: block;
-    margin: 0 auto;
+.dropdown {
+    margin: 0 auto @l-stack auto;
+    width: 140px;
+    position: relative;
+    border-bottom: @base-border;
+    padding-bottom: @xs-stack;
 
-    &:focus {
-        outline: none;
+    select {
+        width: 140px;
+        -webkit-appearance: button;
+        -moz-appearance: inherit;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        display: block;
+
+        &:focus, &:active {
+            outline: none;
+            border: none;
+        }
+    }
+
+    &:after {
+        content: "\2303";
+        height: 0;
+        font-size: @base-font-size;
+        right: 3px;
+        position: absolute;
+        pointer-events: none;
+        transform: rotate(180deg);
     }
 }

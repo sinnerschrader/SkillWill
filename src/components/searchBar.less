@@ -1,62 +1,60 @@
-@test: pink;
 
 .searchbar {
+  margin-top: @5xl-stack;
 
-  margin: 0 10%;
+  .inputContainer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    border-radius: 0;
+    border-bottom: @base-border;
+    float: left; 
 
-.inputContainer {
-  display: inline-block;
-  width: 90%;
-  height: auto;
-  border-radius: 3px;
-  border: solid 1px #787878;
+    input {
+      padding: @s-stack;
+      box-sizing: content-box;
+      border: none;
+      background-color: transparent;
+      flex: 2 1 auto;
 
-  
-  input {
-    padding-left: 22px;
-    display: inline-block;
-    height: 40px;
-    font-size: 14px;
-    box-sizing: content-box;
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .searchTerm {
+      border: @base-border;
+      padding: @s-stack;
+      padding-right: @s-inline;
+      margin-right: @s-inline;
+      margin-bottom: @xxs-inline;
+      line-height: @base-font-size;
+      
+      a {
+        margin-left: @s-inline;
+      }
+    }
+  }
+
+  button {
+    width: 9%;
+    max-width: 21px;
+    min-height: 42px;
+    background-color: transparent;
     border: none;
+    cursor: pointer;
+    float: right; 
+
+    &.search {
+      background-image: data-uri("@{image-path}/icon-search.svg");
+      background-repeat: no-repeat;
+      background-position-x: 50%;
+      background-position-y: 50%;
+      background-size: contain;
+    }
 
     &:focus {
       outline: none;
     }
   }
-  .searchTerm {
-    font-size: 14px;
-    background: darkgray;
-    color: white;
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 9px;
-    margin-left: 5px;
-  }
-
-}
-
-
-button {
-  width: 9%;
-  max-width: 21px;
-  min-height: 42px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  float: right; 
-
-  &.search {
-    background-image: data-uri("@{image-path}/icon-search.svg");
-    background-repeat: no-repeat;
-    background-position-x: 50%;
-    background-position-y: 50%;
-    background-size: contain;
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
-
 }

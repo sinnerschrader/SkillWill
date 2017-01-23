@@ -7,17 +7,22 @@ export default class Results extends React.Component {
     this.state = {
       resultArray: []
     }
-    console.log("results" + this.props.results);
+    this.scrollToResults = this.scrollToResults.bind(this);
   }
 
+  scrollToResults(e) {
+    e.preventDefault();
+    const scrollTo = document.getElementById("searchbar");
+    scrollTo.scrollIntoView();
+  }
 
   render() {
     if (this.props.results != null ) {
       return(
-        <div>
-          <div>
+        <div class="results-container">
+          <a href="" class="counter" onClick={this.scrollToResults}>
             <span>{this.props.results.length} Ergebnisse</span>
-          </div>
+          </a>
           <ul class="results">
             {this.props.results.map((data, i) => {
               return(
@@ -32,10 +37,10 @@ export default class Results extends React.Component {
       
     }else {
        return(
-        <div> 
-            <div>
-              <span>Keine Ergebnisse</span>
-            </div>
+        <div class="results-container"> 
+            <a class="counter">
+                Keine Ergebnisse
+            </a>
         </div>
       ) 
     }

@@ -96,14 +96,16 @@ export default class SearchBar extends React.Component {
 
   render() {
     return(
-      <div class="searchbar" id="header">
+      <div class="searchbar" id="searchbar">
         <form onSubmit={this.handleSubmit}>
-          <select class="dropdown-select" onChange={this.handleDropdownSelect}>
-          <option value="all">Alle Standorte</option>
-          <option value="Hamburg">Hamburg</option>
-          <option value="Frankfurt">Frankfurt</option>
-          <option value="München">München</option>
-          </select>
+          <div class="dropdown">
+            <select onChange={this.handleDropdownSelect}>
+            <option value="all">Alle Standorte</option>
+            <option value="Hamburg">Hamburg</option>
+            <option value="Frankfurt">Frankfurt</option>
+            <option value="München">München</option>
+            </select>
+          </div>
           <div class="inputContainer">
               {
                  /* display entered searchTerms in front of the input field*/
@@ -111,7 +113,7 @@ export default class SearchBar extends React.Component {
                   return(
                     <div class="searchTerm" >
                       {searchTerm}
-                      <a class="close" href="#" key={i} onClick={this.handleClose.bind(null, i)}>X</a>
+                      <a class="close" href="#" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
                     </div>
                     );
                 })

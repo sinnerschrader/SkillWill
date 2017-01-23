@@ -1,6 +1,35 @@
+.results-container {
+    margin-top: @3xl-stack;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: @3xl-stack;
+
+    .counter {
+        display: block;
+        text-align: center;
+        font-size: @m-title-font-size;
+        color: @s2-red;
+        height: @3xl-stack;
+        margin-bottom: @4xl-stack;
+
+         &:after {
+            content: "\2303";
+            height: 4px;
+            font-size: @l-title-font-size;
+            font-weight: 300;
+            right: calc(50% - @l-inline);
+            margin-top: @3xl-stack;
+            position: absolute;
+            pointer-events: none;
+            transform: rotate(180deg);
+        }
+    }
+
+}
+
 .results {
     display: block-flex;
     margin: 0;
-    padding: 0 5px;
+    padding: 0;
     
 }

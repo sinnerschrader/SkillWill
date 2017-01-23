@@ -19,6 +19,12 @@ html, input, textarea, keygen, select, button  {
 
 ul {
     list-style: none;
+    padding-left: 0;
+}
+
+a {
+    text-decoration: none;
+    color: @s2-black;
 }
 
 .background-layer {
@@ -44,21 +50,24 @@ ul {
     background-position-x: 50%;
     background-position-y: 0%;
     background-size: 80%;
-    padding-top: 100px;
+    padding-top: @4xl-stack;
     min-height: 80vh;
+    margin: 0 @tower;
 }
 
 .title {
     font-size: @xl-title-font-size;
+    line-height:  @xl-title-font-size;
     color: @s2-red;
     text-align: center;
     font-weight: @xl-title-font-weight;
-    margin-bottom: 0;
+    margin: 0;
 }
 .subtitle {
     font-size: @m-title-font-size; 
     text-align: center;  
     font-weight: @m-title-font-weight;
+    margin: 0;  
 
 }
 

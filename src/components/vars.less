@@ -24,17 +24,41 @@
 @m-base-font-size: 14px;
 @l-base-font-size: 15px;
 @base-font-size: @l-base-font-size;
+@base-font-color: @s2-black;
 
 //titles
-@xl-title-font-size: 80px;
-@l-title-font-size: 28px;
+@xl-title-font-size: 90px;
+@l-title-font-size: 54px;
 @m-title-font-size: 24px;
 
 @xl-title-font-weight: bold;
 @l-title-font-weight: normal;
 @m-title-font-weight: normal;
 
-@base-font-color: @s2-black;
+//spaces
+@inline-base:  2px;
+@xxs-inline:   @inline-base;
+@xs-inline:    calc(@inline-base * 2);
+@s-inline:     calc(@inline-base * 4);
+@m-inline:     calc(@inline-base * 6);
+@l-inline:     calc(@inline-base * 8);
+@xl-inline:    calc(@inline-base * 12);
+@xxl-inline:   calc(@inline-base * 18);
+@3xl-inline:   calc(@inline-base * 26);
+
+@stack-base:  2px;
+@xxs-stack:   @stack-base;
+@xs-stack:    calc(@stack-base * 2);
+@s-stack:     calc(@stack-base * 4);
+@m-stack:     calc(@stack-base * 6);
+@l-stack:     calc(@stack-base * 8);
+@xl-stack:    calc(@stack-base * 12);
+@xxl-stack:   calc(@stack-base * 18);
+@3xl-stack:   calc(@stack-base * 26);
+@4xl-stack:   calc(@stack-base * 34);
+@5xl-stack:   calc(@stack-base * 42);
+
+@tower: 7%;
 
 @flex-basis: 8.3333%;
 @flex-1: @flex-basis;
@@ -49,3 +73,6 @@
 //paths
 @image-path: '../images';
 @font-path: "../fonts";
+
+//borders
+@base-border: 1px solid @s2-darkgrey;
