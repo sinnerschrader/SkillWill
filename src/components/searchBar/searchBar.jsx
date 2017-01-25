@@ -1,6 +1,6 @@
 import React from 'react';
-import Results from './results.jsx';
-import Dropdown from './dropdown.jsx';
+import Results from './results/results.jsx';
+import Dropdown from '../dropdown/dropdown.jsx';
 
 export default class SearchBar extends React.Component {
   constructor(props) {

@@ -1,8 +1,8 @@
 import styles from './styles.less';
 import React from 'react';
-import Header from './components/header.jsx';
-import Footer from './components/footer.jsx';
-import SearchBar from './components/searchBar.jsx';
+import Header from './components/header/header.jsx';
+import Footer from './components/footer/footer.jsx';
+import SearchBar from './components/searchBar/searchBar.jsx';
 
 export default class App extends React.Component {
   render() {
