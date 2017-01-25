@@ -1,7 +1,7 @@
 .result-item {
     width: auto;
     height: auto;
-    border-bottom: 1px solid @s2-black;
+    border-bottom: @base-border;
 
     .user-img {
         width: 68px;
@@ -11,6 +11,7 @@
         border-radius: 34px;
         float: left;
     }
+    
     > ul {
         padding: 0;
         display: flex;
@@ -19,11 +20,13 @@
     .info {
         padding-top: @m-stack;
         flex-basis: 45%; 
+
         a {
             font-size: @m-title-font-size;
             font-weight: bold;
             line-height:  @m-title-font-size;
         }
+
         span {
             padding: @xxs-stack 0;
             font-size: @m-base-font-size;
@@ -48,13 +51,13 @@
         flex-direction: row-reverse;
         
         ul {
+
             li {
                 padding-bottom: @s-stack;
 
                 p {
                     width: 112px;
-                    display: inline-block;
-                    margin: 0;      
+                    display: inline-block;    
                     padding-right: @m-inline;
 
                     &.skill-name {
@@ -70,6 +73,5 @@
                 padding-bottom: @l-stack;
             }
         }
-
     }
-    }
+}

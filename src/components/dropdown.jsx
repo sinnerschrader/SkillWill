@@ -16,7 +16,6 @@ export default class Dropdown extends React.Component {
       /* calls onChange method, defined as a prop in the parent component.
       This prop is necessary to give the parent access to the selected value */
       this.props.onSelect(val);
-      console.log(val);
     } 
   }
 
@@ -30,7 +29,6 @@ export default class Dropdown extends React.Component {
           <option value="München">München</option>
           </select>
         </div>
-
     )
   }
 }

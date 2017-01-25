@@ -11,7 +11,7 @@ export default class ResultItem extends React.Component {
         let isASearchedSkill = this.props.searchTerms.indexOf(data.name);
         if (isASearchedSkill > -1) {
             const skillLevel = data.skillLevel;
-            //covert the skill- and willlevel into visual component
+            //convert the skill- and willlevel into a visual component
             if (skillLevel == 0) {
                 data.skillLevel = "-";
             }
