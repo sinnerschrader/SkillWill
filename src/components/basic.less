@@ -1,15 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 
 html {
     background-color: @s2-white;
     overflow-x: hidden;
+    height: 100%;
 }
 
  body {
     position: relative;
     overflow-x: hidden; //is needed both in body and html to hide overflow in Safari
-    margin: 0;
+    min-height: 150%;
 }
-
 
 html, input, textarea, keygen, select, button  {
     font-family: @base-font;
@@ -39,20 +43,22 @@ a {
     left: -50%;
     transform: rotate(-22deg);
     overflow: hidden;
-
    } 
 }
 
 .content {
     z-index: 1;
-    background-image: data-uri("@{image-path}/header-img.svg");
-    background-repeat: no-repeat;
-    background-position-x: 50%;
-    background-position-y: 0%;
-    background-size: 80%;
     padding-top: @4xl-stack;
-    min-height: 80vh;
     margin: 0 @tower;
+
+    @media (min-width: @tablet-portrait-up) {
+        margin: 0 @tower-desktop;
+        background-image: data-uri("@{image-path}/header-img.svg");
+        background-repeat: no-repeat;
+        background-position-x: 50%;
+        background-position-y: 0%;
+        background-size: 65vw;
+    } 
 }
 
 .title {
@@ -60,15 +66,17 @@ a {
     line-height:  @xl-title-font-size;
     color: @s2-red;
     text-align: center;
-    font-weight: @xl-title-font-weight;
-    margin: 0;
+    font-weight: 800;
+
+    @media (min-width: @tablet-portrait-up) {
+        font-size: 6vw;
+        line-height:  6vw;
+    }
 }
+
 .subtitle {
     font-size: @m-title-font-size; 
     text-align: center;  
-    font-weight: @m-title-font-weight;
-    margin: 0;  
-
+    font-weight: 500;
 }
 
-  

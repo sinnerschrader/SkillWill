@@ -9,8 +9,9 @@ export default class SearchBar extends React.Component {
       results: null,
       currentValue: '',
       searchTerms: [],
-      searchRequest: "",
-      locationTerm: ""
+      locationTerm: "",
+      searchStarted: false,
+      shouldUpdate: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -27,8 +28,11 @@ export default class SearchBar extends React.Component {
         return response.json();
     })
     .then(function(data) {
-      console.log("s" + data);
-        e.setState({results: data});
+        e.setState({
+          results: data,
+          searchStarted: true,
+          shouldUpdate: true
+        });
     })
     .catch(function(error) {
         console.error("requestSearch" + error);
@@ -38,7 +42,7 @@ export default class SearchBar extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    if(this.state.currentValue.length != 0) {
+    if (this.state.currentValue.length != 0) {
       this.setState({
         searchTerms: this.state.searchTerms.concat([this.state.currentValue]),
         currentValue : ""
@@ -48,7 +52,6 @@ export default class SearchBar extends React.Component {
   }
 
   handleChange(e) {
-    console.log("current: " + this.state.results);
     this.setState({
       currentValue : e.target.value
     });     
@@ -56,34 +59,35 @@ export default class SearchBar extends React.Component {
 
   handleClose(j) {
     let helperArray= [];
+    let helperIndex = 0;
     this.state.searchTerms.map((searchTerm, i) => {
-      if(i == j) {
-        i++
-      }
-      else {
-        helperArray[i] = searchTerm;
+      //skip deleted term
+      if (i != j) {
+        helperArray[helperIndex] = searchTerm;
+        helperIndex++;
       }
     });
     this.setState({
+      shouldUpdate: false,
       searchTerms: helperArray
     });
 
-    /*update searchTerms, if there is an unsubmitted searchinput */
-    if(this.state.currentValue.length != 0) {
+    /* update searchTerms, if there is an unsubmitted searchinput */
+    if (this.state.currentValue.length != 0) {
       this.setState({
         searchTerms: helperArray.concat([this.state.currentValue]),
         currentValue : ""
       });
-    }
+    } 
 
-    /*refresh search */
+    /* refresh search */
     this.requestSearch(this);
   }
 
-  handleDropdownSelect(e) {
-    if(e.target.value != "all") {
+  handleDropdownSelect(val) {
+    if (val != "all") {
       this.setState({
-        locationTerm: "location=" + e.target.value +"&"
+        locationTerm: "location=" + val +"&"
       }); 
     } 
     else { 
@@ -91,6 +95,17 @@ export default class SearchBar extends React.Component {
         locationTerm: ""
       }); 
     }
+    if (this.state.searchStarted) {
+      this.requestSearch(this);
+    }
+  }
+
+  /* update component only if search has changed */
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchTerms.length !== nextState.searchTerms.length) ) ) {
+      return true;
+    }
+    return false;
   }
 
 
@@ -98,32 +113,32 @@ export default class SearchBar extends React.Component {
     return(
       <div class="searchbar" id="searchbar">
         <form onSubmit={this.handleSubmit}>
-          <div class="dropdown">
-            <select onChange={this.handleDropdownSelect}>
-            <option value="all">Alle Standorte</option>
-            <option value="Hamburg">Hamburg</option>
-            <option value="Frankfurt">Frankfurt</option>
-            <option value="München">München</option>
-            </select>
-          </div>
+          <Dropdown onSelect={this.handleDropdownSelect} />
           <div class="inputContainer">
               {
-                 /* display entered searchTerms in front of the input field*/
+                 /* display entered searchTerms in front of the input field */
                 this.state.searchTerms.map((searchTerm, i) => {
                   return(
                     <div class="searchTerm" >
                       {searchTerm}
-                      <a class="close" href="#" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
+                      <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
                     </div>
                     );
                 })
               }
-          <input type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
+            <input type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
           </div>
           <button type="submit" class="search" />
         </form>
-        {/* Result Component to display all results in state.results */}
-        <Results results={this.state.results} searchTerms={this.state.searchTerms} />
+        {/* display Results component only when there has been an inital search */}
+        {
+          this.state.searchStarted ? 
+            <Results results={this.state.results} searchTerms={this.state.searchTerms} /> 
+          : <div class="info-text">
+                Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?<br/>
+                Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt. 
+            </div>
+        }  
       </div>
     )
   }

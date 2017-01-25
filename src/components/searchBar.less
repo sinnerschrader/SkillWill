@@ -1,11 +1,12 @@
 
 .searchbar {
-  margin-top: @5xl-stack;
+  margin-top: @3xl-stack;
+  padding-top: @l-stack;
 
   .inputContainer {
     display: flex;
     flex-wrap: wrap;
-    width: 90%;
+    width: 95%;
     border-radius: 0;
     border-bottom: @base-border;
     float: left; 
@@ -31,13 +32,14 @@
       line-height: @base-font-size;
       
       a {
+        cursor: pointer;
         margin-left: @s-inline;
       }
     }
   }
 
   button {
-    width: 9%;
+    width: 5%;
     max-width: 21px;
     min-height: 42px;
     background-color: transparent;
@@ -57,4 +59,21 @@
       outline: none;
     }
   }
+
+  .info-text {
+    display: inline-block;
+    margin-top: @xl-stack;
+    font-size: @s-title-font-size;
+    line-height: calc(@s-title-font-size * 2);
+    font-weight: 300;
+
+    @media (min-width: @tablet-portrait-up) {
+      font-size: @m-title-font-size;
+      line-height: calc(@m-title-font-size * 2);
+      margin-top: @3xl-stack;
+      width: 70%;
+    } 
+  }
+
+
 }

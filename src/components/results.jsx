@@ -18,6 +18,7 @@ export default class Results extends React.Component {
 
   render() {
     if (this.props.results != null ) {
+      if (this.props.results.length != 0) {
       return(
         <div class="results-container">
           <a href="" class="counter" onClick={this.scrollToResults}>
@@ -31,16 +32,22 @@ export default class Results extends React.Component {
                   </li>
               );
             })}
-            </ul>
+          </ul>
         </div>
       )
-      
-    }else {
+      } 
+      else {
        return(
-        <div class="results-container"> 
-            <a class="counter">
-                Keine Ergebnisse
-            </a>
+        <div class="results-container empty"> 
+            <a class="counter">Keine Ergebnisse</a>
+        </div>
+      ) 
+    }
+    } 
+    else {
+       return(
+        <div class="results-container empty"> 
+            <a class="counter">Keine Ergebnisse</a>
         </div>
       ) 
     }

@@ -1,5 +1,5 @@
 .results-container {
-    margin-top: @3xl-stack;
+    margin-top: @xl-stack;
     display: inline-block;
     width: 100%;
     margin-bottom: @3xl-stack;
@@ -10,7 +10,7 @@
         font-size: @m-title-font-size;
         color: @s2-red;
         height: @3xl-stack;
-        margin-bottom: @4xl-stack;
+        margin-bottom: @xxl-stack;
 
          &:after {
             content: "\2303";
@@ -25,11 +25,16 @@
         }
     }
 
+    &.empty {
+        .counter {
+            &:after {
+                content: none;
+            }
+        }
+    }
 }
 
 .results {
     display: block-flex;
-    margin: 0;
-    padding: 0;
-    
+    padding: 0;  
 }
