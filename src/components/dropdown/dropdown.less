@@ -7,16 +7,22 @@
 
     select {
         width: @dropdown-width;
+        color: @s2-black;
         -webkit-appearance: button;
         -moz-appearance: inherit;
         border-radius: 0;
         border: none;
         background: transparent;
         display: block;
+        cursor: pointer;
 
         &:focus, &:active {
             outline: none;
             border: none;
+        }
+
+        &:hover {
+            color: @s2-black-hover;
         }
     }
 

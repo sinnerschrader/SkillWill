@@ -34,6 +34,11 @@
       a {
         cursor: pointer;
         margin-left: @s-inline;
+        color: @s2-black;
+
+        &:hover {
+          color: @s2-black-hover;
+        }
       }
     }
   }
@@ -46,6 +51,7 @@
     border: none;
     cursor: pointer;
     float: right; 
+    opacity: 1;
 
     &.search {
       background-image: data-uri("../@{image-path}/icon-search.svg");
@@ -53,6 +59,10 @@
       background-position-x: 50%;
       background-position-y: 50%;
       background-size: contain;
+    }
+
+    &:hover {
+        opacity: 0.75;
     }
 
     &:focus {
@@ -74,6 +84,4 @@
       width: 90%;
     } 
   }
-
-
 }

@@ -48,7 +48,7 @@ export default class SearchBar extends React.Component {
         currentValue : ""
       });
     } 
-    this.requestSearch(this);
+    this.requestSearch(this,e);
   }
 
   handleChange(e) {
@@ -72,7 +72,7 @@ export default class SearchBar extends React.Component {
       searchTerms: helperArray
     });
 
-    /* update searchTerms, if there is an unsubmitted searchinput */
+    // update searchTerms, if there is an unsubmitted searchinput 
     if (this.state.currentValue.length != 0) {
       this.setState({
         searchTerms: helperArray.concat([this.state.currentValue]),
@@ -80,7 +80,7 @@ export default class SearchBar extends React.Component {
       });
     } 
 
-    /* refresh search */
+    // refresh search
     this.requestSearch(this);
   }
 
@@ -100,7 +100,7 @@ export default class SearchBar extends React.Component {
     }
   }
 
-  /* update component only if search has changed */
+  // update component only if search has changed
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchTerms.length !== nextState.searchTerms.length) ) ) {
       return true;
@@ -108,25 +108,28 @@ export default class SearchBar extends React.Component {
     return false;
   }
 
+  componentDidUpdate() {
+    document.SearchBar.SearchInput.focus();
+  }
 
   render() {
     return(
       <div class="searchbar" id="searchbar">
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} name="SearchBar">
           <Dropdown onSelect={this.handleDropdownSelect} />
           <div class="inputContainer">
               {
-                 /* display entered searchTerms in front of the input field */
+                 // display entered searchTerms in front of the input field
                 this.state.searchTerms.map((searchTerm, i) => {
                   return(
                     <div class="searchTerm" >
                       {searchTerm}
                       <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
                     </div>
-                    );
+                  );
                 })
               }
-            <input type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
+            <input name="SearchInput" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
           </div>
           <button type="submit" class="search" />
         </form>

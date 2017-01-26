@@ -11,6 +11,7 @@
         color: @s2-red;
         height: @3xl-stack;
         margin-bottom: @6xl-stack;
+        opacity: 1;
 
          &:after {
             content: "\2303";
@@ -22,6 +23,10 @@
             position: absolute;
             pointer-events: none;
             transform: rotate(180deg);
+        }
+
+        &:hover {
+            opacity: 0.75;
         }
     }
 
