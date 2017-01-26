@@ -3,6 +3,7 @@ import Results from './results/results.jsx';
 import Dropdown from '../dropdown/dropdown.jsx';
 
 export default class SearchBar extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -14,6 +15,7 @@ export default class SearchBar extends React.Component {
       shouldUpdate: false
     }
     this.handleChange = this.handleChange.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.requestSearch = this.requestSearch.bind(this);
@@ -48,13 +50,23 @@ export default class SearchBar extends React.Component {
         currentValue : ""
       });
     } 
-    this.requestSearch(this,e);
+    this.requestSearch(this);
   }
 
   handleChange(e) {
     this.setState({
       currentValue : e.target.value
     });     
+  }
+
+  handleKeyDown(e) {
+    //remove recently added searchTerm on Backspace
+    if (this.state.currentValue == "" && e.keyCode == 8 && this.state.searchTerms != "") {
+      this.setState ({
+      searchTerms: this.state.searchTerms.slice(0,(this.state.searchTerms.length-1))  
+      });
+      this.requestSearch(this);
+    }
   }
 
   handleClose(j) {
@@ -129,7 +141,7 @@ export default class SearchBar extends React.Component {
                   );
                 })
               }
-            <input name="SearchInput" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} ></input>
+            <input name="SearchInput" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
           </div>
           <button type="submit" class="search" />
         </form>
