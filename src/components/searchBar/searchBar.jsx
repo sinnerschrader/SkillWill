@@ -135,7 +135,7 @@ export default class SearchBar extends React.Component {
           this.state.searchStarted ? 
             <Results results={this.state.results} searchTerms={this.state.searchTerms} /> 
           : <div class="info-text">
-                Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?<br/>
+                Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?
                 Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt. 
             </div>
         }  
