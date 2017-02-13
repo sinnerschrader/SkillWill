@@ -127,7 +127,7 @@ export default class SearchBar extends React.Component {
   render() {
     return(
       <div class="searchbar" id="searchbar">
-        <form onSubmit={this.handleSubmit} name="SearchBar">
+        <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
           <Dropdown onSelect={this.handleDropdownSelect} />
           <div class="inputContainer">
               {
@@ -141,7 +141,7 @@ export default class SearchBar extends React.Component {
                   );
                 })
               }
-            <input name="SearchInput" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
+            <input name="SearchInput"  autocomplete="off" placeholder="Nach welchem Skill oder Will suchst du?" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
           </div>
           <button type="submit" class="search" />
         </form>

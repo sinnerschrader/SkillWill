@@ -39,43 +39,44 @@
 //spaces
 @inline-base:  3px;
 @xxs-inline:   @inline-base;
-@xs-inline:    calc(@inline-base * 2);
-@s-inline:     calc(@inline-base * 4);
-@m-inline:     calc(@inline-base * 6);
-@l-inline:     calc(@inline-base * 8);
-@xl-inline:    calc(@inline-base * 12);
-@xxl-inline:   calc(@inline-base * 18);
-@3xl-inline:   calc(@inline-base * 26);
+@xs-inline:    (@inline-base * 2);
+@s-inline:     (@inline-base * 4);
+@m-inline:     (@inline-base * 6);
+@l-inline:     (@inline-base * 8);
+@xl-inline:    (@inline-base * 12);
+@xxl-inline:   (@inline-base * 18);
+@3xl-inline:   (@inline-base * 26);
 
 @stack-base:  3px;
 @xxs-stack:   @stack-base;
-@xs-stack:    calc(@stack-base * 2);
-@s-stack:     calc(@stack-base * 4);
-@m-stack:     calc(@stack-base * 6);
-@l-stack:     calc(@stack-base * 8);
-@xl-stack:    calc(@stack-base * 12);
-@xxl-stack:   calc(@stack-base * 18);
-@3xl-stack:   calc(@stack-base * 26);
-@4xl-stack:   calc(@stack-base * 34);
-@5xl-stack:   calc(@stack-base * 42);
-@6xl-stack:   calc(@stack-base * 60);
+@xs-stack:    (@stack-base * 2);
+@s-stack:     (@stack-base * 4);
+@m-stack:     (@stack-base * 6);
+@l-stack:     (@stack-base * 8);
+@xl-stack:    (@stack-base * 12);
+@xxl-stack:   (@stack-base * 18);
+@3xl-stack:   (@stack-base * 26);
+@4xl-stack:   (@stack-base * 34);
+@5xl-stack:   (@stack-base * 42);
+@6xl-stack:   (@stack-base * 60);
 
 @tower: 7%;
 @tower-desktop: 15%;
 
 @flex-basis: 8.3333%;
 @flex-1: @flex-basis;
-@flex-2: calc(@flex-basis * 2);
-@flex-3: calc(@flex-basis * 3);
-@flex-4: calc(@flex-basis * 4);
-@flex-6: calc(@flex-basis * 6);
-@flex-8: calc(@flex-basis * 8);
-@flex-10: calc(@flex-basis * 10);
-@flex-12: calc(@flex-basis * 12);
+@flex-2: (@flex-basis * 2);
+@flex-3: (@flex-basis * 3);
+@flex-4: (@flex-basis * 4);
+@flex-6: (@flex-basis * 6);
+@flex-8: (@flex-basis * 8);
+@flex-10: (@flex-basis * 10);
+@flex-12: (@flex-basis * 12);
 
 //paths
-@image-path: '../images';
-@font-path: "../fonts";
+@image-local-path: 'images';
+@image-path: 'images';
+@font-path: '../fonts';
 
 //borders
 @base-border: 1px solid @s2-darkgrey;
@@ -84,5 +85,5 @@
 @dropdown-width: 140px;
 
 //queries
-@tablet-portrait-up: 800px;
+@tablet-portrait-up: 720px;
 @tablet-landscape-up: 1024px;

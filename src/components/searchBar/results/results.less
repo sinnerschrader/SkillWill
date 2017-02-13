@@ -8,6 +8,7 @@
         display: block;
         text-align: center;
         font-size: @m-title-font-size;
+        line-height: @m-title-font-size;
         color: @s2-red;
         height: @3xl-stack;
         margin-bottom: @6xl-stack;
@@ -17,12 +18,13 @@
             content: "\2303";
             height: 4px;
             font-size: @l-title-font-size;
+            line-height: @l-title-font-size;
             font-weight: 300;
-            right: calc(50% - @l-inline);
+            right: 50%;
             margin-top: @3xl-stack;
             position: absolute;
             pointer-events: none;
-            transform: rotate(180deg);
+            transform: rotate(180deg) translateX(-50%);
         }
 
         &:hover {
@@ -30,16 +32,17 @@
         }
     }
 
-    &.empty {
-        .counter {
-            &:after {
-                content: none;
-            }
+    &:empty {
+        &:before {
+            content: attr(data-isEmptyLabel);
+            &:extend(.results-container .counter);
+        }
+        &:after {
+           content: none; 
         }
     }
 }
 
 .results {
-    display: block-flex;
     padding: 0;  
 }

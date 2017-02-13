@@ -38,17 +38,13 @@ export default class Results extends React.Component {
       } 
       else {
        return(
-        <div class="results-container empty"> 
-            <a class="counter">Keine Ergebnisse</a>
-        </div>
+          <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
       ) 
     }
     } 
     else {
        return(
-        <div class="results-container empty"> 
-            <a class="counter">Keine Ergebnisse</a>
-        </div>
+          <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
       ) 
     }
   }

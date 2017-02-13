@@ -4,17 +4,18 @@
     position: relative;
     border-bottom: @base-border;
     padding-bottom: @xs-stack;
+    position: relative;
 
     select {
-        width: @dropdown-width;
         color: @s2-black;
-        -webkit-appearance: button;
-        -moz-appearance: inherit;
-        border-radius: 0;
-        border: none;
-        background: transparent;
+        opacity: 0;
         display: block;
         cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
 
         &:focus, &:active {
             outline: none;
@@ -30,7 +31,9 @@
         content: "\2303";
         height: 0;
         font-size: @base-font-size;
+        line-height: @base-font-size;
         right: 3px;
+        top: 15px;
         position: absolute;
         pointer-events: none;
         transform: rotate(180deg);

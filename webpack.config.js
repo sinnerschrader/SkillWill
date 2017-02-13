@@ -24,7 +24,7 @@ loaders.push({
 		'style?sourceMap',
 		'css',
 		'postcss',
-		'less?{"ieCompat": false, "strictMath": true}',
+		'less?{"ieCompat": false, "strictMath": true, "paths": "src"}',
 		
 	]
 });
