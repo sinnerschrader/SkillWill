@@ -40,7 +40,7 @@ export default class ResultItem extends React.Component {
 
   render() {
     return(
-        <ul>
+        <ul class="result-item-list">
             {/*<div class="user-img"></div> ToDo: add as component */} 
             <li class="info">
                 <a>{this.props.data.firstName} {this.props.data.lastName}</a><br/>
@@ -49,12 +49,12 @@ export default class ResultItem extends React.Component {
             </li>
             <li class="location">{this.props.data.location}</li>
             <li class="skills">
-                <ul>
+                <ul class="skills-list">
                 {this.state.searchedSkills.map((data, i) => { 
                     return(
-                        <li key={i}>
+                        <li key={i} class="skill-item">
                             <p class="skill-name">{data.name}</p><br/>
-                            <p>skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
+                            <p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
                         </li>
                     );
                 })}

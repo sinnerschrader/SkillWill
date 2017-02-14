@@ -3,6 +3,9 @@
     height: auto;
     border-bottom: @base-border;
 
+    .result-item-list{
+        display: flex;
+    }
     .user-img {
         width: 68px;
         height: 68px;
@@ -10,12 +13,7 @@
         border: solid 1px #979797;
         border-radius: 34px;
         float: left;
-    }
-    
-    > ul {
-        padding: 0;
-        display: flex;
-    }      
+    }   
    
     .info {
         padding-top: @m-stack;
@@ -27,7 +25,6 @@
             font-weight: bold;
             
         }
-
         span {
             padding: @xxs-stack 0;
             font-size: @m-base-font-size;
@@ -52,27 +49,26 @@
         display: inline-flex;
         flex-direction: row-reverse;
         
-        ul {
-
-            li {
+        .skills-list {
+            .skill-item {
                 padding-bottom: @s-stack;
 
-                p {
+                .level {
                     width: 112px;
                     display: inline-block;    
                     padding-right: @m-inline;
-
-                    &.skill-name {
-                        width: 100%;
-                        font-weight: 800;
-                        color: @s2-red;
-                        margin-bottom: @xxs-stack;  
-                    }
                 }
-            }
-
-            li:last-child {
-                padding-bottom: @l-stack;
+                .skill-name {
+                    width: 100%;
+                    font-weight: 800;
+                    color: @s2-red;
+                    margin-bottom: @xxs-stack;
+                    display: inline-block;    
+                    padding-right: @m-inline;  
+                }
+                &:last-child {
+                    padding-bottom: @l-stack;
+                }
             }
         }
     }

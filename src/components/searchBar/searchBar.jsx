@@ -129,21 +129,23 @@ export default class SearchBar extends React.Component {
       <div class="searchbar" id="searchbar">
         <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
           <Dropdown onSelect={this.handleDropdownSelect} />
-          <div class="inputContainer">
-              {
-                 // display entered searchTerms in front of the input field
-                this.state.searchTerms.map((searchTerm, i) => {
-                  return(
-                    <div class="searchTerm" >
-                      {searchTerm}
-                      <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
-                    </div>
-                  );
-                })
-              }
-            <input name="SearchInput"  autocomplete="off" placeholder="Nach welchem Skill oder Will suchst du?" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
+          <div class="search-container">
+            <div class="input-container">
+                {
+                  // display entered searchTerms in front of the input field
+                  this.state.searchTerms.map((searchTerm, i) => {
+                    return(
+                      <div class="search-term" >
+                        {searchTerm}
+                        <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
+                      </div>
+                    );
+                  })
+                }
+              <input name="SearchInput"  autocomplete="off" placeholder="Nach welchem Skill oder Will suchst du?" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
+            </div>
+            <button type="submit" class="search" />
           </div>
-          <button type="submit" class="search" />
         </form>
         {/* display Results component only when there has been an inital search */}
         {

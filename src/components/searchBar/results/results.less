@@ -14,7 +14,7 @@
         margin-bottom: @6xl-stack;
         opacity: 1;
 
-         &:after {
+         &::after {
             content: "\2303";
             height: 4px;
             font-size: @l-title-font-size;
@@ -33,11 +33,11 @@
     }
 
     &:empty {
-        &:before {
+        &::before {
             content: attr(data-isEmptyLabel);
             &:extend(.results-container .counter);
         }
-        &:after {
+        &::after {
            content: none; 
         }
     }

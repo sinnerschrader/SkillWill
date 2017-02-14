@@ -3,74 +3,80 @@
   margin-top: @4xl-stack;
   padding-top: @l-stack;
 
-  .inputContainer {
+  .search-container {
     display: flex;
-    flex-wrap: wrap;
-    width: 95%;
-    border-radius: 0;
-    border-bottom: @base-border;
-    float: left; 
 
-    input {
-      padding: @s-stack;
-      box-sizing: content-box;
-      border: none;
+    .input-container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 95%;
+      border-radius: 0;
+      border-bottom: @base-border;
+      float: left; 
+
+      input {
+        padding: @s-stack;
+        box-sizing: content-box;
+        background-color: transparent;
+        flex: 2 1 auto;
+        appearance: none;
+        border: none;
+        border-radius: 0;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      div:first-child {
+        margin-left: 0;
+      }
+      
+      .search-term {
+        border: @base-border;
+        padding: @s-stack;
+        padding-right: @s-inline;
+        margin-left: @s-inline;
+        margin-bottom: @xxs-inline;
+        line-height: @base-font-size;
+        
+        a {
+          cursor: pointer;
+          margin-left: @s-inline;
+          color: @s2-black;
+
+          &:hover {
+            color: @s2-black-hover;
+          }
+        }
+      }
+    }
+
+    button {
+      width: 5%;
+      max-width: 21px;
+      min-height: 42px;
+      margin-left: 5px;
       background-color: transparent;
-      flex: 2 1 auto;
+      border: none;
+      cursor: pointer;
+      opacity: 1;
+
+      &.search {
+        background-image: data-uri("@{image-path}/icon-search.svg");
+        background-repeat: no-repeat;
+        background-position-x: 50%;
+        background-position-y: 50%;
+        background-size: contain;
+      }
+
+      &:hover {
+          opacity: 0.75;
+      }
 
       &:focus {
         outline: none;
       }
-    }
-
-    div:first-child {
-      margin-left: 0;
-    }
-    
-    .searchTerm {
-      border: @base-border;
-      padding: @s-stack;
-      padding-right: @s-inline;
-      margin-left: @s-inline;
-      margin-bottom: @xxs-inline;
-      line-height: @base-font-size;
-      
-      a {
-        cursor: pointer;
-        margin-left: @s-inline;
-        color: @s2-black;
-
-        &:hover {
-          color: @s2-black-hover;
-        }
-      }
-    }
-  }
-
-  button {
-    width: 5%;
-    max-width: 21px;
-    min-height: 42px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    float: right; 
-    opacity: 1;
-
-    &.search {
-      background-image: data-uri("@{image-path}/icon-search.svg");
-      background-repeat: no-repeat;
-      background-position-x: 50%;
-      background-position-y: 50%;
-      background-size: contain;
-    }
-
-    &:hover {
-        opacity: 0.75;
-    }
-
-    &:focus {
-      outline: none;
     }
   }
 
