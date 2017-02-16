@@ -1,6 +1,7 @@
 import React from 'react';
 import Results from './results/results.jsx';
 import Dropdown from '../dropdown/dropdown.jsx';
+import config from '(../../config.json';
 
 export default class SearchBar extends React.Component {
 
@@ -11,6 +12,7 @@ export default class SearchBar extends React.Component {
       currentValue: '',
       searchTerms: [],
       locationTerm: "",
+      dropdownLabel: "Alle Standorte",
       searchStarted: false,
       shouldUpdate: false
     }
@@ -20,13 +22,12 @@ export default class SearchBar extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.requestSearch = this.requestSearch.bind(this);
     this.handleDropdownSelect = this.handleDropdownSelect.bind(this);
-
   }
 
   requestSearch(e) {
-    fetch("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms)
+    fetch(config.backendServer + "/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms)
     .then(function(response) {
-        console.log("http://localhost:1337/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms);
+        console.log(config.backendServer +"/users?"+ e.state.locationTerm + "skills="+ e.state.searchTerms);
         return response.json();
     })
     .then(function(data) {
@@ -99,12 +100,14 @@ export default class SearchBar extends React.Component {
   handleDropdownSelect(val) {
     if (val != "all") {
       this.setState({
-        locationTerm: "location=" + val +"&"
+        locationTerm: "location=" + val +"&",
+        dropdownLabel: val
       }); 
     } 
     else { 
       this.setState({
-        locationTerm: ""
+        locationTerm: "",
+        dropdownLabel: "Alle Standorte"
       }); 
     }
     if (this.state.searchStarted) {
@@ -127,8 +130,8 @@ export default class SearchBar extends React.Component {
   render() {
     return(
       <div class="searchbar" id="searchbar">
+        <Dropdown onDropdownSelect={this.handleDropdownSelect} dropdownLabel={this.state.dropdownLabel}/>
         <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
-          <Dropdown onSelect={this.handleDropdownSelect} />
           <div class="search-container">
             <div class="input-container">
                 {
