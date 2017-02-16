@@ -129,7 +129,7 @@ export default class SearchBar extends React.Component {
 
   render() {
     return(
-      <div class="searchbar" id="searchbar">
+      <div class="searchbar">
         <Dropdown onDropdownSelect={this.handleDropdownSelect} dropdownLabel={this.state.dropdownLabel}/>
         <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
           <div class="search-container">
