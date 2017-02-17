@@ -17,6 +17,8 @@ loaders.push({
 loaders.push({
 	test: /[\/\\]src[\/\\].*\.less/,
 	exclude: /(node_modules|bower_components|public)/,
+	rootpath: path.join(__dirname, 'src'),
+	paths: path.join(__dirname, 'src'),
 	loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!less')
 });
 // global css files

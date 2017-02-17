@@ -24,7 +24,7 @@ loaders.push({
 		'style?sourceMap',
 		'css',
 		'postcss',
-		'less?{"ieCompat": false, "strictMath": true}',
+		'less?{"ieCompat": false, "strictMath": true, "paths": "src"}',
 		
 	]
 });
@@ -41,6 +41,7 @@ loaders.push({
 
 module.exports = {
 	entry: [
+		'whatwg-fetch',
 		'react-hot-loader/patch',
 		'./src/index.jsx' // your app's entry point
 	],
@@ -50,7 +51,11 @@ module.exports = {
 		filename: 'bundle.js'
 	},
 	resolve: {
-		extensions: ['', '.js', '.jsx']
+		extensions: ['', '.js', '.jsx'],
+    	"alias": {
+			"react": "preact-compat",
+      		"react-dom": "preact-compat"
+		}
 	},
 	module: {
 		loaders
@@ -76,3 +81,4 @@ module.exports = {
 		}),
 	]
 };
+

@@ -1,0 +1,41 @@
+.dropdown {
+    margin: 0 auto @l-stack auto;
+    width: @dropdown-width;
+    position: relative;
+    border-bottom: @base-border;
+    padding-bottom: @xs-stack;
+    position: relative;
+
+    select {
+        color: @s2-black;
+        opacity: 0;
+        display: block;
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+
+        &:focus, &:active {
+            outline: none;
+            border: none;
+        }
+
+        &:hover {
+            color: @s2-black-hover;
+        }
+    }
+
+    &::after {
+        content: "\2303";
+        height: 0;
+        font-size: @base-font-size;
+        line-height: @base-font-size;
+        right: 3px;
+        top: 15px;
+        position: absolute;
+        pointer-events: none;
+        transform: rotate(180deg);
+    }
+}
