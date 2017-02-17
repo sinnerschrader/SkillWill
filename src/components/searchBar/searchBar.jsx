@@ -1,7 +1,7 @@
 import React from 'react';
 import Results from './results/results.jsx';
 import Dropdown from '../dropdown/dropdown.jsx';
-import config from '(../../config.json';
+import config from '../../config.json';
 
 export default class SearchBar extends React.Component {
 
