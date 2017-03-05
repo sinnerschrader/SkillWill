@@ -1,4 +1,5 @@
 import React from 'react';
+import User from '../../../user/user.jsx';
 
 export default class ResultItem extends React.Component {
    constructor(props) {
@@ -40,28 +41,10 @@ export default class ResultItem extends React.Component {
 
   render() {
     return(
-        <ul class="result-item-list">
+        <div>
             {/*<div class="user-img"></div> ToDo: add as component */} 
-            <li class="info">
-                <a>{this.props.data.firstName} {this.props.data.lastName}</a><br/>
-                <span>{this.props.data.id}</span><br/>
-                <span class="department">{this.props.data.title}</span><br/>
-            </li>
-            <li class="location">{this.props.data.location}</li>
-            <li class="skills">
-                <ul class="skills-list">
-                {this.state.searchedSkills.map((data, i) => { 
-                    return(
-                        <li key={i} class="skill-item">
-                            <p class="skill-name">{data.name}</p><br/>
-                            <p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
-                        </li>
-                    );
-                })}
-                </ul>
-                 
-            </li>                
-        </ul>
+             <User data={this.props.data} searchedSkills={this.state.searchedSkills} isProfile={false}/> 
+        </div>
     )
   }
 }

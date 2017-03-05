@@ -1,20 +1,27 @@
-.result-item {
-    width: auto;
-    height: auto;
-    border-bottom: @base-border;
+.profile-container {
+    position: fixed;
+    background: rgba(239, 239, 239, 0.96);
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    padding: @xxl-stack 0;
+    overflow: scroll;
 
-    .user{
-        display: flex;
+    .close-btn {
+        right: @m-inline;
+        position: absolute;
+        font-size: @l-base-font-size;
     }
-    .user-img {
-        width: 68px;
-        height: 68px;
-        background-color: #9b9b9b;
-        border: solid 1px #979797;
-        border-radius: 34px;
-        float: left;
-    }   
-   
+}
+
+.profile {
+    margin: 0 auto @xxl-stack auto;
+    max-width: 600px;
+    padding: @xxl-stack @4xl-stack;  
+    background-color: @s2-white;   
+
     .info {
         padding-top: @m-stack;
         flex-basis: 45%; 
@@ -23,8 +30,8 @@
             font-size: @m-title-font-size;
             line-height:  @m-title-font-size;
             font-weight: bold;
-            
         }
+
         .id, .department {
             display: block;
             padding: @xxs-stack 0;
@@ -44,15 +51,20 @@
         padding: @l-stack @l-inline 0 @l-inline;
     }
 
-    .skills {
+    .all-skills, .searched-skills {
         padding-top: @l-stack;
-        flex-basis: 45%;
-        display: inline-flex;
-        flex-direction: row-reverse;
+        display: flex;
+        flex-wrap: wrap; 
         
         .skills-list {
+             display: flex; 
+             flex-wrap: wrap;
+             align-items: center; 
+             
             .skill-item {
                 padding-bottom: @s-stack;
+                width: 33%;
+                cursor: pointer;
 
                 .level {
                     width: 112px;
@@ -71,6 +83,19 @@
                     padding-bottom: @l-stack;
                 }
             }
+        }
+        .show-more-link{
+            color: @s2-red;
+            margin: @m-stack auto;
+        }
+    }
+
+    .edit-layer {
+        position: absolute;
+        background-color: @s2-red;
+        height: 200px;
+        a {
+            padding: 0 @s-inline;
         }
     }
 }

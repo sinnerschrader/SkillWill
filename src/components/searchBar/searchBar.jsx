@@ -159,6 +159,7 @@ export default class SearchBar extends React.Component {
                 Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt. 
             </div>
         }  
+        {this.props.children}
       </div>
     )
   }

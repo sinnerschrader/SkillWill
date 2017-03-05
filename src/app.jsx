@@ -2,7 +2,7 @@ import styles from './styles.less';
 import React from 'react';
 import Header from './components/header/header.jsx';
 import Footer from './components/footer/footer.jsx';
-import SearchBar from './components/searchBar/searchBar.jsx';
+import { Router, Route, Link, browserHistory } from 'react-router';
 
 export default class App extends React.Component {
   render() {
@@ -13,7 +13,7 @@ export default class App extends React.Component {
         <div class="content">
           <h1 class="title">SkillWill</h1>
           <h3 class="subtitle">Wir haben Talent</h3>
-          <SearchBar />
+          {this.props.children} {/* SearchBar*/}
         </div>
         <Footer />
       </div>
