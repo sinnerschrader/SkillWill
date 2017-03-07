@@ -18,7 +18,7 @@
 
 .profile {
     margin: 0 auto @xxl-stack auto;
-    max-width: 600px;
+    max-width: @layer-width;
     padding: @xxl-stack @4xl-stack;  
     background-color: @s2-white;   
 
@@ -83,6 +83,15 @@
                     padding-bottom: @l-stack;
                 }
             }
+
+            .edit-layer {
+                position: absolute;
+                background-color: @s2-red;
+                height: 200px;
+                a {
+                    padding: 0 @s-inline;
+                }
+            }
         }
         .show-more-link{
             color: @s2-red;
@@ -90,12 +99,11 @@
         }
     }
 
-    .edit-layer {
-        position: absolute;
+    .add-skill-btn {
+        position: fixed;
+        right: 50%;
+        transform: translateX((@layer-width / 2));
+        bottom: @xxl-inline;
         background-color: @s2-red;
-        height: 200px;
-        a {
-            padding: 0 @s-inline;
-        }
     }
 }

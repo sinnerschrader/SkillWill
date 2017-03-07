@@ -13,7 +13,7 @@ export default class App extends React.Component {
         <div class="content">
           <h1 class="title">SkillWill</h1>
           <h3 class="subtitle">Wir haben Talent</h3>
-          {this.props.children} {/* SearchBar*/}
+          {this.props.children} {/* UserSearch*/}
         </div>
         <Footer />
       </div>

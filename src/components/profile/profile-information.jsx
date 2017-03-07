@@ -78,9 +78,9 @@ export default class ProfileInformation extends React.Component {
                                     //open Edit-Layer on clicked Item
                                     this.state.editLayerAt == i ?  
                                     <div class="edit-layer">
-                                    <a onClick={this.closeEditLayer}>X</a>
-                                    <a>Bearbeiten</a>
-                                    <a onClick={this.props.handleRemove.bind(data.name)}>Entfernen</a>
+                                        <a onClick={this.closeEditLayer}>X</a>
+                                        <a>Bearbeiten</a>
+                                        <a onClick={this.props.handleRemove.bind(data.name)}>Entfernen</a>
                                     </div> : ""
                                 }
                             </li>

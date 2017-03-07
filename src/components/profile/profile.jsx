@@ -1,6 +1,7 @@
 import React from 'react';
 import User from "../user/user.jsx";
 import ProfileInformation from "./profile-information.jsx";
+import SkillSearch from "../search/skill-search.jsx";
 import config from '../../config.json';
 
 export default class Profile extends React.Component {
@@ -9,10 +10,13 @@ export default class Profile extends React.Component {
       this.state = {
         userId: "id",
         dataLoaded: false,
-        data: null
+        data: null,
+        searchLayerOpen: false
       }
       this.removeSkill = this.removeSkill.bind(this);
       this.sortAlphabetically = this.sortAlphabetically.bind(this);
+      this.openSkillSearch = this.openSkillSearch.bind(this);
+      this.openProfileInformation = this.openProfileInformation.bind(this);
     }
     componentDidMount() {
       const elem = this;
@@ -29,12 +33,15 @@ export default class Profile extends React.Component {
               data: data,
               dataLoaded: true
             });
+            let currData = elem.data;
+            elem.sortAlphabetically(currData.skills);
+            elem.setState({
+              data: currData
+            });
         })
         .catch(function(error) {
             console.error(error);
         });
-
-        sortAlphabetically(this.state.data.skills);
     }
 
      sortAlphabetically(items) {
@@ -47,7 +54,6 @@ export default class Profile extends React.Component {
           if (nameA > nameB) {
             return 1;
           }
-
           // names must be equal
           return 0;
         });
@@ -65,18 +71,37 @@ export default class Profile extends React.Component {
         });
     }
 
+    openSkillSearch(){
+        this.setState({
+            searchLayerOpen: true
+        });
+    }
+
+    openProfileInformation(){
+        this.setState({
+            searchLayerOpen: false
+        });
+    }
+
 render() {
     return(
-      <div class="profile-container">
-        <a  href="../../" class="close-btn">X</a>
-        <div class="profile">
-          {
-            this.state.dataLoaded ? 
-              <ProfileInformation data={this.state.data} handleRemove={this.removeSkill} />
-              : <p>please wait</p>
-          }
+        <div class="profile-container">
+            <a href="../../" class="close-btn">X</a>
+            {this.state.searchLayerOpen ?
+                <div class="profile">
+                    <SkillSearch />
+                    <a class="back-btn" onClick={this.openProfileInformation}>X</a>
+                </div>
+               :
+                <div class="profile">
+                    {this.state.dataLoaded ?
+                        <ProfileInformation data={this.state.data} handleRemove={this.removeSkill}/>
+                        : "" 
+                    }
+                    <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>
+                </div>
+            } 
         </div>
-      </div>
     )
   }
 }
