@@ -12,7 +12,7 @@ export default class Results extends React.Component {
 
   scrollToResults(e) {
     e.preventDefault();
-    const scrollTo = document.getElementById("searchbar");
+    const scrollTo = document.getElementById("results");
     scrollTo.scrollIntoView();
   }
 
@@ -24,7 +24,7 @@ export default class Results extends React.Component {
           <a href="" class="counter" onClick={this.scrollToResults}>
             <span>{this.props.results.length} Ergebnisse</span>
           </a>
-          <ul class="results">
+          <ul class="results" id="results">
             {this.props.results.map((data, i) => {
               return(
                   <li class="result-item" key={i}> 

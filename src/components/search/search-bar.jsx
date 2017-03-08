@@ -66,6 +66,7 @@ export default class SearchBar extends React.Component {
             });
         } 
         this.props.handleRequest(this.props.parent,this.state.searchTerms);
+        e.target.focus();
     }
       // update component only if search has changed
     shouldComponentUpdate(nextProps, nextState) {
@@ -74,7 +75,7 @@ export default class SearchBar extends React.Component {
         }
         return false;
     }
-    
+
     render() {
         return(
             <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
@@ -91,7 +92,7 @@ export default class SearchBar extends React.Component {
                         );
                     })
                     }
-                <input name="SearchInput"  autocomplete="off" placeholder="Nach welchem Skill suchst du?" type="search" value={this.state.currentValue} autofocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
+                <input name="SearchInput" autocomplete="off" placeholder="Nach welchem Skill suchst du?" type="search" value={this.state.currentValue} autoFocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
                 </div>
                 <button type="submit" class="search" />
             </div>

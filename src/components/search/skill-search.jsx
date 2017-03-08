@@ -37,10 +37,6 @@ export default class SkillSearch extends React.Component {
     });
   }
 
-  componentDidUpdate() {
-    document.SearchBar.SearchInput.focus();
-  }
-
   // update component only if search has changed
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchItems.length !== nextState.searchItems.length) ) ) {
