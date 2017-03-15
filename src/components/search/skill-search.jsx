@@ -19,11 +19,11 @@ export default class SkillSearch extends React.Component {
 
   requestSearch(e, searchTerms) {
     fetch(config.backendServer + "/skills?"+ "search="+ searchTerms)
-    .then(function(response) {
-        console.log(config.backendServer +"/skills?"+ "search="+ searchTerms);
-        return response.json();
+    .then(r => {
+      console.log(config.backendServer +"/skills?"+ "search="+ searchTerms);
+      return r.json();
     })
-    .then(function(data) {
+    .then(data => {
         e.setState({
           results: data,
           searchStarted: true,
@@ -31,7 +31,7 @@ export default class SkillSearch extends React.Component {
           shouldUpdate: true
         });
     })
-    .catch(function(error) {
+    .catch(error => {
         console.error("requestSearch" + error);
         e.setState({results: null});
     });
@@ -54,6 +54,8 @@ export default class SkillSearch extends React.Component {
   render() {
     return(
       <div class="searchbar">
+        <div class="headline">Neuen Skill hinzufügen</div>
+        <p>Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
         <SearchBar handleRequest={this.requestSearch} toggleUpdate={this.toggleUpdate} parent={this} searchTerms={this.state.searchItems}/>
         {/* display Results component only when there has been an inital search */}
         {

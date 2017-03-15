@@ -1,17 +1,20 @@
 .profile-container {
     position: fixed;
-    background: rgba(239, 239, 239, 0.96);
+    background: rgba(22, 24, 30, 0.95);
     height: 100%;
     width: 100%;
     z-index: 1;
     top: 0;
     left: 0;
     padding: @xxl-stack 0;
-    overflow: scroll;
+    height: 100vh;
+    overflow: hidden;
 
     .close-btn {
-        right: @m-inline;
         position: absolute;
+        top: @4xl-stack;
+        transform: translateX(((@layer-width / 2) + 70 ));
+        right: 50%;
         font-size: @l-base-font-size;
     }
 }
@@ -21,89 +24,35 @@
     max-width: @layer-width;
     padding: @xxl-stack @4xl-stack;  
     background-color: @s2-white;   
-
-    .info {
-        padding-top: @m-stack;
-        flex-basis: 45%; 
-
-        .name {
-            font-size: @m-title-font-size;
-            line-height:  @m-title-font-size;
-            font-weight: bold;
-        }
-
-        .id, .department {
-            display: block;
-            padding: @xxs-stack 0;
-            font-size: @m-base-font-size;
-            line-height: @m-base-font-size;
-            font-weight: 300;
-        }
-
-        .department {
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-    }
-
-    .location {
-        flex-basis: 10%;
-        padding: @l-stack @l-inline 0 @l-inline;
-    }
-
-    .all-skills, .searched-skills {
-        padding-top: @l-stack;
-        display: flex;
-        flex-wrap: wrap; 
-        
-        .skills-list {
-             display: flex; 
-             flex-wrap: wrap;
-             align-items: center; 
-             
-            .skill-item {
-                padding-bottom: @s-stack;
-                width: 33%;
-                cursor: pointer;
-
-                .level {
-                    width: 112px;
-                    display: inline-block;    
-                    padding-right: @m-inline;
-                }
-                .skill-name {
-                    width: 100%;
-                    font-weight: 800;
-                    color: @s2-red;
-                    margin-bottom: @xxs-stack;
-                    display: inline-block;    
-                    padding-right: @m-inline;  
-                }
-                &:last-child {
-                    padding-bottom: @l-stack;
-                }
-            }
-
-            .edit-layer {
-                position: absolute;
-                background-color: @s2-red;
-                height: 200px;
-                a {
-                    padding: 0 @s-inline;
-                }
-            }
-        }
-        .show-more-link{
-            color: @s2-red;
-            margin: @m-stack auto;
-        }
-    }
+    height: 80vh;
+    overflow: scroll;
+    position: relative;
 
     .add-skill-btn {
         position: fixed;
         right: 50%;
-        transform: translateX((@layer-width / 2));
+        transform: translateX(((@layer-width / 2) + 70 ));
         bottom: @xxl-inline;
         background-color: @s2-red;
+        height: 70px;
+        width: 70px;
+        border-radius: 70px;
+        font-size: 70px;
+        line-height: 70px;
+        color: @s2-white;
+        font-weight: 200;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: @s2-box-shadow-dark;
+    }
+    .back-btn {
+        position: absolute;
+        top: @4xl-stack;
+        left: 50%;
+        transform: translateX((-@layer-width / 2));
+        height: 30px;   
+        bottom: @xxl-inline;
+        background-color: @s2-red;
+        cursor: pointer;
     }
 }

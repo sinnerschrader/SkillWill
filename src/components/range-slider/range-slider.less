@@ -1,12 +1,10 @@
 .thumb-styling() {
     border: none;
-    height: @slider-thumb-height;
-    width: @slider-thumb-height;
-    border-radius: 50%;
-    background: @s2-red;
+    height: 0;
+    width: 0;
 }
 .range-slider {
-    width: (@slider-width + @slider-thumb-height);
+    width: @slider-width;
     margin-bottom: @m-stack;
 
     input[type=range] {
@@ -17,14 +15,13 @@
         border: 1px solid transparent; //FF
         width: @slider-width;    //FF
 
-        /* CHROME */
+       //Remove styles from CHROME
 
         &::-webkit-slider-runnable-track {
             width: @slider-width;
             height: @slider-height;
             background: transparent;
             border: none;
-            border-radius: 3px;
         }
 
         &::-webkit-slider-thumb {
@@ -37,7 +34,7 @@
             outline: none;
         }
 
-        /* FIREFOX */
+        //Remove styles from FIREFOX
 
         &::-moz-range-track {
             width: 100%;
@@ -65,22 +62,23 @@
         height: @slider-height;
         pointer-events: none;
         position: absolute;
-        background: @s2-darkgrey3;
+        background: @s2-white;
+        border: 1px solid @s2-darkgrey3;
         width: @slider-width;
         display: flex;
 
-        //pogress
+        //progress
         &::after {
             content: "";
             position: absolute;
             height: @slider-height;
             width: 0;
+            border: 1px solid @s2-darkgrey3;
         }
 
         &.lvl0 {
             &::after {
                 width: (@slider-width * 0);
-                background-color: @s2-red;
             }
         }
 
@@ -88,6 +86,7 @@
             &::after {
                 width: (@slider-width * 0.33);
                 background-color: @s2-red;
+                border-color: @s2-red;
             } 
         }
 
@@ -95,6 +94,7 @@
             &::after {
                 width: (@slider-width * 0.66);
                 background-color: @s2-blue;
+                border-color: @s2-blue;
             }
         }
 
@@ -102,6 +102,7 @@
             &::after {
                 width: @slider-width;
                 background-color: @s2-green;
+                border-color: @s2-green;
             }
         }
     }
@@ -125,6 +126,25 @@
 
         &.lvl3 {
             transform: translateX(100%);
+        }
+    }
+
+    .legend {
+        display: flex;
+        position: relative;
+
+        [class^="legend-level"]  {
+            flex-basis: 25%;
+
+            &::after {
+                content: "";
+                position: absolute;
+                width: 20px;
+                height: 5px;
+                color: @s2-black;
+                border-left: 2px solid @s2-white;
+                border-right: 2px solid @s2-white;
+            }
         }
     }
 }

@@ -1,0 +1,32 @@
+.skill {
+    display: flex;
+    padding: @m-stack @s-inline;
+    flex-wrap: wrap;
+    position: relative;
+
+    .name {
+        flex-basis: 80%;
+        font-size: @xl-base-font-size;
+        line-height: @xl-base-font-size;
+        color: @s2-black;
+        cursor: pointer;
+    }
+
+    .add {
+        flex-basis: 20%;
+        font-size: @m-title-font-size;
+        line-height: @m-title-font-size;
+        font-weight: 200;
+        cursor: pointer;
+    }
+
+    .editor-container {
+        flex-basis: 100%;
+    }
+
+    &.toggled {
+        .name {
+            color: @s2-red;
+        }
+    }
+}

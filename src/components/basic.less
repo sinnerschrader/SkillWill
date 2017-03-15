@@ -12,15 +12,14 @@ html {
     background-color: @s2-white;
     position: relative; //is needed both in body and html to hide overflow in Safari
     overflow-x: hidden; 
-    min-height: 150%;
+    min-height: 100vh;
 
     &.layerOpen {
         overflow-y: hidden;
-        min-height: 100%;
     }
 }
 
-html, input, textarea, keygen, select, button  {
+html, input, textarea, keygen, select, button, p , a  {
     font-family: @base-font;
     font-size: @base-font-size;
     line-height: @base-font-size;

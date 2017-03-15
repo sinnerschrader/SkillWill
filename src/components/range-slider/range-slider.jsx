@@ -26,6 +26,13 @@ export default class RangeSlider extends React.Component {
                 <span class="step lvl2"></span>
                 <span class="step lvl3"></span> */}
                 <input type='range' min='0' max='3' value={this.props.defaultValue} defaultValue={this.props.defaultValue} onChange={this.handleChange} />
+                <div class="legend">
+                    {this.props.legend.map( (data, i) => {
+                        return (    
+                            <span class={`legend-level-${i}`} key="{i}">{data}</span>
+                        )
+                    })}
+                </div>
             </div>
         )
     }

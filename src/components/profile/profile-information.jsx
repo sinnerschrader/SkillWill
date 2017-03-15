@@ -7,6 +7,7 @@ export default class ProfileInformation extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
+        userAvatarPath: "",
         showAllSkills: false,
         infoLayerAt: null,
         editLayerAt: null,
@@ -18,6 +19,36 @@ export default class ProfileInformation extends React.Component {
        this.renderSkills = this.renderSkills.bind(this);
        this.openEditLayer = this.openEditLayer.bind(this);
        this.handleEdit = this.handleEdit.bind(this);
+       this.loadAvatar = this.loadAvatar.bind(this);
+
+    }
+
+    loadAvatar(name) {
+      /*  fetch("https://wiki.sinnerschrader.com/rest/api/user?username=meimen", 
+            {
+                method: 'GET',
+                mode: 'no-cors',
+                headers:{
+                'Access-Control-Allow-Origin':'*'
+                },
+            }
+        )
+        .then(r => r.json())
+        .then(data => {
+            elem.setState({
+                userAvatarPath: data
+            });
+             console.log(elem.state.userAvatarPath);
+        })
+        .catch(error => {
+            console.error(error);
+        }); */
+        console.log(name);
+        let initialLetter = name.charAt(0);
+        console.log(initialLetter);
+        return (
+            <span class="fallback-letter">{initialLetter}</span>
+        );
     }
 
     showAllSkills(e) {
@@ -70,14 +101,15 @@ export default class ProfileInformation extends React.Component {
                 //open Edit-Layer on clicked Item
                 this.state.infoLayerAt == i ? 
                 <div class="edit-layer">
-                    <a href="" onClick={this.closeInfoLayer}>X</a>
+                    <p>{data.name}</p>
                     <a onClick={this.openEditLayer.bind(null, i)}>Bearbeiten</a>
                     <a>Entfernen</a>
+                    <a onClick={this.closeInfoLayer}>X</a>
                 </div> : ""
             }
             {
                 this.state.editLayerAt == i ? 
-                    <Editor skillName={data.name} handleAccept={this.handleEdit} handleClose={this.closeEditLayer.bind(this)} />
+                    <Editor skillNamse={data.name} handleAccept={this.handleEdit} handleClose={this.closeEditLayer.bind(this)} />
                 : ""
             }
             </div>
@@ -86,14 +118,19 @@ export default class ProfileInformation extends React.Component {
 
     render() {
         return(
-            <ul class="user">
+            <ul class="profile-information">
                 <li class="info">
+                    <div class="avatar">{this.loadAvatar(this.props.data.firstName)}</div>
                     <p class="name">{this.props.data.firstName} {this.props.data.lastName}</p>
-                    <span class="id">{this.props.data.id}</span><br/>
-                    <span class="department">{this.props.data.title}</span><br/>
+                    <p class="id">{this.props.data.id}</p>
+                    <p class="department">{this.props.data.title}</p>
+                    <p class="location phone">{this.props.data.location} / TEL. {this.props.data.phone}</p>
+                    <a class="mail" href={`mailto:${this.props.data.mail}`} target="_blank">MAIL</a>
+                    <a class="move" href={`http://move.sinner-schrader.de/?id=${this.props.data.id}`} target="_blank">MOVE</a>
+                    <a class="hangout" href="https://hangouts.google.com/" target="_blank">HANGOUT</a>
                 </li>
-                <li class="searched-skills">
-                    <p>Gesuchte Skillls</p>
+                <li class="searched-skills skill-listing">
+                    <div class="listing-header">Gesuchte Skillls</div>
                     <ul class="skills-list">
                     {this.props.data.skills.map((data, i) => { 
                         if ( i <= 3) 
@@ -105,9 +142,23 @@ export default class ProfileInformation extends React.Component {
                         );
                     })}
                     </ul>  
-                </li>  
-                <li class="all-skills">
-                    <p>Alle Skillls</p>
+                </li>
+                <li class="top-wills skill-listing ">
+                    <div class="listing-header">Top Willls</div>
+                    <ul class="skills-list">
+                    {this.props.data.skills.map((data, i) => { 
+                        if ( i <= 3) 
+                        return( 
+                            <li key={i} class="skill-item">
+                                <p class="skill-name">{data.name}</p>
+                                <p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
+                            </li>
+                        );
+                    })}
+                    </ul>  
+                </li>    
+                <li class="all-skills skill-listing">
+                    <div class="listing-header">Alle Skillls</div>
                     <ul class="skills-list closed">
                         {this.props.data.skills.map((data, i) => { 
                             //Display Show-More-Link after maximum Skills to Show 

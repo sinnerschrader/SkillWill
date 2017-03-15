@@ -104,20 +104,22 @@ export default class Profile extends React.Component {
         return(
             <div class="profile-container">
                 <a href="../../" class="close-btn">X</a>
-                {this.state.searchLayerOpen ?
                     <div class="profile">
-                        <SkillSearch />
-                        <a class="back-btn" onClick={this.openProfileInformation}>X</a>
-                    </div>
-                :
-                    <div class="profile">
-                        {this.state.dataLoaded ?
-                            <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill}/>
-                            : "" 
-                        }
-                        <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>
-                    </div>
-                } 
+                    {this.state.searchLayerOpen ?
+                        <div>
+                            <SkillSearch />
+                            <a class="back-btn" onClick={this.openProfileInformation}>X</a>
+                        </div>
+                    :
+                        <div>
+                            {this.state.dataLoaded ?
+                                <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill}/>
+                                : "" 
+                            }
+                            <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>
+                        </div>
+                    } 
+                </div>
             </div>
         )
     }

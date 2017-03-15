@@ -57,7 +57,7 @@ export default class User extends React.Component {
                 <span class="id">{this.props.data.id}</span>
                 <span class="department">{this.props.data.title}</span>
             </li>
-            <li class="location">{this.props.data.location}</li>
+            <li class="location">{this.props.data.location == "Hamburg"? <span>HAM</span> : "MUN"}</li>
             <li class="skills">
                 <ul class="skills-list">
                 {this.state.skillsToShow.map((data, i) => { 

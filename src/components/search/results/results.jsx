@@ -26,7 +26,7 @@ export default class Results extends React.Component {
           </a>
           <ul class="results" id="results">
             {this.props.results.map((data, i) => {
-              return(
+              return (
                   <li class="result-item" key={i}> 
                     <ResultItem data={data} index={i} searchTerms={this.props.searchTerms} resultType={this.props.resultType}/>
                   </li>
@@ -37,13 +37,13 @@ export default class Results extends React.Component {
       )
       } 
       else {
-       return(
+       return (
           <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
       ) 
     }
     } 
     else {
-       return(
+       return (
           <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
       ) 
     }

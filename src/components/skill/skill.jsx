@@ -1,6 +1,7 @@
  import React from 'react';
  import { Router, Route, Link } from 'react-router'
  import Editor from '../editor/editor.jsx'
+ import config from '../../config.json';
 
 export default class Skill extends React.Component {
     constructor(props) {
@@ -31,13 +32,13 @@ export default class Skill extends React.Component {
     
     render() {
         return(
-            <ul class="user">
-                <li class="info">
-                    <span class="name" id={`${this.props.data.name}`}>{this.props.data.name}</span>
+            <ul class={`skill ${this.state.editorIsOpen ? `toggled` :""}`}>
+                <li class="name" onClick={this.toggleEditor}>
+                    {this.props.data.name}
                 </li>
-                <li><a onClick={this.toggleEditor}>+</a></li>
+                <li class="add" onClick={this.toggleEditor}>+</li>
                 { this.state.editorIsOpen?
-                    <li>
+                    <li class="editor-container">
                         <Editor skillName={this.props.data.name} handleAccept={this.handleEdit} handleClose={this.toggleEditor} />
                     </li>
                     :""

@@ -23,11 +23,11 @@ export default class UserSearch extends React.Component {
 
   requestSearch(e, searchTerms) {
     fetch(config.backendServer + "/users?"+ e.state.locationTerm + "skills="+ searchTerms)
-    .then(function(response) {
-        console.log(config.backendServer +"/users?"+ e.state.locationTerm + "skills="+ searchTerms);
-        return response.json();
+    .then(r => {
+      console.log(config.backendServer +"/users?"+ e.state.locationTerm + "skills="+ searchTerms); 
+      return r.json();
     })
-    .then(function(data) {
+    .then(data => {
         e.setState({
           results: data,
           searchStarted: true,
@@ -35,7 +35,7 @@ export default class UserSearch extends React.Component {
           shouldUpdate: true
         });
     })
-    .catch(function(error) {
+    .catch(error => {
         console.error("requestSearch" + error);
         e.setState({results: null});
     });

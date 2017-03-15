@@ -9,7 +9,7 @@ export default class ResultItem extends React.Component {
 
   render() {
     if (this.props.resultType == "user") {
-        return(
+        return (
             <div>
                 {/*<div class="user-img"></div> ToDo: add as component */} 
                 <User data={this.props.data} searchTerms={this.props.searchTerms}/> 
