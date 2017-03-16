@@ -3,6 +3,7 @@ import User from "../user/user.jsx";
 import ProfileInformation from "./profile-information.jsx";
 import SkillSearch from "../search/skill-search.jsx";
 import config from '../../config.json';
+import sortAlphabetically from '../../libs/sortAlphabetically.jsx'
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -10,14 +11,13 @@ export default class Profile extends React.Component {
       this.state = {
         userId: "id",
         session: "X",
-        dataLoaded: false,
         data: null,
+        dataLoaded: false,
         searchLayerOpen: false
       }
 
       this.removeSkill = this.removeSkill.bind(this);
       this.editOrAddSkill = this.editOrAddSkill.bind(this);
-      this.sortAlphabetically = this.sortAlphabetically.bind(this);
       this.openSkillSearch = this.openSkillSearch.bind(this);
       this.openProfileInformation = this.openProfileInformation.bind(this);
     }
@@ -28,17 +28,15 @@ export default class Profile extends React.Component {
       });
 
       fetch(config.backendServer + "/users/"+ elem.state.userId)
-        .then(function(response) {
-            return response.json();
-        })
+        .then(r => r.json())
         .then(function(data) {
             elem.setState({
               data: data,
               dataLoaded: true
             });
 
-            let currData = elem.state.data;
-            elem.sortAlphabetically(currData.skills);
+            let currData = eval(elem.state.data);
+            sortAlphabetically(currData.skills);
             elem.setState({
               data: currData
             });
@@ -47,21 +45,6 @@ export default class Profile extends React.Component {
             console.error(error);
         });
     }
-
-     sortAlphabetically(items) {
-       items.sort(a, b => {
-          var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-          var nameB = b.name.toUpperCase(); // ignore upper and lowercase
-          if (nameA < nameB) {
-            return -1;
-          }
-          if (nameA > nameB) {
-            return 1;
-          }
-          // names must be equal
-          return 0;
-        });
-     }
 
      removeSkill(skill) {
       fetch(config.backendServer + "/users/"+ this.state.userId + "?" + this.state.session +"&skill=" + skill)

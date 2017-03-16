@@ -57,8 +57,8 @@ export default class SkillSearch extends React.Component {
         <div class="headline">Neuen Skill hinzufügen</div>
         <p>Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
         <SearchBar handleRequest={this.requestSearch} toggleUpdate={this.toggleUpdate} parent={this} searchTerms={this.state.searchItems}/>
-        {/* display Results component only when there has been an inital search */}
         {
+          /* display Results component only when there has been an inital search */
           this.state.searchStarted ? 
             <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"skill"} /> 
           : " "
