@@ -22,8 +22,9 @@
     "preact": "^7.1.0",
     "preact-compat": "^3.9.4",
     "react": "15.4.1",
-    "react-dom": "15.4.1",
-    "react-router": "^4.0.0",
+    "react-dom": "^15.4.1",
+    "react-router": "^2.0.0",
+    "webpack-dev-server": "^1.16.2",
     "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
