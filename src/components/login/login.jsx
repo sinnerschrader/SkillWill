@@ -15,7 +15,7 @@ export default class Login extends React.Component {
     return(
       <div class="login">
         <form>
-          <input autocomplete="off" placeholder="LDAP User" type="text"></input>
+          <input autocomplete="off" placeholder="LDAP User" type="text" value=""></input>
         </form>
       </div>
     )

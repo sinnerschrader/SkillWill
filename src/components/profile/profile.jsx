@@ -5,6 +5,7 @@ import SkillSearch from "../search/skill-search.jsx";
 import config from '../../config.json';
 import sortAlphabetically from '../../libs/sortAlphabetically.jsx'
 import Login from '../login/login.jsx'
+import Cookies from 'react-cookie'
 
 
 export default class Profile extends React.Component {
@@ -23,7 +24,6 @@ export default class Profile extends React.Component {
       this.editOrAddSkill = this.editOrAddSkill.bind(this);
       this.openSkillSearch = this.openSkillSearch.bind(this);
       this.openProfileInformation = this.openProfileInformation.bind(this);
-      this.checkLogin = this.checkLogin.bind(this);
     }
     componentDidMount() {
       const elem = this;
@@ -63,11 +63,14 @@ export default class Profile extends React.Component {
     }
 
     editOrAddSkill(user, skill, skillLvl, willLvl) {
+      let loggedIn = this.checkAndOpenLogin()
+      if (loggedIn) {
+        // TODO fetch here
+      }
 
     }
 
     openSkillSearch(){
-        this.checkLogin();
         this.setState({
             searchLayerOpen: true
         });
@@ -79,12 +82,14 @@ export default class Profile extends React.Component {
         });
     }
 
-    checkLogin() {
-      this.setState({ loginLayerOpen: !this.state.session })
+    checkAndOpenLogin() {
+      let s =  this.state.session || Cookies.load("session")
+      this.setState({session: s, loginLayerOpen: !s })
+      return !!s;
     }
 
-    closeLogin() {
-        this.setState({ loginLayerOpen: false })
+    retrieveSession(session) {
+      this.setState({ loginLayerOpen: false, session: session })
     }
 
     renderProfile() {
@@ -92,13 +97,13 @@ export default class Profile extends React.Component {
             <div class="profile">
             {this.state.searchLayerOpen ?
                 <div>
-                    <SkillSearch handleEdit={this.editOrAddSkill} checkLogin={this.checkLogin}/>
+                    <SkillSearch handleEdit={this.editOrAddSkill}/>
                     <a class="back-btn" onClick={this.openProfileInformation}>X</a>
                 </div>
             :
                 <div>
                     {this.state.dataLoaded ?
-                        <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill} checkLogin={this.checkLogin}/>
+                        <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill}/>
                         : ""
                     }
                     <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>

@@ -60,7 +60,6 @@ export default class ProfileInformation extends React.Component {
     }
 
     openInfoLayer(i) {
-      this.props.checkLogin()
       if (i == this.state.infoLayerAt) {
         this.closeInfoLayer();
       }
