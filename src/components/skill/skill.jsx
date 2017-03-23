@@ -18,18 +18,6 @@ export default class Skill extends React.Component {
         })
     }
 
-    handleEdit(skill, skillLvl, willLvl) {
-      fetch(config.backendServer + "/users/"+ this.state.userId + "?" + this.state.session + "&skill=" + skill + "&skill_level" + skillLvl + "&will_level" + willLvl)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-        })
-        .catch(function(error) {
-            console.error(error);
-        });
-    }
-    
     render() {
         return(
             <ul class={`skill ${this.state.editorIsOpen ? `toggled` :""}`}>
@@ -39,11 +27,11 @@ export default class Skill extends React.Component {
                 <li class="add" onClick={this.toggleEditor}>+</li>
                 { this.state.editorIsOpen?
                     <li class="editor-container">
-                        <Editor skillName={this.props.data.name} handleAccept={this.handleEdit} handleClose={this.toggleEditor} />
+                        <Editor skillName={this.props.data.name} handleAccept={this.handleEdit} handleClose={this.toggleEditor} handleEdit={this.props.handleEdit}/>
                     </li>
                     :""
                 }
-            </ul>  
+            </ul>
         )
     }
 }

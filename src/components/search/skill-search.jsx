@@ -48,7 +48,7 @@ export default class SkillSearch extends React.Component {
   toggleUpdate(bool) {
     this.setState({
       shouldUpdate: bool
-    }); 
+    });
   }
 
   render() {
@@ -59,10 +59,10 @@ export default class SkillSearch extends React.Component {
         <SearchBar handleRequest={this.requestSearch} toggleUpdate={this.toggleUpdate} parent={this} searchTerms={this.state.searchItems}/>
         {
           /* display Results component only when there has been an inital search */
-          this.state.searchStarted ? 
-            <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"skill"} /> 
+          this.state.searchStarted ?
+            <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"skill"} handleEdit={this.props.handleEdit}/> 
           : " "
-        }  
+        }
       </div>
     )
   }

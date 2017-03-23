@@ -27,25 +27,25 @@ export default class Results extends React.Component {
           <ul class="results" id="results">
             {this.props.results.map((data, i) => {
               return (
-                  <li class="result-item" key={i}> 
-                    <ResultItem data={data} index={i} searchTerms={this.props.searchTerms} resultType={this.props.resultType}/>
+                  <li class="result-item" key={i}>
+                    <ResultItem data={data} index={i} searchTerms={this.props.searchTerms} resultType={this.props.resultType} handleEdit={this.props.handleEdit}/>
                   </li>
               );
             })}
           </ul>
         </div>
       )
-      } 
+      }
       else {
        return (
           <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
-      ) 
+      )
     }
-    } 
+    }
     else {
        return (
           <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
-      ) 
+      )
     }
   }
 }
