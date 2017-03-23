@@ -6,6 +6,7 @@ import config from '../../config.json';
 import sortAlphabetically from '../../libs/sortAlphabetically.jsx'
 import Login from '../login/login.jsx'
 
+
 export default class Profile extends React.Component {
     constructor(props) {
       super(props);
@@ -22,6 +23,7 @@ export default class Profile extends React.Component {
       this.editOrAddSkill = this.editOrAddSkill.bind(this);
       this.openSkillSearch = this.openSkillSearch.bind(this);
       this.openProfileInformation = this.openProfileInformation.bind(this);
+      this.checkLogin = this.checkLogin.bind(this);
     }
     componentDidMount() {
       const elem = this;
@@ -65,6 +67,7 @@ export default class Profile extends React.Component {
     }
 
     openSkillSearch(){
+        this.checkLogin();
         this.setState({
             searchLayerOpen: true
         });
@@ -80,29 +83,43 @@ export default class Profile extends React.Component {
       this.setState({ loginLayerOpen: !this.state.session })
     }
 
+    closeLogin() {
+        this.setState({ loginLayerOpen: false })
+    }
+
+    renderProfile() {
+      return(
+            <div class="profile">
+            {this.state.searchLayerOpen ?
+                <div>
+                    <SkillSearch handleEdit={this.editOrAddSkill} checkLogin={this.checkLogin}/>
+                    <a class="back-btn" onClick={this.openProfileInformation}>X</a>
+                </div>
+            :
+                <div>
+                    {this.state.dataLoaded ?
+                        <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill} checkLogin={this.checkLogin}/>
+                        : ""
+                    }
+                    <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>
+                </div>
+            }
+        </div>
+      )
+    }
+
+    renderLoginLayer() {
+      return (
+          <Login />
+      )
+    }
 
 
     render() {
         return(
             <div class="profile-container">
-                {this.state.loginLayerOpen ? <Login /> : '' }
                 <a href="../../" class="close-btn">X</a>
-                    <div class="profile">
-                    {this.state.searchLayerOpen ?
-                        <div>
-                            <SkillSearch handleEdit={this.editOrAddSkill} checkLogin={this.checkLogin}/>
-                            <a class="back-btn" onClick={this.openProfileInformation}>X</a>
-                        </div>
-                    :
-                        <div>
-                            {this.state.dataLoaded ?
-                                <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill}/>
-                                : ""
-                            }
-                            <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>
-                        </div>
-                    }
-                </div>
+                {this.state.loginLayerOpen ? this.renderLoginLayer() : this.renderProfile() }
             </div>
         )
     }
