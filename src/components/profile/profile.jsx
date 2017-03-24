@@ -82,7 +82,8 @@ export default class Profile extends React.Component {
       .then(res => {
         if (res.status == 401) {
           this.setState({session: undefined})
-          Cookies.save("session", undefined)
+          Cookies.remove("session")
+          this.editOrAddSkill(skill, skillLvl, willLvl)
         }
 
         if (res.status != 200) {
@@ -116,6 +117,10 @@ export default class Profile extends React.Component {
     }
 
     retrieveSession(session) {
+      if (!session) {
+        throw Error("session is unknown, or null, or some other bullshit")
+      }
+
       Cookies.save("session", session)
       this.setState({ loginLayerOpen: false, session: session })
       this.closeLogin()
