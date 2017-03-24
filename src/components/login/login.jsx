@@ -52,6 +52,7 @@ handleSubmit(e) {
     return(
       <div class="login">
         <form onSubmit={this.handleSubmit}>
+          <h1>Haaalt stop! Erstmal einloggen!</h1>
           <input autocomplete="off" placeholder="LDAP User" type="text" value={this.state.user} onChange={this.handleUserchange}></input>
           <input autocomplete="off" placeholder="password" type="password" value={this.state.password} onChange={this.handlePasswordChange}></input>
           <br />
