@@ -16,7 +16,7 @@ export default class Editor extends React.Component {
         this.handleSliderChange = this.handleSliderChange.bind(this);
         this.handleAccept = this.handleAccept.bind(this);
     }
-    
+
     handleSliderChange(val, type) {
         if( type == "skill") {
             this.setState({
@@ -52,4 +52,3 @@ export default class Editor extends React.Component {
         )
     }
 }
-

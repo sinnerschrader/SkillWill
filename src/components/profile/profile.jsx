@@ -24,6 +24,9 @@ export default class Profile extends React.Component {
       this.editOrAddSkill = this.editOrAddSkill.bind(this);
       this.openSkillSearch = this.openSkillSearch.bind(this);
       this.openProfileInformation = this.openProfileInformation.bind(this);
+      this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this);
+      this.closeLogin = this.closeLogin.bind(this);
+      this.retrieveSession = this.retrieveSession.bind(this);
     }
     componentDidMount() {
       const elem = this;
@@ -62,12 +65,32 @@ export default class Profile extends React.Component {
         });
     }
 
-    editOrAddSkill(user, skill, skillLvl, willLvl) {
-      let loggedIn = this.checkAndOpenLogin()
-      if (loggedIn) {
-        // TODO fetch here
+    editOrAddSkill(skill, skillLvl, willLvl) {
+      if (!this.checkAndOpenLogin()) {
+        // must show login modal, abort everything
+        return;
       }
 
+      // checked login -> session is set
+      let postData = new FormData()
+      postData.append("skill", skill)
+      postData.append("skill_level", skillLvl)
+      postData.append("will_level", willLvl)
+      postData.append("session", this.state.session)
+
+      fetch(config.backendServer + "/users/" + this.state.userId + "/skills", {method: "POST", body: postData})
+      .then(res => {
+        if (res.status == 401) {
+          this.setState({session: undefined})
+          Cookies.save("session", undefined)
+        }
+
+        if (res.status != 200) {
+          throw Error("error while editing skills")
+        }
+
+      })
+      .catch(err => console.log(err))
     }
 
     openSkillSearch(){
@@ -88,8 +111,14 @@ export default class Profile extends React.Component {
       return !!s;
     }
 
+    closeLogin() {
+      this.setState({loginLayerOpen: false})
+    }
+
     retrieveSession(session) {
+      Cookies.save("session", session)
       this.setState({ loginLayerOpen: false, session: session })
+      this.closeLogin()
     }
 
     renderProfile() {
@@ -115,7 +144,7 @@ export default class Profile extends React.Component {
 
     renderLoginLayer() {
       return (
-          <Login />
+          <Login onRetrieveSession={this.retrieveSession} onClose={this.closeLogin}/>
       )
     }
 

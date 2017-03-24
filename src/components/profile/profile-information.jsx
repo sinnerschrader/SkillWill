@@ -89,7 +89,7 @@ export default class ProfileInformation extends React.Component {
     }
 
     handleEdit(skill, skillLvl, willLvl) {
-        this.props.handleEdit(this.props.thisElem, skill, skillLvl, willLvl);
+        this.props.handleEdit(skill, skillLvl, willLvl);
     }
 
     renderSkills(data, i) {
@@ -109,7 +109,7 @@ export default class ProfileInformation extends React.Component {
             }
             {
                 this.state.editLayerAt == i ?
-                    <Editor skillNamse={data.name} handleAccept={this.handleEdit} handleClose={this.closeEditLayer.bind(this)} />
+                    <Editor skillName={data.name} handleAccept={this.handleEdit} handleClose={this.closeEditLayer.bind(this)} />
                 : ""
             }
             </div>
