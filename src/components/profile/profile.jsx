@@ -95,6 +95,11 @@ export default class Profile extends React.Component {
     }
 
     openSkillSearch(){
+        if (!this.checkAndOpenLogin()) {
+          console.log("user needs to login");
+          return
+        }
+
         this.setState({
             searchLayerOpen: true
         });
@@ -108,7 +113,9 @@ export default class Profile extends React.Component {
 
     checkAndOpenLogin() {
       let s =  this.state.session || Cookies.load("session")
-      this.setState({session: s, loginLayerOpen: !s })
+      if (s != this.state.session || !s) {
+        this.setState({session: s, loginLayerOpen: !s })
+      }
       return !!s;
     }
 
@@ -131,13 +138,13 @@ export default class Profile extends React.Component {
             <div class="profile">
             {this.state.searchLayerOpen ?
                 <div>
-                    <SkillSearch handleEdit={this.editOrAddSkill}/>
+                    <SkillSearch handleEdit={this.editOrAddSkill} />
                     <a class="back-btn" onClick={this.openProfileInformation}>X</a>
                 </div>
             :
                 <div>
                     {this.state.dataLoaded ?
-                        <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill}/>
+                        <ProfileInformation data={this.state.data} thisElem={this} handleRemove={this.removeSkill} handleEdit={this.editOrAddSkill} checkLogin={this.checkAndOpenLogin}/>
                         : ""
                     }
                     <a class="add-skill-btn" onClick={this.openSkillSearch}>+</a>

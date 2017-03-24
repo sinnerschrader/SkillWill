@@ -77,6 +77,10 @@ export default class ProfileInformation extends React.Component {
     }
 
     openEditLayer(i) {
+      if (!this.props.checkLogin()) {
+        console.log("user needs to login");
+        return;
+      }
       this.setState({
         editLayerAt: i //set Layer to index of clicked item
       });

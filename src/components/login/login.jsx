@@ -43,7 +43,6 @@ handleSubmit(e) {
     }
   })
   .then(data => {
-    console.log("foo");
     this.props.onRetrieveSession(data.session)
   })
   .catch(err => console.log(err))

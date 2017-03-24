@@ -20,7 +20,7 @@ export default class ResultItem extends React.Component {
         return(
             <div>
                 {/*<div class="user-img"></div> ToDo: add as component */}
-                <Skill data={this.props.data} handleEdit={this.props.handleEdit}/> 
+                <Skill data={this.props.data} handleEdit={this.props.handleEdit} /> 
             </div>
         )
     }

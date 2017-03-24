@@ -60,7 +60,7 @@ export default class SkillSearch extends React.Component {
         {
           /* display Results component only when there has been an inital search */
           this.state.searchStarted ?
-            <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"skill"} handleEdit={this.props.handleEdit}/> 
+            <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"skill"} handleEdit={this.props.handleEdit} /> 
           : " "
         }
       </div>
