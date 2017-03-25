@@ -164,7 +164,6 @@ export default class Profile extends React.Component {
     render() {
         return(
             <div class="profile-container">
-                <a href="../../" class="close-btn">X</a>
                 {this.state.loginLayerOpen ? this.renderLoginLayer() : this.renderProfile() }
             </div>
         )
