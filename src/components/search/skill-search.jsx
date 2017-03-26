@@ -51,10 +51,11 @@ export default class SkillSearch extends React.Component {
     });
   }
 
-  render() {
+
+  render() {  
     return(
       <div class="searchbar">
-        <div class="headline">Neuen Skill hinzufügen</div>
+        <p class="subtitle">Neuen Skill hinzufügen</p>
         <p>Suche nach Skills, die Du auf Deinem Profil zeigen möchtest</p>
         <SearchBar handleRequest={this.requestSearch} toggleUpdate={this.toggleUpdate} parent={this} searchTerms={this.state.searchItems}/>
         {

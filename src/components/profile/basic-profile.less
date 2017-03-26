@@ -1,5 +1,5 @@
 
-.profile-information {
+.basic-profile {
     flex-basis: 45%; 
 
     .info {
@@ -21,8 +21,8 @@
         }
 
         .name {
-            font-size: @m-title-font-size;
-            line-height:  @m-title-font-size;
+            font-size: @s-title-font-size;
+            line-height:  @s-title-font-size;
             font-weight: bold;
         }
 
@@ -50,8 +50,8 @@
         flex-wrap: wrap; 
         
         .listing-header {
-            font-size: @s-title-font-size;
-            line-height: @s-title-font-size;
+            font-size: @xs-title-font-size;
+            line-height: @xs-title-font-size;
             font-weight: @s-title-font-weight;
             padding: @s-stack 0;
         }
@@ -63,8 +63,6 @@
             .skill-item {
                 padding-bottom: @s-stack;
                 width: 33%;
-                cursor: pointer;
-
                 .level {
                     width: 112px;
                     display: inline-block;    
@@ -78,6 +76,8 @@
                     margin-bottom: @xxs-stack;
                     display: inline-block;    
                     padding-right: @m-inline;  
+                    cursor: pointer;
+
                 }
 
                 &:last-child {
@@ -85,13 +85,15 @@
                 }
             }
 
-            .edit-layer {
+            .info-layer {
                 position: absolute;
                 transform: translateY(-200px) translateX(-200px);
                 background-color: @s2-white;
                 box-shadow: @s2-box-shadow-medium;
                 width: 400px;
                 padding: @xxl-stack @xl-inline;
+                z-index: 4;
+                cursor: auto;
 
                 a {
                     padding: 0 @s-inline;
@@ -113,7 +115,7 @@
             }
             // last item in a 3-collum row
             li:nth-child(3n) {
-                .edit-layer {
+                .info-layer {
                     transform: translateY(-200px) translateX(-250px);
                     &::after {
                         left: 300px;
@@ -122,12 +124,25 @@
             }
             //first item in row
             li:nth-child(3n - 2) {
-                .edit-layer {
+                .info-layer {
                     transform: translateY(-200px) translateX(-30px);
                     &::after {
                         left: 39px;
                     }
                 }
+            }
+
+            .close-layer {
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                top: 0;
+                left: 0;
+                z-index: 3;
+            }
+
+            .close-btn-small {
+                cursor: pointer;
             }
         }
 
@@ -136,4 +151,32 @@
             margin: @m-stack auto;
         }
     }
+}
+.add-skill-btn {
+    position: fixed;
+    right: 50%;
+    transform: translateX(((@layer-width / 2) + 70 ));
+    bottom: @xxl-inline;
+    background-color: @s2-red;
+    height: 70px;
+    width: 70px;
+    border-radius: 70px;
+    font-size: 70px;
+    line-height: 70px;
+    color: @s2-white;
+    font-weight: 200;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: @s2-box-shadow-dark;
+}
+
+.back-btn {
+    position: absolute;
+    top: @4xl-stack;
+    left: 50%;
+    transform: translateX((-@layer-width / 2));
+    height: 30px;   
+    bottom: @xxl-inline;
+    background-color: @s2-red;
+    cursor: pointer;
 }

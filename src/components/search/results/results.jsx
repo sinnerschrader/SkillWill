@@ -21,7 +21,7 @@ export default class Results extends React.Component {
       if (this.props.results.length != 0) {
       return(
         <div class="results-container">
-          <a href="" class="counter" onClick={this.scrollToResults}>
+          <a class="counter" onClick={this.scrollToResults}>
             <span>{this.props.results.length} Ergebnisse</span>
           </a>
           <ul class="results" id="results">

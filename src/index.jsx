@@ -5,7 +5,8 @@ import App from './app.jsx';
 import UserSearch from './components/search/user-search.jsx';
 import SkillSearch from './components/search/skill-search.jsx';
 import Layer from './components/layer/layer.jsx';
-import Profile from './components/profile/profile.jsx';
+import MyProfile from './components/profile/my-profile.jsx';
+import OthersProfile from './components/profile/others-profile.jsx';
 import Login from './components/login/login.jsx';
 import { Router, Route, Link, browserHistory } from 'react-router';
 import { IndexRoute } from 'react-router'
@@ -17,15 +18,14 @@ render(
         <IndexRoute component={UserSearch} />
         <Route path="search" component={UserSearch}>
             <Route path="profile" component={Layer}>
-              <Route path=":id" component={Profile} />
+              <Route path=":id" component={OthersProfile} />
             </Route>
         </Route>  
-        <Route path="/myProfile" component={Layer}>
-          <Route path=":id" component={Profile} />
-          <Route path="/login" component={Login} />
-        </Route>
-        <Route path="profile" component={Layer}>
-          <Route path=":id" component={Profile} />
+        <Route path="my-profile" component={Layer}>
+          <Route path="login" component={Login} />
+          <Route path=":id" component={MyProfile}>
+            <Route path="add-skill" component={Login} />
+          </Route>
         </Route>
       </Route>
     </Router>

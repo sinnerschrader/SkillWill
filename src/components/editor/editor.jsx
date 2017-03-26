@@ -6,10 +6,10 @@ export default class Editor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            initialSkillLevel: 1,
-            initialWillLevel: 2,
-            skillLevel: 1,
-            willLevel:  2,
+            initialSkillLevel: this.props.skillLvl,
+            initialWillLevel: this.props.willLvl,
+            skillLevel: this.props.skillLvl,
+            willLevel:  this.props.willLvl,
             skillLegend: ["n/a","Anfänger","Fortgeschritten","Experte"],
             willLegend: ["n/a","Nope","Gerne","Yes, Yes, Yes!"]
         }
