@@ -20,16 +20,15 @@ export default class MyProfile extends React.Component {
         skillSearchOpen: false,
 
       }
-
-      this.infoLayer = this.infoLayer.bind(this);
-      this.openCloseEditLayer = this.openCloseEditLayer.bind(this);
-      this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this);
-      this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this);
-      this.editSkill = this.editSkill.bind(this);
+        this.infoLayer = this.infoLayer.bind(this);
+        this.openCloseEditLayer = this.openCloseEditLayer.bind(this);
+        this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this);
+        this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this);
+        this.editSkill = this.editSkill.bind(this);
 
         if(!this.checkAndOpenLogin()){
             browserHistory.push("/my-profile/login");
-        };
+        }
     }
 
     componentDidMount() {
@@ -38,6 +37,9 @@ export default class MyProfile extends React.Component {
             userId: elem.props.params.id
         });
         elem.getProfileData(elem);
+        if(! this.checkUser()){
+            browserHistory.push("/my-profile/login");
+        }
     }
        
     getProfileData(elem) {
@@ -58,9 +60,17 @@ export default class MyProfile extends React.Component {
       let s =  this.state.session || Cookies.load("session")
       if (s != this.state.session || !s) {
         this.setState({session: s})
-        console.log(!s);
       }
       return !!s;
+    }
+
+    checkUser() {
+        // check if the profiles userID matches with the logged in user
+        let u =  Cookies.load("user")
+        if (u != this.state.userId) {
+            return false;
+        }
+        return true;
     }
 
     infoLayer(data, i, showAllSkills) {
@@ -110,6 +120,9 @@ export default class MyProfile extends React.Component {
 
         if (res.status != 200) {
           throw Error("error while editing skills")
+        }
+        else {
+            this.getProfileData(this);
         }
 
       })
