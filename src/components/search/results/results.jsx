@@ -28,7 +28,7 @@ export default class Results extends React.Component {
             {this.props.results.map((data, i) => {
               return (
                   <li class="result-item" key={i}>
-                    <ResultItem data={data} index={i} searchTerms={this.props.searchTerms} resultType={this.props.resultType} handleEdit={this.props.handleEdit} />
+                    {React.cloneElement(this.props.children, { data: data })}
                   </li>
               );
             })}
@@ -38,13 +38,13 @@ export default class Results extends React.Component {
       }
       else {
        return (
-          <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
+          <div class="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
       )
     }
     }
     else {
        return (
-          <div class="results-container" data-isEmptyLabel="Keine Ergebnisse"></div>
+          <div class="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
       )
     }
   }

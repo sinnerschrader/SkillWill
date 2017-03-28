@@ -1,6 +1,7 @@
 import React from 'react';
 import SearchBar from './search-bar.jsx';
 import Results from './results/results.jsx';
+import Skill from '../skill/skill.jsx';
 import config from '../../config.json';
 
 export default class SkillSearch extends React.Component {
@@ -61,7 +62,9 @@ export default class SkillSearch extends React.Component {
         {
           /* display Results component only when there has been an inital search */
           this.state.searchStarted ?
-            <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"skill"} handleEdit={this.props.handleEdit} /> 
+            <Results results={this.state.results} searchTerms={this.state.searchItems} noResultsLabel={"Kein passenden Skill gefunden?"}>
+              <Skill handleEdit={this.props.handleEdit} userData={this.props.data}/>
+            </Results> 
           : " "
         }
       </div>

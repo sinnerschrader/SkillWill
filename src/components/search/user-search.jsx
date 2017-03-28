@@ -2,6 +2,7 @@ import React from 'react';
 import SearchBar from './search-bar.jsx';
 import Results from './results/results.jsx';
 import Dropdown from '../dropdown/dropdown.jsx';
+import User from '../user/user.jsx';
 import config from '../../config.json';
 
 export default class UserSearch extends React.Component {
@@ -87,13 +88,14 @@ export default class UserSearch extends React.Component {
         {/* display Results component only when there has been an inital search */}
         {
           this.state.searchStarted ? 
-            <Results results={this.state.results} searchTerms={this.state.searchItems} resultType={"user"}/> 
+            <Results results={this.state.results} searchTerms={this.state.searchItems} > 
+              <User searchTerms={this.state.searchItems}/>
+            </Results> 
           : <div class="info-text">
                 Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?
                 Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt. 
             </div>
         }  
-        {this.props.children}
       </div>
     )
   }

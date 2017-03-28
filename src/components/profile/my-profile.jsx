@@ -134,7 +134,7 @@ export default class MyProfile extends React.Component {
             this.state.dataLoaded ?
                 this.state.skillSearchOpen ?
                  <div class="profile">
-                    <SkillSearch handleEdit={this.editSkill} />
+                    <SkillSearch handleEdit={this.editSkill} data={this.state.data}/>
                     <div class="back-btn" onClick={this.openCloseSkillSearch}>X</div>
                 </div>
                 :

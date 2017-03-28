@@ -53,7 +53,7 @@ export default class User extends React.Component {
     return(
         <ul class="user">
             <li class="info">
-                <Link class="name"to={`search/profile/${this.props.data.id}`} activeClassName="active" id={`${this.props.data.id}`} onClick={this.handleClick}>{this.props.data.firstName} {this.props.data.lastName}</Link>
+                <Link class="name" to={`search/profile/${this.props.data.id}`} activeClassName="active" id={`${this.props.data.id}`} onClick={this.handleClick}>{this.props.data.firstName} {this.props.data.lastName}</Link>
                 <span class="id">{this.props.data.id}</span>
                 <span class="department">{this.props.data.title}</span>
             </li>
