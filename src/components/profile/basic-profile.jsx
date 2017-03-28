@@ -68,7 +68,7 @@ export default class BasicProfile extends React.Component {
 
     closeInfoLayer() {
       this.setState({
-        infoLayerAt: -1 //unset Layer  
+        infoLayerAt: -1 //unset Layer
       });
     }
 
@@ -86,9 +86,9 @@ export default class BasicProfile extends React.Component {
                     {
                         // for my-profile only
                         this.props.infoLayer(data, i, this.state.showAllSkills)
-                    } 
+                    }
                     <a class="close-btn-small" onClick={this.closeInfoLayer}>X</a>
-                </div> 
+                </div>
                 : ""
             }
             </div>
@@ -106,12 +106,12 @@ export default class BasicProfile extends React.Component {
                     <p class="location phone">{this.props.data.location} / TEL. {this.props.data.phone}</p>
                     <Link class="mail" href={`mailto:${this.props.data.mail}`} target="_blank">MAIL</Link>
                     <Link class="move" href={`http://move.sinner-schrader.de/?id=${this.props.data.id}`} target="_blank">MOVE</Link>
-                    <Link class="hangout" href="https://hangouts.google.com/" target="_blank">HANGOUT</Link>
+                    <Link class="hangout" href={`https://sinnerschrader.slack.com/messages/@${this.props.data.firstName.toLowerCase()}.${this.props.data.lastName.toLowerCase()}`} target="_blank">SLACK</Link>
                 </li>
 
                 {
                     this.props.additionalSkillListing // e.g. searched skills
-                } 
+                }
 
                 <li class="top-wills skill-listing ">
                     <div class="listing-header">Top Willls</div>
