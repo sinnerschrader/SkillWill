@@ -1,5 +1,4 @@
 import React from 'react';
-import ResultItem from './result-item/result-item.jsx';
 
 export default class Results extends React.Component {
   constructor(props) {
