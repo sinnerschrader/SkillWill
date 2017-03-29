@@ -23,11 +23,20 @@
             width: 20px;
             cursor: pointer;    
         }
+
         &.small {
+            position: absolute;
+            top: @m-inline;
+            right: @l-inline;
             height: 5px;
             width: 5px;
-             &::after {
+
+            &::after {
                  position: relative;
+                 top: @s-stack;
+                 left: 0;
+                 display: inline-block;
+                 transform: rotate(45deg) translateX(-@m-inline) scale(0.5);
             }
         }
     }

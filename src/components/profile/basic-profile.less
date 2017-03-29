@@ -106,7 +106,7 @@
              align-items: center;
 
             .skill-item {
-                padding-bottom: @s-stack;
+                padding-bottom: @m-stack;
                 width: 33%;
                 .level {
                     width: 112px;
@@ -124,15 +124,11 @@
                     cursor: pointer;
 
                 }
-
-                &:last-child {
-                    padding-bottom: @l-stack;
-                }
             }
 
             .info-layer {
                 position: absolute;
-                transform: translateY(-200px) translateX(-200px);
+                transform: translateY(-270px) translateX(-200px);
                 background-color: @s2-white;
                 box-shadow: @s2-box-shadow-medium;
                 width: auto;
@@ -140,10 +136,6 @@
                 padding: @xxl-stack @xl-inline;
                 z-index: 4;
                 cursor: auto;
-
-                a {
-                    padding: 0 @s-inline;
-                }
 
                 .skill-title {
                     color: @s2-red;
@@ -195,7 +187,7 @@
             // last item in a 3-collum row
             li:nth-child(3n) {
                 .info-layer {
-                    transform: translateY(-200px) translateX(-250px);
+                    transform: translateY(-270px) translateX(-250px);
                     &::after {
                         left: 300px;
                     }
@@ -204,7 +196,7 @@
             //first item in row
             li:nth-child(3n - 2) {
                 .info-layer {
-                    transform: translateY(-200px) translateX(-30px);
+                    transform: translateY(-270px) translateX(-30px);
                     &::after {
                         left: 39px;
                     }
@@ -218,10 +210,6 @@
                 top: 0;
                 left: 0;
                 z-index: 3;
-            }
-
-            .close-btn-small {
-                cursor: pointer;
             }
         }
 

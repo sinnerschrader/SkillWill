@@ -73,7 +73,7 @@ export default class BasicProfile extends React.Component {
                         // for my-profile only
                         this.props.infoLayer(data, i, this.state.showAllSkills)
                     }
-                    <a class="close-btn small" onClick={this.closeInfoLayer}>X</a>
+                    <a class="close-btn small" onClick={this.closeInfoLayer}></a>
                 </div>
                 : ""
             }

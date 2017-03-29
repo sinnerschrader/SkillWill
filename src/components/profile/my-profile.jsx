@@ -25,6 +25,7 @@ export default class MyProfile extends React.Component {
         this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this);
         this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this);
         this.editSkill = this.editSkill.bind(this);
+        this.getProfileData = this.getProfileData.bind(this);
 
         if(!this.checkAndOpenLogin()){
             browserHistory.push("/my-profile/login");
