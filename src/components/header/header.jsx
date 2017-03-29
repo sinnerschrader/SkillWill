@@ -1,5 +1,6 @@
 import React from 'react' 
-import Cookies from 'react-cookie' 
+import Cookies from 'react-cookie'
+import { Router, Link, browserHistory } from 'react-router'  
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -34,7 +35,7 @@ export default class Header extends React.Component {
             //markup is inspired by the s2-website navigation 
             <header class="mod-navigation-container">
                 <div class={`mod-navigation nav-open-is-${this.state.isNavOpen}`}>
-                    <a class="s2-logo" href="/"></a>
+                    <Link class="s2-logo" to="/"></Link>
                     <label class="burger" title="Show navigation" onClick={this.handleClick}>
                         <div class="burger-layer-wrapper">
                             <span class="burger-layer"></span>
@@ -46,10 +47,10 @@ export default class Header extends React.Component {
                     <nav class="nav">
                         <ul class="nav-list">
                             <li class="nav-item">
-                                <a class="nav-link" href="/">Suche</a>
+                                <Link class="nav-link" to="/">Suche</Link>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href={`/my-profile/${this.state.userId}`}>Dein Profil</a>
+                                <Link class="nav-link" to={`/my-profile/${this.state.userId}`}>Dein Profil</Link>
                             </li>
                         </ul>
                     </nav>

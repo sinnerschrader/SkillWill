@@ -31,12 +31,13 @@ export default class SearchBar extends React.Component {
         this.props.handleRequest(this.props.parent, this.state.searchTerms) 
         }
     }
-
+    
     handleClose(name) {
         this.setState({
             searchTerms: this.state.searchTerms.filter(s => s !== name),
             currentValue: ''
-        }) 
+        })
+        this.props.handleRequest(this.props.parent, this.state.searchTerms)  
     }
 
     handleSubmit(e) {
@@ -76,7 +77,7 @@ export default class SearchBar extends React.Component {
                                     return(
                                     <div class="search-term" >
                                         {searchTerm}
-                                        <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
+                                        <a class="close" key={i} onClick={this.handleClose.bind(null, searchTerm)}>&#9747;</a>
                                     </div>
                                     ) 
                                 })

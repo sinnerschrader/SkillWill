@@ -8,7 +8,14 @@ export default class Layer extends React.Component {
     }
 
     handleClose() { 
-        browserHistory.goBack() 
+        //return to home if current page is login
+        if (this.props.location.pathname == '/my-profile/login') {
+
+            browserHistory.push("/")
+        }
+        else {
+            browserHistory.goBack() 
+        }
     }
 
     render() {

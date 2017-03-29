@@ -24,7 +24,8 @@ export default class MyProfile extends React.Component {
         this.openCloseEditLayer = this.openCloseEditLayer.bind(this) 
         this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this) 
         this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this) 
-        this.editSkill = this.editSkill.bind(this) 
+        this.editSkill = this.editSkill.bind(this)
+        this.deleteSkill = this.deleteSkill.bind(this) 
         this.getProfileData = this.getProfileData.bind(this) 
 
         if(!this.checkAndOpenLogin()){
@@ -84,7 +85,7 @@ export default class MyProfile extends React.Component {
            return(
                 <div class="additional-options">
                     <div class="edit" onClick={this.openCloseEditLayer.bind(null,i, showAllSkills )}></div>
-                    <div class="delete"></div> {/* TODO DELTE HANDLER */}
+                    <div class="delete" onClick={this.deleteSkill.bind(null, data.name)}></div>
                 </div>
            )
        }
@@ -116,11 +117,34 @@ export default class MyProfile extends React.Component {
           Cookies.remove("session")
           this.editSkill(skill, skillLvl, willLvl) 
           this.setState({editLayerOpen: false}) 
-          this.getProfileData(this) 
+          this.getProfileData(this)
         }
 
         if (res.status != 200) {
           throw Error("error while editing skills")
+        }
+        else {
+            this.getProfileData(this) 
+        }
+
+      })
+      .catch(err => console.log(err))
+    }
+
+    deleteSkill(skill) {
+
+      fetch(config.backendServer + "/users/" + this.state.userId + "/skills?session=" + this.state.session + "&skill=" + skill, {method: "DELETE"})
+      .then(res => {
+        if (res.status == 401) {
+          this.setState({session: undefined})
+          Cookies.remove("session") 
+          this.deleteSkill(skill) 
+          this.setState({editLayerOpen: false}) 
+          this.getProfileData(this) 
+        }
+
+        if (res.status != 200) {
+          throw Error("error while deleting skills")
         }
         else {
             this.getProfileData(this) 

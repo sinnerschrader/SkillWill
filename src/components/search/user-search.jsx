@@ -27,8 +27,7 @@ export default class UserSearch extends React.Component {
 
   requestSearch(e, searchTerms) {
     fetch(config.backendServer + "/users?"+ e.state.locationTerm + "skills="+ searchTerms)
-    .then(r => {
-      console.log(config.backendServer +"/users?"+ e.state.locationTerm + "skills="+ searchTerms)  
+    .then(r => { 
       if (r.status === 400) {
           e.setState({
           results: null,
@@ -77,7 +76,6 @@ export default class UserSearch extends React.Component {
 
   componentDidUpdate() {
     document.SearchBar.SearchInput.focus() 
-    console.log(this.state.searchStarted) 
   }
 
   // update component only if search has changed
