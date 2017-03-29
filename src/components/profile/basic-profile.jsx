@@ -18,33 +18,7 @@ export default class BasicProfile extends React.Component {
        this.openInfoLayer = this.openInfoLayer.bind(this);
        this.closeInfoLayer = this.closeInfoLayer.bind(this);
        this.renderSkills = this.renderSkills.bind(this);
-       this.loadAvatar = this.loadAvatar.bind(this);
-    }
-
-    loadAvatar(name) {
-      /*  fetch("https://wiki.sinnerschrader.com/rest/api/user?username=meimen",
-            {
-                method: 'GET',
-                mode: 'no-cors',
-                headers:{
-                'Access-Control-Allow-Origin':'*'
-                },
-            }
-        )
-        .then(r => r.json())
-        .then(data => {
-            elem.setState({
-                userAvatarPath: data
-            });
-             console.log(elem.state.userAvatarPath);
-        })
-        .catch(error => {
-            console.error(error);
-        }); */
-        let initialLetter = name.charAt(0);
-        return (
-            <span class="fallback-letter">{initialLetter}</span>
-        );
+       this.getAvatarColor = this.getAvatarColor.bind(this);
     }
 
     showAllSkills(e) {
@@ -70,6 +44,17 @@ export default class BasicProfile extends React.Component {
       this.setState({
         infoLayerAt: -1 //unset Layer
       });
+    }
+
+    getAvatarColor() {
+      const colors = ["blue", "red", "green"]
+      let index = this.props.data.id
+        .toLowerCase()
+        .split('')
+        .map(c => c.charCodeAt(0))
+        .reduce((a,b) => a + b);
+      return colors[index % colors.length];
+
     }
 
     renderSkills(data, i) {
@@ -99,7 +84,7 @@ export default class BasicProfile extends React.Component {
         return(
             <ul class="basic-profile">
                 <li class="info">
-                    <div class="avatar">{this.loadAvatar(this.props.data.firstName)}</div>
+                    <div class={`avatar avatar-${this.getAvatarColor()}`}><span class="fallback-letter">{this.props.data.firstName.charAt(0).toUpperCase()}</span></div>
                     <p class="name">{this.props.data.firstName} {this.props.data.lastName}</p>
                     <p class="id">{this.props.data.id}</p>
                     <p class="department">{this.props.data.title}</p>

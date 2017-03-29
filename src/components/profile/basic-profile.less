@@ -1,6 +1,6 @@
 
 .basic-profile {
-    flex-basis: 45%; 
+    flex-basis: 45%;
 
     .info {
         text-align: center;
@@ -12,11 +12,24 @@
             margin: 0 auto;
             background-color: @s2-red;
             margin-bottom: @l-stack;
-            
+
             .fallback-letter {
                 line-height: 100px;
                 text-align: center;
                 font-size: @l-title-font-size;
+            }
+
+            &.avatar-blue {
+               background-color: @s2-blue;
+               color: @s2-white;
+            }
+
+            &.avatar-red {
+                background-color: @s2-red;
+            }
+
+            &.avatar-green {
+              background-color: @s2-green;
             }
         }
 
@@ -47,8 +60,8 @@
     .skill-listing {
         padding-top: @l-stack;
         display: flex;
-        flex-wrap: wrap; 
-        
+        flex-wrap: wrap;
+
         .listing-header {
             font-size: @xs-title-font-size;
             line-height: @xs-title-font-size;
@@ -56,16 +69,16 @@
             padding: @s-stack 0;
         }
         .skills-list {
-             display: flex; 
+             display: flex;
              flex-wrap: wrap;
-             align-items: center; 
-             
+             align-items: center;
+
             .skill-item {
                 padding-bottom: @s-stack;
                 width: 33%;
                 .level {
                     width: 112px;
-                    display: inline-block;    
+                    display: inline-block;
                     padding-right: @m-inline;
                 }
 
@@ -74,8 +87,8 @@
                     font-weight: 800;
                     color: @s2-red;
                     margin-bottom: @xxs-stack;
-                    display: inline-block;    
-                    padding-right: @m-inline;  
+                    display: inline-block;
+                    padding-right: @m-inline;
                     cursor: pointer;
 
                 }
@@ -175,7 +188,7 @@
     top: @4xl-stack;
     left: 50%;
     transform: translateX((-@layer-width / 2));
-    height: 30px;   
+    height: 30px;
     bottom: @xxl-inline;
     background-color: @s2-red;
     cursor: pointer;
