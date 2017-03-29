@@ -1,18 +1,18 @@
-import React from 'react';
+import React from 'react' 
 
 export default class Results extends React.Component {
   constructor(props) {
-    super(props);
+    super(props) 
     this.state = {
       resultArray: []
     }
-    this.scrollToResults = this.scrollToResults.bind(this);
+    this.scrollToResults = this.scrollToResults.bind(this) 
   }
 
   scrollToResults(e) {
-    e.preventDefault();
-    const scrollTo = document.getElementById("results");
-    scrollTo.scrollIntoView();
+    e.preventDefault() 
+    const scrollTo = document.getElementById("results") 
+    scrollTo.scrollIntoView() 
   }
 
   render() {
@@ -29,7 +29,7 @@ export default class Results extends React.Component {
                   <li class="result-item" key={i}>
                     {React.cloneElement(this.props.children, { data: data })}
                   </li>
-              );
+              ) 
             })}
           </ul>
         </div>

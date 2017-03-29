@@ -1,51 +1,51 @@
- import React from 'react';
+ import React from 'react' 
  import { Router, Route, Link } from 'react-router'
 
 export default class User extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             skillsToShow: [] // e.g. only searched skills 
         }
 
-        const allSkills= this.props.data.skills;
+        const allSkills= this.props.data.skills
         // show only searched skills 
         allSkills.map((skill,i) => { 
-            let isASearchedSkill = this.props.searchTerms.indexOf(skill.name);
+            let isASearchedSkill = this.props.searchTerms.indexOf(skill.name) 
             if (isASearchedSkill > -1) {
-                const skillLevel = skill.skillLevel;
+                const skillLevel = skill.skillLevel
                 //convert the skill- and willlevel into a visual component
                 if (skillLevel == 0) {
-                    skill.skillLevel = "-";
+                    skill.skillLevel = "-"
                 }
                 else {
-                    skill.skillLevel = "";
-                    for (var counter = 0; counter < skillLevel; counter++) {
-                        skill.skillLevel= skill.skillLevel + "◼";
+                    skill.skillLevel = "" 
+                    for (var counter = 0;  counter < skillLevel;  counter++) {
+                        skill.skillLevel= skill.skillLevel + "◼"
                     }
                 }
-                const willLevel = skill.willLevel;
+                const willLevel = skill.willLevel 
                 if (willLevel == 0) {
-                    skill.willLevel = "-";
+                    skill.willLevel = "-"
                 }
                 else {
-                    skill.willLevel = "";
-                    for (var counter = 0; counter < willLevel; counter++) {
-                        skill.willLevel= skill.willLevel + "◼";
+                    skill.willLevel = "" 
+                    for (var counter = 0;  counter < willLevel;  counter++) {
+                        skill.willLevel= skill.willLevel + "◼" 
                     }
                 }
 
                 this.setState({
                     skillsToShow: this.state.skillsToShow.concat([skill])
-                }); 
+                })  
             }
-        });
+        }) 
 
-        this.handleClick = this.handleClick.bind(this);
+        this.handleClick = this.handleClick.bind(this) 
     }
  
     handleClick() {
-        document.body.classList.add('layerOpen');
+        document.body.classList.add('layerOpen') 
     }
 
 
@@ -57,7 +57,7 @@ export default class User extends React.Component {
                 <span class="id">{this.props.data.id}</span>
                 <span class="department">{this.props.data.title}</span>
             </li>
-            <li class="location">{this.props.data.location == "Hamburg"? <span>HAM</span> : "MUN"}</li>
+            <li class="location">{this.props.data.location}</li>
             <li class="skills">
                 <ul class="skills-list">
                 {this.state.skillsToShow.map((data, i) => { 
@@ -66,7 +66,7 @@ export default class User extends React.Component {
                             <p class="skill-name">{data.name}</p>
                             <p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
                         </li>
-                    );
+                    ) 
                 })}
                 </ul>
             </li>  

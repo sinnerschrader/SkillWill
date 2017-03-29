@@ -1,23 +1,23 @@
-import React from 'react';
+import React from 'react' 
 
 export default class Dropdown extends React.Component {
   constructor(props) {
-    super(props);
-    this.handleDropdownChange = this.handleDropdownChange.bind(this);
+    super(props) 
+    this.handleDropdownChange = this.handleDropdownChange.bind(this) 
     this.state = {
       dropdownLabel: this.props.dropdownLabel
     }
   }
 
   handleDropdownChange(e) {
-    const val= e.target.value;
+    const val= e.target.value 
     if (this.props.dropdownLabel != val) {
       this.setState({
         dropdownLabel: val
-      });
+      }) 
       /* calls onChange method, defined as a prop in the parent component.
       This prop is necessary to give the parent access to the selected value */
-      this.props.onDropdownSelect(val);
+      this.props.onDropdownSelect(val) 
     }
   }
   

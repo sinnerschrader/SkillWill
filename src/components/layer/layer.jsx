@@ -1,14 +1,14 @@
-import React from 'react';
-import { Router, Link, browserHistory } from 'react-router';
+import React from 'react' 
+import { Router, Link, browserHistory } from 'react-router' 
 
 export default class Layer extends React.Component {
     constructor(props) {
-        super(props);
-        this.handleClose = this.handleClose.bind(this);
+        super(props) 
+        this.handleClose = this.handleClose.bind(this) 
     }
 
     handleClose() { 
-        browserHistory.goBack();
+        browserHistory.goBack() 
     }
 
     render() {

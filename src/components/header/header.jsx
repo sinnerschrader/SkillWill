@@ -1,32 +1,32 @@
-import React from 'react';
-import Cookies from 'react-cookie';
+import React from 'react' 
+import Cookies from 'react-cookie' 
 
 export default class Header extends React.Component {
     constructor(props) {
-        super(props);
+        super(props) 
         this.state = {
             isNavOpen: false,
             userId: undefined
         }   
-        this.handleClick = this.handleClick.bind(this);
-        this.checkUserIdCookie = this.checkUserIdCookie.bind(this);
+        this.handleClick = this.handleClick.bind(this) 
+        this.checkUserIdCookie = this.checkUserIdCookie.bind(this) 
 
-        this.checkUserIdCookie();
+        this.checkUserIdCookie() 
     }
 
     handleClick(e){
         this.setState({
             isNavOpen: !this.state.isNavOpen
         })
-        this.checkUserIdCookie();
+        this.checkUserIdCookie() 
     }
 
     checkUserIdCookie() {
-      let u =  Cookies.load("user");
+      let u =  Cookies.load("user") 
       if (u != this.state.userId) {
         this.setState({userId: u})
       }
-      return !!u;
+      return !!u 
     }
 
     render() {

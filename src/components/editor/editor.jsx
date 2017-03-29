@@ -1,10 +1,10 @@
- import React from 'react';
+ import React from 'react' 
  import { Router, Route, Link } from 'react-router'
  import RangeSlider from '../range-slider/range-slider.jsx'
 
 export default class Editor extends React.Component {
     constructor(props) {
-        super(props);
+        super(props) 
         this.state = {
             initialSkillLevel: this.props.skillLvl,
             initialWillLevel: this.props.willLvl,
@@ -13,26 +13,26 @@ export default class Editor extends React.Component {
             skillLegend: ["n/a","Anfänger","Fortgeschritten","Experte"],
             willLegend: ["n/a","Nope","Gerne","Yes, Yes, Yes!"]
         }
-        this.handleSliderChange = this.handleSliderChange.bind(this);
-        this.handleAccept = this.handleAccept.bind(this);
+        this.handleSliderChange = this.handleSliderChange.bind(this) 
+        this.handleAccept = this.handleAccept.bind(this) 
     }
 
     handleSliderChange(val, type) {
         if( type == "skill") {
             this.setState({
                 skillLevel: val
-            });
+            }) 
         }
         else {
             this.setState({
                 willLevel: val
-            });
+            }) 
         }
     }
 
     handleAccept() {
-        this.props.handleAccept(this.props.skillName, this.state.skillLevel, this.state.willLevel);
-        this.props.handleClose();
+        this.props.handleAccept(this.props.skillName, this.state.skillLevel, this.state.willLevel) 
+        this.props.handleClose() 
     }
 
     render() {

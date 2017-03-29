@@ -1,14 +1,14 @@
-import React from 'react';
-import { Router, Link, browserHistory } from 'react-router';
-import BasicProfile from "./basic-profile.jsx";
-import SkillSearch from "../search/skill-search.jsx";
-import config from '../../config.json';
-import Editor from '../editor/editor.jsx';
-import Cookies from 'react-cookie';
+import React from 'react' 
+import { Router, Link, browserHistory } from 'react-router' 
+import BasicProfile from "./basic-profile.jsx" 
+import SkillSearch from "../search/skill-search.jsx" 
+import config from '../../config.json' 
+import Editor from '../editor/editor.jsx' 
+import Cookies from 'react-cookie' 
 
 export default class MyProfile extends React.Component {
     constructor(props) {
-      super(props);
+      super(props) 
       this.state = {
         session: undefined,
         userId: "id",
@@ -20,26 +20,26 @@ export default class MyProfile extends React.Component {
         skillSearchOpen: false,
 
       }
-        this.infoLayer = this.infoLayer.bind(this);
-        this.openCloseEditLayer = this.openCloseEditLayer.bind(this);
-        this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this);
-        this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this);
-        this.editSkill = this.editSkill.bind(this);
-        this.getProfileData = this.getProfileData.bind(this);
+        this.infoLayer = this.infoLayer.bind(this) 
+        this.openCloseEditLayer = this.openCloseEditLayer.bind(this) 
+        this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this) 
+        this.openCloseSkillSearch = this.openCloseSkillSearch.bind(this) 
+        this.editSkill = this.editSkill.bind(this) 
+        this.getProfileData = this.getProfileData.bind(this) 
 
         if(!this.checkAndOpenLogin()){
-            browserHistory.push("/my-profile/login");
+            browserHistory.push("/my-profile/login") 
         }
     }
 
     componentDidMount() {
-        const elem = this;
+        const elem = this 
         elem.setState({
             userId: elem.props.params.id
-        });
-        elem.getProfileData(elem);
+        }) 
+        elem.getProfileData(elem) 
         if(! this.checkUser()){
-            browserHistory.push("/my-profile/login");
+            browserHistory.push("/my-profile/login") 
         }
     }
        
@@ -50,11 +50,11 @@ export default class MyProfile extends React.Component {
                 elem.setState({
                     data: data,
                     dataLoaded: true
-                });
+                }) 
             })
             .catch(function(error) {
-                console.error(error);
-            });
+                console.error(error) 
+            }) 
     }
 
     checkAndOpenLogin() {
@@ -62,16 +62,16 @@ export default class MyProfile extends React.Component {
       if (s != this.state.session || !s) {
         this.setState({session: s})
       }
-      return !!s;
+      return !!s 
     }
 
     checkUser() {
         // check if the profiles userID matches with the logged in user
         let u =  Cookies.load("user")
         if (u != this.state.userId) {
-            return false;
+            return false 
         }
-        return true;
+        return true 
     }
 
     infoLayer(data, i, showAllSkills) {
@@ -95,11 +95,11 @@ export default class MyProfile extends React.Component {
             openLayerAt: i,
             editLayerOpen: !this.state.editLayerOpen,
             showAllSkills: show
-      });
+      }) 
     }
 
     openCloseSkillSearch() {
-        this.setState({skillSearchOpen: !this.state.skillSearchOpen});
+        this.setState({skillSearchOpen: !this.state.skillSearchOpen}) 
     }
 
     editSkill(skill, skillLvl, willLvl) {
@@ -114,16 +114,16 @@ export default class MyProfile extends React.Component {
         if (res.status == 401) {
           this.setState({session: undefined})
           Cookies.remove("session")
-          this.editSkill(skill, skillLvl, willLvl);
-          this.setState({editLayerOpen: false});
-          getProfileData(this);
+          this.editSkill(skill, skillLvl, willLvl) 
+          this.setState({editLayerOpen: false}) 
+          this.getProfileData(this) 
         }
 
         if (res.status != 200) {
           throw Error("error while editing skills")
         }
         else {
-            this.getProfileData(this);
+            this.getProfileData(this) 
         }
 
       })

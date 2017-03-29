@@ -1,22 +1,22 @@
- import React from 'react';
+ import React from 'react' 
  import { Router, Route, Link } from 'react-router'
  import Editor from '../editor/editor.jsx'
- import config from '../../config.json';
- import Cookies from 'react-cookie';
+ import config from '../../config.json' 
+ import Cookies from 'react-cookie' 
 
 export default class Skill extends React.Component {
     constructor(props) {
-        super(props);
+        super(props) 
         this.state = {
             editorIsOpen: false,
             userId: undefined,
             skillLvl: 0,
             willLvl: 0
         }
-        this.toggleEditor = this.toggleEditor.bind(this);
-        this.checkSkillLvls = this.checkSkillLvls.bind(this);
+        this.toggleEditor = this.toggleEditor.bind(this) 
+        this.checkSkillLvls = this.checkSkillLvls.bind(this) 
 
-        this.checkSkillLvls();
+        this.checkSkillLvls() 
     }
 
     toggleEditor(e) {

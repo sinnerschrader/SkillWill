@@ -1,19 +1,19 @@
-import React from 'react';
+import React from 'react' 
 import { Router, Route, Link } from 'react-router'
 
 export default class RangeSlider extends React.Component {
     constructor(props) {
-        super(props);
+        super(props) 
         this.state = {
             progress: "lvl" + this.props.defaultValue
         }
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChange = this.handleChange.bind(this) 
     }
 
     handleChange(e) {
-        e.preventDefault();
-        let val =  e.target.value;
-        this.props.onSlide(val, this.props.type);
+        e.preventDefault() 
+        let val =  e.target.value 
+        this.props.onSlide(val, this.props.type) 
     }
 
     render() {

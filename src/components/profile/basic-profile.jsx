@@ -1,12 +1,12 @@
-import React from 'react';
-import User from "../user/user.jsx";
-import config from '../../config.json';
-import Editor from '../editor/editor.jsx';
-import { Router, Link, browserHistory } from 'react-router';
+import React from 'react' 
+import User from "../user/user.jsx" 
+import config from '../../config.json' 
+import Editor from '../editor/editor.jsx' 
+import { Router, Link, browserHistory } from 'react-router' 
 
 export default class BasicProfile extends React.Component {
     constructor(props) {
-      super(props);
+      super(props) 
       this.state = {
         userAvatarPath: "",
         showAllSkills:  this.props.showAllSkills,
@@ -15,36 +15,36 @@ export default class BasicProfile extends React.Component {
         editLayerAt: null,
         skillsToShow: 6
       }
-       this.showAllSkills = this.showAllSkills.bind(this);
-       this.openInfoLayer = this.openInfoLayer.bind(this);
-       this.closeInfoLayer = this.closeInfoLayer.bind(this);
-       this.renderSkills = this.renderSkills.bind(this);
-       this.getAvatarColor = this.getAvatarColor.bind(this);
+       this.showAllSkills = this.showAllSkills.bind(this) 
+       this.openInfoLayer = this.openInfoLayer.bind(this) 
+       this.closeInfoLayer = this.closeInfoLayer.bind(this) 
+       this.renderSkills = this.renderSkills.bind(this) 
+       this.getAvatarColor = this.getAvatarColor.bind(this) 
     }
 
     showAllSkills(e) {
-        e.preventDefault();
+        e.preventDefault() 
         this.setState({
             showAllSkills: !(this.state.showAllSkills),
-        });
-        e.target.classList.toggle("open");
+        }) 
+        e.target.classList.toggle("open") 
     }
 
     openInfoLayer(i) {
       if (i == this.state.infoLayerAt) {
-        this.closeInfoLayer();
+        this.closeInfoLayer() 
       }
       else {
         this.setState({
           infoLayerAt: i, //set Layer to index of clicked item
-        });
+        }) 
       }
     }
 
     closeInfoLayer() {
       this.setState({
         infoLayerAt: -1 //unset Layer
-      });
+      }) 
     }
 
     getAvatarColor() {
@@ -53,8 +53,8 @@ export default class BasicProfile extends React.Component {
         .toLowerCase()
         .split('')
         .map(c => c.charCodeAt(0))
-        .reduce((a,b) => a + b);
-      return colors[index % colors.length];
+        .reduce((a,b) => a + b) 
+      return colors[index % colors.length] 
 
     }
 
@@ -78,7 +78,7 @@ export default class BasicProfile extends React.Component {
                 : ""
             }
             </div>
-        );
+        ) 
     }
 
     render() {
@@ -109,7 +109,7 @@ export default class BasicProfile extends React.Component {
                                 <p class="skill-name">{data.name}</p>
                                 <p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
                             </li>
-                        );
+                        ) 
                     })}
                     </ul>
                 </li>
@@ -120,11 +120,11 @@ export default class BasicProfile extends React.Component {
 
                             //display show-more-link after maximum skills to show
                             if (this.state.showAllSkills) {
-                                 return( <li class="skill-item" >{this.renderSkills(data, i)}</li>);;
+                                 return( <li class="skill-item" >{this.renderSkills(data, i)}</li>)  
                             }
                             else {
                                 if ( i <= (this.state.skillsToShow)) {
-                                    return( <li class="skill-item">{this.renderSkills(data, i)}</li>);
+                                    return( <li class="skill-item">{this.renderSkills(data, i)}</li>) 
                                 }
                             }
                         })}

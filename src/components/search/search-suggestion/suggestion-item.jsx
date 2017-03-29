@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react' 
 
 export default class SuggestionItem extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props) 
   }
 
   render() {
