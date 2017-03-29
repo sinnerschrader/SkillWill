@@ -11,6 +11,7 @@ export default class BasicProfile extends React.Component {
         userAvatarPath: "",
         showAllSkills:  this.props.showAllSkills,
         infoLayerAt: this.props.openLayerAt,
+        showMoreLabel: "Mehr",
         editLayerAt: null,
         skillsToShow: 6
       }
@@ -24,7 +25,7 @@ export default class BasicProfile extends React.Component {
     showAllSkills(e) {
         e.preventDefault();
         this.setState({
-        showAllSkills: !(this.state.showAllSkills)
+            showAllSkills: !(this.state.showAllSkills),
         });
         e.target.classList.toggle("open");
     }
@@ -67,12 +68,12 @@ export default class BasicProfile extends React.Component {
                 //open Info-Layer on clicked Item
                 this.state.infoLayerAt == i ?
                 <div class="info-layer">
-                    <p>{data.name}</p>
+                    <p class="skill-title">{data.name}</p>
                     {
                         // for my-profile only
                         this.props.infoLayer(data, i, this.state.showAllSkills)
                     }
-                    <a class="close-btn-small" onClick={this.closeInfoLayer}>X</a>
+                    <a class="close-btn small" onClick={this.closeInfoLayer}>X</a>
                 </div>
                 : ""
             }
@@ -89,9 +90,9 @@ export default class BasicProfile extends React.Component {
                     <p class="id">{this.props.data.id}</p>
                     <p class="department">{this.props.data.title}</p>
                     <p class="location phone">{this.props.data.location} / TEL. {this.props.data.phone}</p>
-                    <Link class="mail" href={`mailto:${this.props.data.mail}`} target="_blank">MAIL</Link>
-                    <Link class="move" href={`http://move.sinner-schrader.de/?id=${this.props.data.id}`} target="_blank">MOVE</Link>
-                    <Link class="hangout" href={`https://sinnerschrader.slack.com/messages/@${this.props.data.firstName.toLowerCase()}.${this.props.data.lastName.toLowerCase()}`} target="_blank">SLACK</Link>
+                    <Link class="mail" href={`mailto:${this.props.data.mail}`} target="_blank"></Link>
+                    <Link class="slack" href={`https://sinnerschrader.slack.com/messages/@${this.props.data.firstName.toLowerCase()}.${this.props.data.lastName.toLowerCase()}`} target="_blank"></Link>
+                    <Link class="move" href={`http://move.sinner-schrader.de/?id=${this.props.data.id}`} target="_blank"></Link>
                 </li>
 
                 {
@@ -128,7 +129,7 @@ export default class BasicProfile extends React.Component {
                             }
                         })}
                     </ul>
-                    <a class="show-more-link" onClick={this.showAllSkills} href="">MORE</a>
+                    <a class="show-more-link" onClick={this.showAllSkills} href=""></a>
                 </li>
             </ul>
         )

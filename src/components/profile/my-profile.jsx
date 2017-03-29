@@ -81,9 +81,9 @@ export default class MyProfile extends React.Component {
        }
        else {
            return(
-                <div>
-                    <div onClick={this.openCloseEditLayer.bind(null,i, showAllSkills )}>Bearbeiten</div>
-                    <div>Entfernen</div>
+                <div class="additional-options">
+                    <div class="edit" onClick={this.openCloseEditLayer.bind(null,i, showAllSkills )}></div>
+                    <div class="delete"></div> {/* TODO DELTE HANDLER */}
                 </div>
            )
        }
@@ -135,12 +135,12 @@ export default class MyProfile extends React.Component {
                 this.state.skillSearchOpen ?
                  <div class="profile">
                     <SkillSearch handleEdit={this.editSkill} data={this.state.data}/>
-                    <div class="back-btn" onClick={this.openCloseSkillSearch}>X</div>
+                    <div class="back-btn" onClick={this.openCloseSkillSearch}></div>
                 </div>
                 :
                 <div class="profile">
                     <BasicProfile data={this.state.data} thisElem={this} infoLayer={this.infoLayer} openLayerAt={this.state.openLayerAt} showAllSkills={this.state.showAllSkills} checkLogin={this.checkAndOpenLogin}/>
-                    <div class="add-skill-btn" onClick={this.openCloseSkillSearch}>+</div>
+                    <div class="add-skill-btn" onClick={this.openCloseSkillSearch}></div>
                 </div>
                 : ""
         )

@@ -37,18 +37,18 @@ export default class Editor extends React.Component {
 
     render() {
         return(
-            <ul class="editor">
-                <li class="slider-container">
-                    <p>Dein Skill-Level</p>
+            <div class="editor">
+                <div class="action-buttons">
+                    <a  class="check" onClick={this.handleAccept}></a>
+                    <a  class="cancel" onClick={this.props.handleClose}></a>
+                </div>
+                <div class="slider-container">
+                    <p class="slider-description">Dein Skill-Level</p>
                     <RangeSlider onSlide={this.handleSliderChange} type="skill" defaultValue={this.state.skillLevel} legend={this.state.skillLegend}/>
-                    <p>Dein Will-Level</p>
+                    <p class="slider-description">Dein Will-Level</p>
                     <RangeSlider onSlide={this.handleSliderChange} type="will" defaultValue={this.state.willLevel} legend={this.state.willLegend}/>
-                </li>
-                <li class="action-buttons">
-                    <a onClick={this.handleAccept}>✓</a>
-                    <a onClick={this.props.handleClose}>X</a>
-                </li>
-            </ul>
+                </div>
+            </div>
         )
     }
 }
