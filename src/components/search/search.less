@@ -27,27 +27,30 @@
           outline: none;
         }
       }
-
-      div:first-child {
-        margin-left: 0;
-      }
       
       .search-term {
+        display: inline-block;
         border: @base-border;
         padding: @s-stack;
         padding-right: @s-inline;
-        margin-left: @s-inline;
+        margin: @xs-inline;
         margin-bottom: @xxs-inline;
         line-height: @base-font-size;
-        
+        cursor: pointer;
+
+        &:hover {
+            color: @s2-red;
+            border-color: @s2-red;
+            
+            a {
+              color: @s2-red;
+            }
+        }
+
         a {
           cursor: pointer;
           margin-left: @s-inline;
           color: @s2-black;
-
-          &:hover {
-            color: @s2-black-hover;
-          }
         }
       }
     }

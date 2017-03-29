@@ -1,5 +1,6 @@
  import React from 'react';
- import { Router, Route, Link } from 'react-router'
+ import { Router, Route, Link } from 'react-router';
+ import SearchSuggestions from './search-suggestion/search-suggestions.jsx';
 
 export default class SearchBar extends React.Component {
     constructor(props) {
@@ -12,6 +13,8 @@ export default class SearchBar extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSuggestionSelected = this.handleSuggestionSelected.bind(this);
+
     }
 
     handleChange(e) {
@@ -30,31 +33,11 @@ export default class SearchBar extends React.Component {
         }
     }
 
-    handleClose(j) {
-        let helperArray= [];
-        let helperIndex = 0;
-        this.state.searchTerms.map((searchTerm, i) => {
-        //skip deleted term
-        if (i != j) {
-            helperArray[helperIndex] = searchTerm;
-            helperIndex++;
-        }
-        });
+    handleClose(name) {
         this.setState({
-            searchTerms: helperArray
+            searchTerms: this.state.searchTerms.filter(s => s !== name),
+            currentValue: ''
         });
-
-        this.props.toggleUpdate(false);
-
-        // update searchTerms, if there is an unsubmitted searchinput 
-        if (this.state.currentValue.length != 0) {
-            this.setState({
-                searchTerms: helperArray.concat([this.state.currentValue]),
-                currentValue : ""
-            });
-        } 
-        // refresh search
-        this.props.handleRequest(this.props.parent, this.state.searchTerms);
     }
 
     handleSubmit(e) {
@@ -68,35 +51,43 @@ export default class SearchBar extends React.Component {
         this.props.handleRequest(this.props.parent,this.state.searchTerms);
         e.target.focus();
     }
+
+    handleSuggestionSelected(name) {
+        this.setState({
+        searchTerms: this.state.searchTerms.concat(name),
+        currentValue: ''
+        })
+        this.props.handleRequest(this.props.parent, this.state.searchTerms);
+    }
       // update component only if search has changed
     shouldComponentUpdate(nextProps, nextState) {
-        if ((this.state.currentValue.length !== nextState.currentValue) ) {
-            return true;
-        }
-        return false;
+        return this.state != nextState || this.props != nextProps;
     }
 
     render() {
         return(
-            <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
-            <div class="search-container">
-                <div class="input-container">
-                    {
-                    // display entered searchTerms in front of the input field
-                    this.state.searchTerms.map((searchTerm, i) => {
-                        return(
-                        <div class="search-term" >
-                            {searchTerm}
-                            <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
-                        </div>
-                        );
-                    })
-                    }
-                <input name="SearchInput" autocomplete="off" placeholder="Nach welchem Skill suchst du?" type="search" value={this.state.currentValue} autoFocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
+            <div>
+                <form onSubmit={this.handleSubmit} name="SearchBar" autocomplete="off">
+                    <div class="search-container">
+                        <div class="input-container">
+                            {
+                            // display entered searchTerms in front of the input field
+                            this.state.searchTerms.map((searchTerm, i) => {
+                                return(
+                                <div class="search-term" >
+                                    {searchTerm}
+                                    <a class="close" key={i} onClick={this.handleClose.bind(null, i)}>&#9747;</a>
+                                </div>
+                                );
+                            })
+                        }
+                        <input name="SearchInput" autocomplete="off" placeholder="Nach welchem Skill suchst du?" type="search" value={this.state.currentValue} autoFocus="true" onChange={this.handleChange} onKeyDown={this.handleKeyDown}></input>
+                    </div>
+                    <button type="submit" class="search" />
                 </div>
-                <button type="submit" class="search" />
-            </div>
-        </form>
+            </form>
+            <SearchSuggestions searchTerms={this.state.searchTerms} currentValue={this.state.currentValue} handleSuggestionSelected={this.handleSuggestionSelected}/>
+        </div>
         )
     }
 }
