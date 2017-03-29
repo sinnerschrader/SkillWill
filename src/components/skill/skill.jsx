@@ -44,7 +44,7 @@ export default class Skill extends React.Component {
                 <li class="name" onClick={this.toggleEditor}>
                     {this.props.data.name}
                 </li>
-                <li class="add" onClick={this.toggleEditor}>+</li>
+                <li class="add" onClick={this.toggleEditor}></li>
                 { this.state.editorIsOpen ?
                     <li class="editor-container">
                         <Editor skillName={this.props.data.name} skillLvl={this.state.skillLvl} willLvl ={this.state.willLvl} handleAccept={this.props.handleEdit} handleClose={this.toggleEditor} handleEdit={this.props.handleEdit}/>
