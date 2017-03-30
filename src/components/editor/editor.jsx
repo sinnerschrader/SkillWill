@@ -18,7 +18,7 @@ export default class Editor extends React.Component {
     }
 
     handleSliderChange(val, type) {
-        if( type == "skill") {
+        if ( type == "skill") {
             this.setState({
                 skillLevel: val
             }) 

@@ -28,7 +28,7 @@ export default class MyProfile extends React.Component {
         this.deleteSkill = this.deleteSkill.bind(this) 
         this.getProfileData = this.getProfileData.bind(this) 
 
-        if(!this.checkAndOpenLogin()){
+        if (!this.checkAndOpenLogin()) {
             browserHistory.push("/my-profile/login") 
         }
     }
@@ -39,7 +39,7 @@ export default class MyProfile extends React.Component {
             userId: elem.props.params.id
         }) 
         elem.getProfileData(elem) 
-        if(! this.checkUser()){
+        if (! this.checkUser()) {
             browserHistory.push("/my-profile/login") 
         }
     }

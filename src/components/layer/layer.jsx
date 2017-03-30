@@ -16,6 +16,7 @@ export default class Layer extends React.Component {
         else {
             browserHistory.goBack() 
         }
+        document.body.classList.remove('layerOpen') 
     }
 
     render() {

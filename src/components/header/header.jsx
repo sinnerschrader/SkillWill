@@ -15,7 +15,7 @@ export default class Header extends React.Component {
         this.checkUserIdCookie() 
     }
 
-    handleClick(e){
+    handleClick(e) {
         this.setState({
             isNavOpen: !this.state.isNavOpen
         })
