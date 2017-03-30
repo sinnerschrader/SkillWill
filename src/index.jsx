@@ -16,7 +16,7 @@ render(
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={UserSearch} />
-        <Route path="search" component={UserSearch}>
+        <Route path="search(&:searchTerms)" name="search" component={UserSearch}>
             <Route path="profile" component={Layer}>
               <Route path=":id" component={OthersProfile} />
             </Route>

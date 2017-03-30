@@ -1,5 +1,5 @@
  import React from 'react' 
- import { Router, Route, Link } from 'react-router'
+ import { Router, Route, Link, browserHistory } from 'react-router'
 
 export default class User extends React.Component {
     constructor(props) {
@@ -53,7 +53,7 @@ export default class User extends React.Component {
     return(
         <ul class="user">
             <li class="info">
-                <Link class="name" to={`search/profile/${this.props.data.id}`} activeClassName="active" id={`${this.props.data.id}`} onClick={this.handleClick}>{this.props.data.firstName} {this.props.data.lastName}</Link>
+                <Link class="name" to={`${location.pathname}/profile/${this.props.data.id}`} activeClassName="active" id={`${this.props.data.id}`} onClick={this.handleClick}>{this.props.data.firstName} {this.props.data.lastName}</Link>
                 <span class="id">{this.props.data.id}</span>
                 <span class="department">{this.props.data.title}</span>
             </li>

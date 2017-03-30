@@ -5,6 +5,7 @@ import Dropdown from '../dropdown/dropdown.jsx'
 import SearchSuggestions from './search-suggestion/search-suggestions.jsx' 
 import User from '../user/user.jsx' 
 import config from '../../config.json' 
+import { Router, Route, Link, browserHistory } from 'react-router'
 
 export default class UserSearch extends React.Component {
 
@@ -17,15 +18,46 @@ export default class UserSearch extends React.Component {
       searchItems: [],
       searchStarted: false,
       noResults: false,
-      shouldUpdate: false
+      shouldUpdate: false,
+      isRouteSet: false,
+      route: ""
     }
     this.toggleUpdate = this.toggleUpdate.bind(this) 
     this.requestSearch = this.requestSearch.bind(this) 
-    this.handleDropdownSelect = this.handleDropdownSelect.bind(this) 
+    this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
 
+    const queryTerms = this.props.params.searchTerms
+
+    //Get searchTerm out of route queries
+    if (queryTerms != undefined) {
+      let arr = []
+      let helperString = ""
+      //get searchTerms seperated by Comma
+      for (let z = 0; z < this.props.params.searchTerms.length; z++) {
+        let currChar = this.props.params.searchTerms.charAt(z)
+        if (currChar== ",") {
+          arr= arr.concat([helperString])
+          helperString = ""
+        } 
+        else {
+          helperString += currChar
+        }
+        if (z == (this.props.params.searchTerms.length - 1)) {
+           //last or only searchTerm
+            arr= arr.concat([helperString])
+        }
+      }
+      this.setState({
+        searchItems: arr,
+        shouldUpdate: true,
+        isRouteSet: true
+      }) 
+      this.requestSearch(this, this.state.searchItems);
+    }
   }
 
   requestSearch(e, searchTerms) {
+    if (e.state.isRouteSet) {
     fetch(config.backendServer + "/users?"+ e.state.locationTerm + "skills="+ searchTerms)
     .then(r => { 
       if (r.status === 400) {
@@ -34,6 +66,7 @@ export default class UserSearch extends React.Component {
           searchStarted: true,
           shouldUpdate: true,
           noResults: true,
+          isRouteSet: false,
           searchItems: this.state.searchItems.slice(0,(this.state.searchItems.length-1))
         }) 
       }
@@ -45,14 +78,34 @@ export default class UserSearch extends React.Component {
           results: data,
           searchStarted: true,
           searchItems: searchTerms,
+          route: "search&" + searchTerms,
           noResults: false,
-          shouldUpdate: true
+          shouldUpdate: true,
+          isRouteSet: false
         }) 
     })
     .catch(error => {
         console.error("requestSearch" + error) 
     }) 
+  } 
+  else {
+    e.setState({      
+      isRouteSet: true,
+      results: null,
+      searchStarted: true,
+      searchItems: searchTerms,
+      route: "search&" + searchTerms,
+      noResults: false,
+      shouldUpdate: true,
+    })
+
+    if (searchTerms.length == 0) {
+      e.setState({      
+        route: "search"
+      })
+    }
   }
+}
 
   handleDropdownSelect(val) {
     if (val != "all") {
@@ -75,7 +128,11 @@ export default class UserSearch extends React.Component {
   }
 
   componentDidUpdate() {
-    document.SearchBar.SearchInput.focus() 
+    document.SearchBar.SearchInput.focus()
+    if ((this.props.params.searchTerms != this.state.searchItems) && !(this.state.noResults)) {
+      browserHistory.replace(this.state.route)
+    }
+ 
   }
 
   // update component only if search has changed
