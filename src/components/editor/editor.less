@@ -1,9 +1,21 @@
 .editor {
     display: flex;
-    padding-left: @xl-stack;
+    flex-direction: row-reverse;
+    padding-left: @s-stack;
+    position: relative;
+    left: 8vw;
     flex-wrap: wrap;
-    width: 100%;
+    width: 90vw;
     box-sizing: border-box;
+    transform: scale(0.75); //ToDo: add responsive widths
+
+    @media (min-width: @tablet-portrait-up) {
+        padding-left: @xl-stack;
+        flex-direction: row;
+        left: inherit;
+        width: 100%;
+        transform: none;
+    }
 
     .slider-container {
         flex-basis: 80%;

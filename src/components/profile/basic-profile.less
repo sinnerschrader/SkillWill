@@ -145,12 +145,12 @@
 
     .info-layer {
         position: absolute;
-        transform: translateY(-270px) translateX(-200px);
         background-color: @s2-white;
         box-shadow: @s2-box-shadow-medium;
-        width: auto;
-        min-width: 400px;
-        padding: @xxl-stack @xl-inline;
+        width: 100vw;
+        top: 50%;
+        left: 0;
+        padding: @xl-stack @m-inline;
         z-index: 4;
         cursor: auto;
 
@@ -202,23 +202,32 @@
             }
         }
     }
-
-    // last item in a 3-collum row
-    li:nth-child(3n) {
+    @media (min-width: @tablet-portrait-up) {
         .info-layer {
-            transform: translateY(-270px) translateX(-250px);
-            &::after {
-                left: 300px;
+            width: auto;
+            min-width: 500px;
+            transform: translateY(-270px) translateX(-200px);
+            top: inherit;
+            left: inherit;
+            padding: @xxl-stack @xl-inline;
+        }
+
+        // last item in a 3-collum row
+        li:nth-child(3n) {
+            .info-layer {
+                transform: translateY(-270px) translateX(-250px);
+                &::after {
+                    left: 300px;
+                }
             }
         }
-    }
-
-    //first item in row
-    li:nth-child(3n - 2) {
-        .info-layer {
-            transform: translateY(-270px) translateX(-30px);
-            &::after {
-                left: 39px;
+        //first item in row
+        li:nth-child(3n - 2) {
+            .info-layer {
+                transform: translateY(-270px) translateX(-30px);
+                &::after {
+                    left: 39px;
+                }
             }
         }
     }
@@ -244,8 +253,8 @@
 
 .add-skill-btn {
     position: fixed;
-    right: 50%;
-    transform: translateX(((@layer-width / 2) + @l-inline )) translateY(-80px);
+    right: 10vw;
+    transform: translateX(@l-inline ) translateY(-80px);
     bottom: 0;
     background-color: @s2-red;
     height: 70px;
@@ -265,6 +274,11 @@
         width: 50px;
         display: inline-block;
         transform: translateY(-8px) translateX(1px)
+    }
+
+    @media (min-width: @tablet-portrait-up) {
+        transform: translateX(((@layer-width / 2) + @l-inline )) translateY(-80px);
+        right: 50%;
     }
 }
 

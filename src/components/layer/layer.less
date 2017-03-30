@@ -52,11 +52,17 @@
 
 .layer {
         margin: 0 auto @xxl-stack auto;
-        max-width: @layer-width;
-        padding: @xxl-stack @3xl-stack;  
+        max-width: 100vw;
+        padding: @l-stack @s-stack; 
         background-color: @s2-white;   
-        height: 80vh;
+        height: 90vh;
         overflow: scroll;
         position: relative;
         z-index: 2;
+
+        @media (min-width: @tablet-portrait-up) {
+            max-width: @layer-width;
+            padding: @xxl-stack @3xl-stack;
+            height: 80vh; 
+        }       
 }
