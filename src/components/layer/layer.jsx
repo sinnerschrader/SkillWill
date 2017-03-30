@@ -1,22 +1,21 @@
-import React from 'react' 
-import { Router, Link, browserHistory } from 'react-router' 
+import React from 'react'
+import { Router, Link, browserHistory } from 'react-router'
 
 export default class Layer extends React.Component {
     constructor(props) {
-        super(props) 
-        this.handleClose = this.handleClose.bind(this) 
+        super(props)
+        this.handleClose = this.handleClose.bind(this)
     }
 
-    handleClose() { 
+    handleClose() {
         //return to home if current page is login
-        if (this.props.location.pathname == '/my-profile/login') {
-
+        if (this.props.location.pathname.startsWith('/my-profile')) {
             browserHistory.push("/")
         }
         else {
-            browserHistory.goBack() 
+            browserHistory.goBack()
         }
-        document.body.classList.remove('layerOpen') 
+        document.body.classList.remove('layerOpen')
     }
 
     render() {
