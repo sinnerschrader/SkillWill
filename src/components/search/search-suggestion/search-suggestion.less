@@ -1,0 +1,34 @@
+.search-suggestions {
+    padding: @xs-stack @xs-inline;
+
+    &.hidden {
+        visibility: hidden;
+        display: inline-block;
+    }
+
+    .info {
+        padding-left: @xs-inline;
+        margin: @s-stack 0;
+    }
+
+    .search-suggestions-list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .search-suggestions-item {
+        display: inline-block;
+        border: @base-border;
+        padding: @s-stack;
+        padding-right: @s-inline;
+        margin: @xs-inline;
+        margin-bottom: @xxs-inline;
+        line-height: @base-font-size;
+        cursor: pointer;
+
+        &:hover {
+            color: @s2-red;
+            border-color: @s2-red;
+        }
+    }
+}

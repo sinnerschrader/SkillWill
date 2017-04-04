@@ -1,0 +1,56 @@
+.editor {
+    display: flex;
+    flex-direction: row-reverse;
+    padding-left: @s-stack;
+    position: relative;
+    left: 8vw;
+    flex-wrap: wrap;
+    width: 90vw;
+    box-sizing: border-box;
+    transform: scale(0.75); //ToDo: add responsive widths
+
+    @media (min-width: @tablet-portrait-up) {
+        padding-left: @xl-stack;
+        flex-direction: row;
+        left: inherit;
+        width: 100%;
+        transform: none;
+    }
+
+    .slider-container {
+        flex-basis: 80%;
+    }
+
+    .action-buttons {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin: @s-stack 0;
+    }
+
+    .check, .cancel {
+        background-size: contain;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        display: inline-block;
+        margin: 0 @xl-inline;
+    }
+    .check {
+        &::after {
+            content: data-uri("@{image-path}/check.svg");
+            height: 25px;
+            width: 20px;
+            transform: translateY(5px);
+            display: inline-block;
+        }
+    }
+    .cancel {
+        &::after {
+            content: data-uri("@{image-path}/cross.svg");
+            height: 20px;
+            width: 20px;
+            transform: rotate(45deg);
+            display: inline-block;
+        }
+    }
+}

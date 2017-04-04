@@ -1,6 +1,6 @@
 
-//Colors (names adapted from the s2-website)
-@s2-black: #1e212a;
+//Colors (adapted from the s2-website)
+@s2-black: #3b4151;;
 @s2-darkblack: #16181e;
 @s2-darkgrey3: #858586;
 @s2-darkgrey2: #a3a3a3;
@@ -18,11 +18,17 @@
 @s2-black-hover: #495066;
 @s2-white-fade: hsla(0,0%,100%,.25);
 
+//added
+@s2-box-shadow-medium: 0 10px 20px 0 rgba(0, 0, 0, 0.5);
+@s2-box-shadow-dark: 0 10px 20px 0 rgba(0, 0, 0, 0.8);
+@s2-darkblack-transparent: rgba(22, 24, 30, 0.95);
+
 //Fonts
 @base-font: "s2", sans-serif;
 @s-base-font-size: 12px;
 @m-base-font-size: 14px;
 @l-base-font-size: 15px;
+@xl-base-font-size: 16px;
 @base-font-size: @l-base-font-size;
 @base-font-color: @s2-black;
 
@@ -36,6 +42,7 @@
 @xl-title-font-weight: bold;
 @l-title-font-weight: normal;
 @m-title-font-weight: normal;
+@s-title-font-weight: bold;
 
 //spaces
 @inline-base:  3px;
@@ -82,9 +89,24 @@
 //borders
 @base-border: 1px solid @s2-darkgrey;
 
-//widths:
+//widths
 @dropdown-width: 140px;
 
 //queries
 @tablet-portrait-up: 720px;
 @tablet-landscape-up: 1024px;
+
+//layer
+@layer-width: 600px;
+
+//range-slider
+@slider-height: 10px;
+@slider-width: 400px;
+@slider-thumb-height: 25px;
+
+//logical vars
+@itemsToShow: 6; //maximum Items to Show e.g. in the Profile
+
+//text
+@more-label: "mehr";
+@less-label: "weniger";

@@ -11,11 +11,16 @@ html {
  body {
     background-color: @s2-white;
     position: relative; //is needed both in body and html to hide overflow in Safari
-    overflow-x: hidden; 
-    min-height: 150%;
+    overflow-x: hidden;
+    min-height: 100vh;
+
+    &.layer-open {
+        overflow-y: hidden;
+        max-height: 100vh;
+    }
 }
 
-html, input, textarea, keygen, select, button  {
+html, input, textarea, keygen, select, button, p , a  {
     font-family: @base-font;
     font-size: @base-font-size;
     line-height: @base-font-size;
@@ -32,6 +37,10 @@ a {
     color: @s2-black;
 }
 
+&.hidden {
+    display: none;
+}
+
 .background-layer {
    &::after{
     z-index: -1;
@@ -43,7 +52,7 @@ a {
     top: 160px;
     left: -50%;
     transform: rotate(-22deg);
-   } 
+   }
 }
 
 .content {
@@ -57,7 +66,7 @@ a {
         background-position-x: 50%;
         background-position-y: 0%;
         background-size: 65vw;
-    } 
+    }
 }
 
 .title {
@@ -74,9 +83,13 @@ a {
 }
 
 .subtitle {
-    font-size: @m-title-font-size; 
-    line-height: @m-title-font-size; 
-    text-align: center;  
+    font-size: @m-title-font-size;
+    line-height: @m-title-font-size;
+    text-align: center;
     font-weight: 500;
+}
+
+.error {
+    color: @s2-red;
 }
 

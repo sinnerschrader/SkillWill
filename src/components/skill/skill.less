@@ -1,0 +1,39 @@
+.skill {
+    display: flex;
+    padding: @l-stack @s-inline;
+    flex-wrap: wrap;
+    position: relative;
+
+    .name {
+        flex-basis: 90%;
+        font-size: @xl-base-font-size;
+        line-height: @xl-base-font-size;
+        color: @s2-black;
+        cursor: pointer;
+    }
+
+    .add {
+        flex-basis: 10%;
+        cursor: pointer;
+        display: inline-block;
+        background: data-uri("@{image-path}/cross.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        height: 15px;
+        width: 15px;
+    }
+
+    .editor-container {
+        margin-top: @s-stack;
+        flex-basis: 100%;
+    }
+
+    &.toggled {
+        .name {
+            color: @s2-red;
+        }
+        .add {
+            display: none;
+        }
+    }
+}

@@ -1,0 +1,38 @@
+.login {
+      margin-top: @xxl-stack;
+    
+      .submit-btn {
+        border: @base-border;
+        border-radius: 6px;
+        padding: @s-stack;
+        padding-right: @s-inline;
+        margin: @s-stack 0;
+        line-height: @base-font-size;
+        cursor: pointer;
+        background: @s2-blue;
+        color: @s2-white;
+        display: block;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+      form {
+        margin-top: @xl-stack;
+
+        input {
+          border: @base-border;
+          padding: @s-stack;
+          box-sizing: content-box;
+          background-color: transparent;
+          appearance: none;
+          border-radius: 0;
+          margin-right: @xs-inline;
+          display: inline-block;
+
+          &:focus {
+            outline: none;
+          }
+      }
+    }
+}
