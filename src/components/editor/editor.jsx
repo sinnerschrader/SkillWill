@@ -21,8 +21,7 @@ export default class Editor extends React.Component {
             this.setState({
                 skillLevel: val
             })
-        }
-        else {
+        } else {
             this.setState({
                 willLevel: val
             })

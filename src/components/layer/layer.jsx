@@ -11,11 +11,10 @@ export default class Layer extends React.Component {
         //return to home if current page is login
         if (this.props.location.pathname.startsWith('/my-profile')) {
             browserHistory.push("/")
-        }
-        else {
+        } else {
             browserHistory.goBack()
         }
-        document.body.classList.remove('layerOpen')
+        document.body.classList.remove('layer-open')
     }
 
     render() {
