@@ -43,7 +43,7 @@ export default class User extends React.Component {
     }
 
     handleClick() {
-        document.body.classList.add('layerOpen')
+        document.body.classList.add('layer-open')
     }
 
 
