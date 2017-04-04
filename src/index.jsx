@@ -8,10 +8,9 @@ import Layer from './components/layer/layer.jsx';
 import MyProfile from './components/profile/my-profile.jsx';
 import OthersProfile from './components/profile/others-profile.jsx';
 import Login from './components/login/login.jsx';
-import { Router, Route, Link, browserHistory } from 'react-router';
-import { IndexRoute } from 'react-router'
+import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
 
-render( 
+render(
   <AppContainer>
     <Router history={browserHistory}>
       <Route path="/" component={App}>
@@ -20,7 +19,7 @@ render(
             <Route path="profile" component={Layer}>
               <Route path=":id" component={OthersProfile} />
             </Route>
-        </Route>  
+        </Route>
         <Route path="my-profile" component={Layer}>
           <Route path="login" component={Login} />
           <Route path=":id" component={MyProfile}>
