@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import App from './app.jsx';
 import UserSearch from './components/search/user-search.jsx';
+import Results from './components/search/results/results.jsx'
 import SkillSearch from './components/search/skill-search.jsx';
 import Layer from './components/layer/layer.jsx';
 import MyProfile from './components/profile/my-profile.jsx';
@@ -15,7 +16,7 @@ render(
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={UserSearch} />
-        <Route path="search(&:searchTerms)" name="search" component={UserSearch}>
+        <Route path="search(/:skills)" name="search" component={Results}>
             <Route path="profile" component={Layer}>
               <Route path=":id" component={OthersProfile} />
             </Route>

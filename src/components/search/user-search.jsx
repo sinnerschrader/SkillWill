@@ -7,19 +7,18 @@ import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
+
 export default class UserSearch extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      results: null,
+      results: [],
       locationTerm: "",
       dropdownLabel: "Alle Standorte",
       searchItems: [],
       searchStarted: false,
-      noResults: false,
       shouldUpdate: false,
-      isRouteSet: false,
       route: ""
     }
     this.toggleUpdate = this.toggleUpdate.bind(this)
@@ -28,74 +27,60 @@ export default class UserSearch extends React.Component {
 
     const queryTerms = this.props.params.searchTerms
 
+
     //Get searchTerm out of route queries
     if (queryTerms != undefined) {
-      let arr = []
-      let helperString = ""
-      //get searchTerms seperated by Comma
-      for (let z = 0; z < this.props.params.searchTerms.length; z++) {
-        let currChar = this.props.params.searchTerms.charAt(z)
-        if (currChar== ",") {
-          arr= arr.concat([helperString])
-          helperString = ""
-        }
-        else {
-          helperString += currChar
-        }
-        if (z == (this.props.params.searchTerms.length - 1)) {
-           //last or only searchTerm
-            arr= arr.concat([helperString])
-        }
-      }
+      let set = new Set(this.props.params.searchTerms.split(','))
+			let arr = Array.from(set)
+
       this.setState({
         searchItems: arr,
         shouldUpdate: true,
-        isRouteSet: true
       })
       this.requestSearch(this, this.state.searchItems);
     }
   }
+	componentWillMount() {
+	}
+
+	componentDidMount(){
+		console.log('mount again and again...and again')
+
+	}
 
   requestSearch(e, searchTerms) {
-    if (e.state.isRouteSet) {
-    fetch(config.backendServer + "/users?"+ e.state.locationTerm + "skills="+ searchTerms)
+    if (true) {
+    fetch(`${config.backendServer}/users?skills=${searchTerms}`)
     .then(r => {
       if (r.status === 400) {
           e.setState({
-          results: null,
+          results: [],
           searchStarted: true,
           shouldUpdate: true,
-          noResults: true,
-          isRouteSet: false,
-          searchItems: this.state.searchItems.slice(0,(this.state.searchItems.length-1))
         })
+				return []
       } else {
 				return r.json()
 			}
-
     })
     .then(data => {
         e.setState({
           results: data,
           searchStarted: true,
           searchItems: searchTerms,
-          route: "search&" + searchTerms,
-          noResults: false,
+		      route: `search?skills=${searchTerms}`,
           shouldUpdate: true,
-          isRouteSet: false
         })
     })
     .catch(error => {
-        console.error("requestSearch" + error)
+        console.error(`requestSearch:${error}`)
     })
   } else {
     e.setState({
-      isRouteSet: true,
-      results: null,
+      //results: [],
       searchStarted: true,
       searchItems: searchTerms,
-      route: "search&" + searchTerms,
-      noResults: false,
+      route: `search?skills=${searchTerms}`,
       shouldUpdate: true,
     })
 
@@ -110,7 +95,7 @@ export default class UserSearch extends React.Component {
   handleDropdownSelect(val) {
     if (val != "all") {
       this.setState({
-        locationTerm: "location=" + val +"&",
+        locationTerm: `location=${val}&`,
         dropdownLabel: val
       })
     } else {
@@ -125,17 +110,20 @@ export default class UserSearch extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+		const {searchItems, route, results} = this.state
     document.SearchBar.SearchInput.focus()
-    if ((this.props.params.searchTerms != this.state.searchItems) && !(this.state.noResults)) {
-      browserHistory.replace(this.state.route)
+    if ((this.props.params.searchTerms != searchItems) && results.length > 0) {
+      browserHistory.replace(route)
     }
 
   }
 
   // update component only if search has changed
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.shouldUpdate && ((this.state.results !== nextState.results) || (this.state.searchItems.length !== nextState.searchItems.length)) ) {
+		const {searchItems} = this.state
+		const haveSearchItemsChanged = searchItems.length != nextState.searchItems.length
+    if (nextState.shouldUpdate && haveSearchItemsChanged){
       return true
     }
     return false
@@ -147,25 +135,49 @@ export default class UserSearch extends React.Component {
     })
   }
 
+	renderResults(searchStarted, results, searchItems) {
+		/* display Results component only when there has been an inital search */
+		console.log('search',searchStarted)
+		console.log('results',results)
+		if (searchStarted){
+			return(
+				<Results
+					results={results}
+					searchTerms={searchItems}
+					noResultsLabel={"Keine Ergebnisse"}>
+					<User searchTerms={searchItems}/>
+				</Results>
+			)
+		} else {
+			return(
+				<div class="info-text">
+					Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?
+					Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt.
+				</div>
+			)
+		}
+	}
+
   render() {
+		console.log(this.props.location.query.skills)
+		const {results, dropdownLabel, searchItems, searchStarted} = this.state
     return(
       <div class="searchbar">
-        <Dropdown onDropdownSelect={this.handleDropdownSelect} dropdownLabel={this.state.dropdownLabel}/>
-        <SearchBar handleRequest={this.requestSearch} toggleUpdate={this.toggleUpdate} parent={this} searchTerms={this.state.searchItems} noResults={this.state.noResults}>
-          <SearchSuggestions searchTerms={this.state.searchItems} noResults={this.state.results == null? true : false}/>
+        <Dropdown
+					onDropdownSelect={this.handleDropdownSelect}
+					dropdownLabel={dropdownLabel}/>
+        <SearchBar
+					handleRequest={this.requestSearch}
+					toggleUpdate={this.toggleUpdate}
+					parent={this}
+					searchTerms={searchItems}
+					noResults={results.length === 0}>
+          <SearchSuggestions
+						searchTerms={searchItems}
+						noResults={results.length === 0}/>
         </SearchBar>
-        {/* display Results component only when there has been an inital search */}
-        {this.state.searchStarted ?
-              <Results results={this.state.results} searchTerms={this.state.searchItems} noResultsLabel={"Keine Ergebnisse"}>
-                <User searchTerms={this.state.searchItems}/>
-              </Results>
-          :
-          <div class="info-text">
-                Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?
-                Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt.
-          </div>
-        }
-         {this.props.children}
+        {this.renderResults(searchStarted, results, searchItems)}
+        {this.props.children}
       </div>
     )
   }

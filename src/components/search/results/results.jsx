@@ -16,7 +16,7 @@ export default class Results extends React.Component {
   }
 
   render() {
-    if (this.props.results != null ) {
+
       if (this.props.results.length != 0) {
       return(
         <div class="results-container">
@@ -41,10 +41,5 @@ export default class Results extends React.Component {
       )
     }
     }
-    else {
-       return (
-          <div class="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
-      )
-    }
   }
-}
+

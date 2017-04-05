@@ -51,22 +51,34 @@ export default class User extends React.Component {
     return(
         <ul class="user">
             <li class="info">
-                <Link class="name" to={`${location.pathname}/profile/${this.props.data.id}`} activeClassName="active" id={`${this.props.data.id}`} onClick={this.handleClick}>{this.props.data.firstName} {this.props.data.lastName}</Link>
-                <span class="id">{this.props.data.id}</span>
-                <span class="department">{this.props.data.title}</span>
+							<Link
+								class="name"
+								to={`${location.pathname}/profile/${this.props.data.id}`} activeClassName="active"
+								id={`${this.props.data.id}`}
+								onClick={this.handleClick}
+							>
+								{this.props.data.firstName} {this.props.data.lastName}
+							</Link>
+							<span class="id">{this.props.data.id}</span>
+							<span class="department">{this.props.data.title}</span>
             </li>
             <li class="location">{this.props.data.location}</li>
             <li class="skills">
-                <ul class="skills-list">
-                {this.state.skillsToShow.map((data, i) => {
-                    return(
-                        <li key={i} class="skill-item">
-                            <p class="skill-name">{data.name}</p>
-                            <p class="level">skillLevel: <span>{data.skillLevel}</span></p><p>willLevel: <span>{data.willLevel }</span></p>
-                        </li>
-                    )
-                })}
-                </ul>
+							<ul class="skills-list">
+								{this.state.skillsToShow.map((data, i) => {
+									return(
+										<li key={i} class="skill-item">
+											<p class="skill-name">{data.name}</p>
+											<p class="level">skillLevel:
+												<span>{data.skillLevel}</span>
+											</p>
+											<p>willLevel:
+												<span>{data.willLevel}</span>
+											</p>
+										</li>
+									)
+								})}
+							</ul>
             </li>
         </ul>
     )
