@@ -7,7 +7,6 @@ import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
-
 export default class UserSearch extends React.Component {
 
 	constructor(props) {
@@ -19,7 +18,7 @@ export default class UserSearch extends React.Component {
 			searchItems: [],
 			searchStarted: false,
 			shouldUpdate: false,
-			route: ""
+			route: this.props.location.pathname
 		}
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
@@ -36,19 +35,14 @@ export default class UserSearch extends React.Component {
 			this.setState({
 				searchItems: arr,
 				shouldUpdate: true,
+				searchStarted: true
 			})
 			this.requestSearch(this, this.state.searchItems);
 		}
 	}
-	componentWillMount() {
-	}
-
-	componentDidMount(){
-		console.log('mount again and again...and again')
-
-	}
 
 	requestSearch(e, searchTerms) {
+
 		fetch(`${config.backendServer}/users?skills=${searchTerms}`)
 		.then(r => {
 			if (r.status === 400) {
@@ -98,9 +92,8 @@ export default class UserSearch extends React.Component {
 		const {searchItems, route, results} = this.state
 		document.SearchBar.SearchInput.focus()
 		if ((this.props.params.searchTerms != searchItems) && results.length > 0) {
-			browserHistory.replace(route)
+			browserHistory.push(route)
 		}
-
 	}
 
 	// update component only if search has changed
@@ -141,7 +134,12 @@ export default class UserSearch extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.location.query.skills)
+		if (this.props && this.props.location) {
+			const skills = new URLSearchParams(this.props.location.search).getAll('skills')
+			console.log('user props', this.props)
+			console.log('user skills', skills)
+		}
+
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
 		return(
 			<div class="searchbar">

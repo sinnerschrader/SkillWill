@@ -3,9 +3,6 @@ import React from 'react'
 export default class Results extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			resultArray: []
-		}
 		this.scrollToResults = this.scrollToResults.bind(this)
 	}
 
@@ -16,7 +13,7 @@ export default class Results extends React.Component {
 	}
 
 	render() {
-		if (this.props.results.length != 0) {
+		if (this.props.results) {
 			return(
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
@@ -27,7 +24,7 @@ export default class Results extends React.Component {
 							return (
 								<li class="result-item" key={i}>
 									{React.cloneElement(this.props.children, { data: data })}
-								</li>
+							</li>
 							)
 						})}
 					</ul>
