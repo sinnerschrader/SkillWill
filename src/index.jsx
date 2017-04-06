@@ -16,7 +16,7 @@ render(
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={UserSearch} />
-        <Route path="search(/:skills)" name="search" component={Results}>
+        <Route path="/search" name="search" component={Results}>
             <Route path="profile" component={Layer}>
               <Route path=":id" component={OthersProfile} />
             </Route>
