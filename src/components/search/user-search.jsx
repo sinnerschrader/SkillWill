@@ -141,7 +141,6 @@ export default class UserSearch extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.location.query.skills)
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
 		return(
 			<div class="searchbar">
