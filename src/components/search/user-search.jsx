@@ -7,7 +7,6 @@ import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
-
 export default class UserSearch extends React.Component {
 
 	constructor(props) {
@@ -27,7 +26,6 @@ export default class UserSearch extends React.Component {
 
 		const queryTerms = this.props.params.searchTerms
 
-
 		//Get searchTerm out of route queries
 		if (queryTerms != undefined) {
 			let set = new Set(this.props.params.searchTerms.split(','))
@@ -39,13 +37,6 @@ export default class UserSearch extends React.Component {
 			})
 			this.requestSearch(this, this.state.searchItems);
 		}
-	}
-	componentWillMount() {
-	}
-
-	componentDidMount(){
-		console.log('mount again and again...and again')
-
 	}
 
 	requestSearch(e, searchTerms) {
