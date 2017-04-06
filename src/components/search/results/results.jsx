@@ -16,30 +16,29 @@ export default class Results extends React.Component {
   }
 
   render() {
-
       if (this.props.results.length != 0) {
-      return(
-        <div class="results-container">
-          <a class="counter" onClick={this.scrollToResults}>
-            <span>{this.props.results.length} Ergebnisse</span>
-          </a>
-          <ul class="results">
-            {this.props.results.map((data, i) => {
-              return (
-                  <li class="result-item" key={i}>
-                    {React.cloneElement(this.props.children, { data: data })}
-                  </li>
-              )
-            })}
-          </ul>
-        </div>
-      )
+				return(
+					<div class="results-container">
+						<a class="counter" onClick={this.scrollToResults}>
+							<span>{this.props.results.length} Ergebnisse</span>
+						</a>
+						<ul class="results">
+							{this.props.results.map((data, i) => {
+								return (
+									<li class="result-item" key={i}>
+										{React.cloneElement(this.props.children, { data: data })}
+									</li>
+								)
+							})}
+						</ul>
+					</div>
+				)
       }
       else {
-       return (
+      	return (
           <div class="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
-      )
-    }
+      	)
+    	}
     }
   }
 

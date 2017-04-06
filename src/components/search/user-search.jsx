@@ -7,7 +7,6 @@ import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
-
 export default class UserSearch extends React.Component {
 
   constructor(props) {
@@ -27,7 +26,6 @@ export default class UserSearch extends React.Component {
 
     const queryTerms = this.props.params.searchTerms
 
-
     //Get searchTerm out of route queries
     if (queryTerms != undefined) {
       let set = new Set(this.props.params.searchTerms.split(','))
@@ -40,16 +38,8 @@ export default class UserSearch extends React.Component {
       this.requestSearch(this, this.state.searchItems);
     }
   }
-	componentWillMount() {
-	}
-
-	componentDidMount(){
-		console.log('mount again and again...and again')
-
-	}
 
   requestSearch(e, searchTerms) {
-    if (true) {
     fetch(`${config.backendServer}/users?skills=${searchTerms}`)
     .then(r => {
       if (r.status === 400) {
@@ -74,14 +64,6 @@ export default class UserSearch extends React.Component {
     })
     .catch(error => {
         console.error(`requestSearch:${error}`)
-    })
-  } else {
-    e.setState({
-      //results: [],
-      searchStarted: true,
-      searchItems: searchTerms,
-      route: `search?skills=${searchTerms}`,
-      shouldUpdate: true,
     })
 
     if (searchTerms.length == 0) {
@@ -137,8 +119,6 @@ export default class UserSearch extends React.Component {
 
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
-		console.log('search',searchStarted)
-		console.log('results',results)
 		if (searchStarted){
 			return(
 				<Results
