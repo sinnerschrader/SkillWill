@@ -7,115 +7,117 @@ import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
 
+
 export default class UserSearch extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      results: [],
-      locationTerm: "",
-      dropdownLabel: "Alle Standorte",
-      searchItems: [],
-      searchStarted: false,
-      shouldUpdate: false,
-      route: ""
-    }
-    this.toggleUpdate = this.toggleUpdate.bind(this)
-    this.requestSearch = this.requestSearch.bind(this)
-    this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
+	constructor(props) {
+		super(props)
+		this.state = {
+			results: [],
+			locationTerm: "",
+			dropdownLabel: "Alle Standorte",
+			searchItems: [],
+			searchStarted: false,
+			shouldUpdate: false,
+			route: ""
+		}
+		this.toggleUpdate = this.toggleUpdate.bind(this)
+		this.requestSearch = this.requestSearch.bind(this)
+		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
 
-    const queryTerms = this.props.params.searchTerms
+		const queryTerms = this.props.params.searchTerms
 
-    //Get searchTerm out of route queries
-    if (queryTerms != undefined) {
-      let set = new Set(this.props.params.searchTerms.split(','))
+
+		//Get searchTerm out of route queries
+		if (queryTerms != undefined) {
+			let set = new Set(this.props.params.searchTerms.split(','))
 			let arr = Array.from(set)
 
-      this.setState({
-        searchItems: arr,
-        shouldUpdate: true,
-      })
-      this.requestSearch(this, this.state.searchItems);
-    }
-  }
+			this.setState({
+				searchItems: arr,
+				shouldUpdate: true,
+			})
+			this.requestSearch(this, this.state.searchItems);
+		}
+	}
+	componentWillMount() {
+	}
 
-  requestSearch(e, searchTerms) {
-    fetch(`${config.backendServer}/users?skills=${searchTerms}`)
-    .then(r => {
-      if (r.status === 400) {
-          e.setState({
-          results: [],
-          searchStarted: true,
-          shouldUpdate: true,
-        })
+	componentDidMount(){
+		console.log('mount again and again...and again')
+
+	}
+
+	requestSearch(e, searchTerms) {
+		fetch(`${config.backendServer}/users?skills=${searchTerms}`)
+		.then(r => {
+			if (r.status === 400) {
+					e.setState({
+					results: [],
+					searchStarted: true,
+					shouldUpdate: true,
+				})
 				return []
-      } else {
+			} else {
 				return r.json()
 			}
-    })
-    .then(data => {
-        e.setState({
-          results: data,
-          searchStarted: true,
-          searchItems: searchTerms,
-		      route: `search?skills=${searchTerms}`,
-          shouldUpdate: true,
-        })
-    })
-    .catch(error => {
-        console.error(`requestSearch:${error}`)
-    })
+		})
+		.then(data => {
+				e.setState({
+					results: data,
+					searchStarted: true,
+					searchItems: searchTerms,
+					route: `search?skills=${searchTerms}`,
+					shouldUpdate: true,
+				})
+		})
+		.catch(error => {
+				console.error(`requestSearch:${error}`)
+		})
+	}
 
-    if (searchTerms.length == 0) {
-      e.setState({
-        route: "search"
-      })
-    }
-  }
-}
+	handleDropdownSelect(val) {
+		if (val != "all") {
+			this.setState({
+				locationTerm: `location=${val}&`,
+				dropdownLabel: val
+			})
+		} else {
+			this.setState({
+				locationTerm: "",
+				dropdownLabel: "Alle Standorte"
+			})
+		}
 
-  handleDropdownSelect(val) {
-    if (val != "all") {
-      this.setState({
-        locationTerm: `location=${val}&`,
-        dropdownLabel: val
-      })
-    } else {
-      this.setState({
-        locationTerm: "",
-        dropdownLabel: "Alle Standorte"
-      })
-    }
+		if (this.state.searchStarted) {
+			this.requestSearch(this, this.state.searchItems)
+		}
+	}
 
-    if (this.state.searchStarted) {
-      this.requestSearch(this, this.state.searchItems)
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+	componentDidUpdate(prevProps, prevState) {
 		const {searchItems, route, results} = this.state
-    document.SearchBar.SearchInput.focus()
-    if ((this.props.params.searchTerms != searchItems) && results.length > 0) {
-      browserHistory.replace(route)
-    }
+		document.SearchBar.SearchInput.focus()
+		if ((this.props.params.searchTerms != searchItems) && results.length > 0) {
+			browserHistory.replace(route)
+		}
 
-  }
+	}
 
-  // update component only if search has changed
-  shouldComponentUpdate(nextProps, nextState) {
+	// update component only if search has changed
+	shouldComponentUpdate(nextProps, nextState) {
 		const {searchItems} = this.state
 		const haveSearchItemsChanged = searchItems.length != nextState.searchItems.length
-    if (nextState.shouldUpdate && haveSearchItemsChanged){
-      return true
-    }
-    return false
-  }
+		if (nextState.shouldUpdate && haveSearchItemsChanged){
+			return true
+		}
+		return false
+	}
 
-  toggleUpdate(bool) {
-    this.setState({
-      shouldUpdate: bool
-    })
-  }
+	toggleUpdate(bool) {
+		this.setState({
+			shouldUpdate: bool
+		})
+	}
 
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
@@ -138,27 +140,27 @@ export default class UserSearch extends React.Component {
 		}
 	}
 
-  render() {
+	render() {
 		console.log(this.props.location.query.skills)
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
-    return(
-      <div class="searchbar">
-        <Dropdown
+		return(
+			<div class="searchbar">
+				<Dropdown
 					onDropdownSelect={this.handleDropdownSelect}
 					dropdownLabel={dropdownLabel}/>
-        <SearchBar
+				<SearchBar
 					handleRequest={this.requestSearch}
 					toggleUpdate={this.toggleUpdate}
 					parent={this}
 					searchTerms={searchItems}
 					noResults={results.length === 0}>
-          <SearchSuggestions
+					<SearchSuggestions
 						searchTerms={searchItems}
 						noResults={results.length === 0}/>
-        </SearchBar>
-        {this.renderResults(searchStarted, results, searchItems)}
-        {this.props.children}
-      </div>
-    )
-  }
+				</SearchBar>
+				{this.renderResults(searchStarted, results, searchItems)}
+				{this.props.children}
+			</div>
+		)
+	}
 }
