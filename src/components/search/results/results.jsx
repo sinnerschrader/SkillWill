@@ -5,15 +5,15 @@ export default class Results extends React.Component {
 		super(props)
 		this.scrollToResults = this.scrollToResults.bind(this)
 	}
-
 	scrollToResults(e) {
 		e.preventDefault()
-		const scrollTo = document.getElementsByClassName("results")
-		scrollTo.scrollIntoView()
+		const scrollTo = e.target
+		console.log(scrollTo)
+		scrollTo.scrollIntoView({behavior: "smooth"})
 	}
 
 	render() {
-		if (this.props.results) {
+		if (this.props.results.length > 0) {
 			return(
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
