@@ -25,19 +25,20 @@ export default class UserSearch extends React.Component {
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
 
-		const queryTerms = this.props.params.searchTerms
-
+		// check to see if there are query params in the url
 		if(this.props.location.query.skills){
 			const query = this.props.location.query.skills.split(',')
+
 			this.setState({
-				searchItems: query
+				searchItems: query,
+				locationTerm: location
 			})
 			this.requestSearch(query);
 		}
 	}
 
-	requestSearch(searchTerms){
-		fetch(`${config.backendServer}/users?skills=${searchTerms}`)
+	requestSearch(searchTerms, locationTerm = ''){
+		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationTerm}`)
 		.then(r => {
 			if (r.status === 400) {
 				this.setState({
@@ -46,14 +47,13 @@ export default class UserSearch extends React.Component {
 					searchStarted: true,
 					shouldUpdate: true,
 				})
-		console.log(this.state.searchItems)
 			} else {
 				r.json().then(data => {
 						this.setState({
 							results: data,
 							searchStarted: true,
 							searchItems: searchTerms,
-							route: `search?skills=${searchTerms}`,
+							route: `search?skills=${searchTerms}${locationTerm}`,
 							shouldUpdate: true,
 						})
 				})
@@ -67,7 +67,7 @@ export default class UserSearch extends React.Component {
 	handleDropdownSelect(val) {
 		if (val != "all") {
 			this.setState({
-				locationTerm: `location=${val}&`,
+				locationTerm: `&location=${val}`,
 				dropdownLabel: val
 			})
 		} else {
