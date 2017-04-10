@@ -29,10 +29,10 @@ export default class UserSearch extends React.Component {
 
 		if(this.props.location.query.skills){
 			const query = this.props.location.query.skills.split(',')
-			const location = this.props.location.query.location ? this.props.location.query.location.split(','):''
+			const locationString = this.props.location.query.location ? `&location=${this.props.location.query.location.split(',')}`:''
 			this.setState({
 				searchItems: query,
-				locationString: `&location=${location}`
+				locationString: locationString
 			})
 			this.requestSearch(query, this.state.locationString);
 		}
@@ -79,7 +79,7 @@ export default class UserSearch extends React.Component {
 			})
 		}
 		if (this.state.searchStarted) {
-			this.requestSearch(this.state.searchItems, `&location=${val}`)
+			this.requestSearch(this.state.searchItems, this.state.locationTerm)
 		}
 	}
 
