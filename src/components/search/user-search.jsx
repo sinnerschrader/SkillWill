@@ -24,15 +24,16 @@ export default class UserSearch extends React.Component {
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
-		console.log('location',this.props.location.query)
+
 		// check to see if there are query params in the url
 
 		if(this.props.location.query.skills){
 			const query = this.props.location.query.skills.split(',')
-			const locationString = this.props.location.query.location ? `&location=${this.props.location.query.location.split(',')}`:''
+			const locationString = `&location=${this.props.location.query.location}`
 			this.setState({
 				searchItems: query,
-				locationString: locationString
+				locationString: locationString,
+				dropdownLabel: this.props.location.query.location || 'Alle Standorte'
 			})
 			this.requestSearch(query, this.state.locationString);
 		}
@@ -110,7 +111,7 @@ export default class UserSearch extends React.Component {
 
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
-		if (results.length > 0){
+		if (results && results.length >= 0){
 			return(
 				<Results
 					results={results}

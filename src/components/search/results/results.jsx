@@ -8,7 +8,6 @@ export default class Results extends React.Component {
 	scrollToResults(e) {
 		e.preventDefault()
 		const scrollTo = e.target
-		console.log(scrollTo)
 		scrollTo.scrollIntoView({behavior: "smooth"})
 	}
 
