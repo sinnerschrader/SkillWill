@@ -24,21 +24,22 @@ export default class UserSearch extends React.Component {
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
-
+		console.log('location',this.props.location.query)
 		// check to see if there are query params in the url
+
 		if(this.props.location.query.skills){
 			const query = this.props.location.query.skills.split(',')
-
+			const location = this.props.location.query.location ? this.props.location.query.location.split(','):''
 			this.setState({
 				searchItems: query,
-				locationTerm: location
+				locationString: `&location=${location}`
 			})
-			this.requestSearch(query);
+			this.requestSearch(query, this.state.locationString);
 		}
 	}
 
-	requestSearch(searchTerms, locationTerm = ''){
-		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationTerm}`)
+	requestSearch(searchTerms, locationString = ''){
+		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
 		.then(r => {
 			if (r.status === 400) {
 				this.setState({
@@ -53,7 +54,7 @@ export default class UserSearch extends React.Component {
 							results: data,
 							searchStarted: true,
 							searchItems: searchTerms,
-							route: `search?skills=${searchTerms}${locationTerm}`,
+							route: `search?skills=${searchTerms}${locationString}`,
 							shouldUpdate: true,
 						})
 				})
@@ -68,7 +69,8 @@ export default class UserSearch extends React.Component {
 		if (val != "all") {
 			this.setState({
 				locationTerm: `&location=${val}`,
-				dropdownLabel: val
+				dropdownLabel: val,
+				searchStarted: true
 			})
 		} else {
 			this.setState({
@@ -76,9 +78,8 @@ export default class UserSearch extends React.Component {
 				dropdownLabel: "Alle Standorte"
 			})
 		}
-
 		if (this.state.searchStarted) {
-			this.requestSearch(this.state.searchItems)
+			this.requestSearch(this.state.searchItems, `&location=${val}`)
 		}
 	}
 
