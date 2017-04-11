@@ -1,11 +1,11 @@
-import React from 'react' 
-import config from '../../config.json' 
-import Cookies from 'react-cookie' 
-import { Router, Link, browserHistory } from 'react-router' 
+import React from 'react'
+import config from '../../config.json'
+import Cookies from 'react-cookie'
+import { Router, Link, browserHistory } from 'react-router'
 
 export default class Login extends React.Component {
   constructor(props) {
-    super(props) 
+    super(props)
     this.state = {
       user: undefined,
       password: undefined,
@@ -27,8 +27,8 @@ export default class Login extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault() 
-    let postData = new FormData() 
+    e.preventDefault()
+    let postData = new FormData()
     postData.append("username", this.state.user)
     postData.append("password", this.state.password)
 
@@ -59,7 +59,7 @@ export default class Login extends React.Component {
       Cookies.save("session", session)
       Cookies.save("user", this.state.user)
       this.setState({ loginLayerOpen: false, session: session })
-      browserHistory.push("/my-profile/"+this.state.user) 
+      browserHistory.push("/my-profile/"+this.state.user)
   }
 
   render() {

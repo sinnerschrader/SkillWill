@@ -61,7 +61,7 @@ export default class UserSearch extends React.Component {
 					results: [],
 					searchItems: searchTerms,
 					searchStarted: true,
-					shouldUpdate: true,
+					shouldUpdate: true
 				})
 			} else {
 				r.json().then(data => {
@@ -70,7 +70,7 @@ export default class UserSearch extends React.Component {
 							searchStarted: true,
 							searchItems: searchTerms,
 							route: `search?skills=${searchTerms}${locationString}`,
-							shouldUpdate: true,
+							shouldUpdate: true
 						})
 				})
 			}

@@ -1,38 +1,48 @@
-import React from 'react' 
+import React from 'react'
 import Cookies from 'react-cookie'
-import { Router, Link, browserHistory } from 'react-router'  
+import { Router, Link, browserHistory } from 'react-router'
 
 export default class Header extends React.Component {
     constructor(props) {
-        super(props) 
+        super(props)
         this.state = {
             isNavOpen: false,
             userId: undefined
-        }   
-        this.handleClick = this.handleClick.bind(this) 
-        this.checkUserIdCookie = this.checkUserIdCookie.bind(this) 
+        }
+        this.handleClick = this.handleClick.bind(this)
+        this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
 
-        this.checkUserIdCookie() 
+        this.checkUserIdCookie()
     }
 
     handleClick(e) {
         this.setState({
             isNavOpen: !this.state.isNavOpen
         })
-        this.checkUserIdCookie() 
+        this.checkUserIdCookie()
     }
 
     checkUserIdCookie() {
-      let u =  Cookies.load("user") 
-      if (u != this.state.userId) {
-        this.setState({userId: u})
+      const user =  Cookies.load("user")
+      if (user != this.state.userId) {
+        this.setState({userId: user})
       }
-      return !!u 
+      return !!user
     }
+
+		renderLogOut(){
+			if(this.checkUserIdCookie()){
+				return(
+					<li class="nav-item">
+						<Link class="nav-link" to={`/my-profile/logout`}>Logout</Link>
+					</li>
+				)
+			}
+		}
 
     render() {
         return(
-            //markup is inspired by the s2-website navigation 
+            //markup is inspired by the s2-website navigation
             <header class="mod-navigation-container">
                 <div class={`mod-navigation nav-open-is-${this.state.isNavOpen}`}>
                     <Link class="s2-logo" to="/"></Link>
@@ -52,6 +62,7 @@ export default class Header extends React.Component {
                             <li class="nav-item">
                                 <Link class="nav-link" to={`/my-profile/${this.state.userId}`}>Dein Profil</Link>
                             </li>
+														{this.renderLogOut()}
                         </ul>
                     </nav>
                 </div>
