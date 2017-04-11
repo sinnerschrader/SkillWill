@@ -6,9 +6,7 @@ import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
-
 export default class UserSearch extends React.Component {
-
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -20,13 +18,11 @@ export default class UserSearch extends React.Component {
 			shouldUpdate: false,
 			route: this.props.location.pathname
 		}
-
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
 		this.setInitialStateFromURL()
 	}
-
 	setInitialStateFromURL(){
 		if(typeof this.props.location.query.skills != 'undefined'){
 			const query = this.props.location.query.skills
@@ -34,16 +30,15 @@ export default class UserSearch extends React.Component {
 			const dropdownLabel = typeof location != 'undefined' ? location : 'Alle Standorte'
 			const queryArray = this.convertQueryParamsToArray(this.props.location.query.skills)
 			const locationString = this.convertLocationToString(location)
-
 			this.setState({
-				searchItems: query,
-				locationTerm: location
+				searchItems: queryArray,
+				locationString: locationString,
+				dropdownLabel: dropdownLabel
 			})
 			this.requestSearch(this.state.searchItems, this.state.locationString)
 			this.handleDropdownSelect(location)
 		}
 	}
-
 	convertQueryParamsToArray(query){
 		if (typeof query != 'undefined'){
 			return query.split(',')
@@ -51,7 +46,6 @@ export default class UserSearch extends React.Component {
 			return
 		}
 	}
-
 	convertLocationToString(location){
 		if (typeof location != 'undefined'){
 			return `&location=${this.props.location.query.location}`
@@ -59,7 +53,6 @@ export default class UserSearch extends React.Component {
 			return
 		}
 	}
-
 	requestSearch(searchTerms, locationString = ''){
 		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
 		.then(r => {
@@ -76,7 +69,7 @@ export default class UserSearch extends React.Component {
 							results: data,
 							searchStarted: true,
 							searchItems: searchTerms,
-							route: `search?skills=${searchTerms}${locationTerm}`,
+							route: `search?skills=${searchTerms}${locationString}`,
 							shouldUpdate: true,
 						})
 				})
@@ -86,12 +79,12 @@ export default class UserSearch extends React.Component {
 				console.error(`requestSearch:${error}`)
 		})
 	}
-
 	handleDropdownSelect(val) {
-		if (val != "all") {
+		if (val != "all" && typeof val != 'undefined') {
 			this.setState({
 				locationTerm: `&location=${val}`,
-				dropdownLabel: val
+				dropdownLabel: val,
+				searchStarted: true
 			})
 		} else {
 			this.setState({
@@ -99,12 +92,10 @@ export default class UserSearch extends React.Component {
 				dropdownLabel: "Alle Standorte"
 			})
 		}
-
 		if (this.state.searchStarted) {
-			this.requestSearch(this.state.searchItems)
+			this.requestSearch(this.state.searchItems, this.state.locationTerm)
 		}
 	}
-
 	componentDidUpdate(prevProps, prevState) {
 		const {route} = this.state
 		const prevSearchString = `search${prevProps.location.search}`
@@ -113,7 +104,6 @@ export default class UserSearch extends React.Component {
 			browserHistory.push(route)
 		}
 	}
-
 	// update component only if search has changed
 	shouldComponentUpdate(nextProps, nextState) {
 		const {searchItems, shouldUpdate} = this.state
@@ -123,16 +113,14 @@ export default class UserSearch extends React.Component {
 		}
 		return false
 	}
-
 	toggleUpdate(bool) {
 		this.setState({
 			shouldUpdate: bool
 		})
 	}
-
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
-		if (results.length > 0){
+		if (results && results.length > 0){
 			return(
 				<Results
 					results={results}
@@ -150,7 +138,6 @@ export default class UserSearch extends React.Component {
 			)
 		}
 	}
-
 	render() {
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
 		return(
