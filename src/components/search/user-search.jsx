@@ -153,7 +153,6 @@ export default class UserSearch extends React.Component {
 	}
 
 	render() {
-
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
 		return(
 			<div class="searchbar">
