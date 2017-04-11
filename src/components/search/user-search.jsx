@@ -28,14 +28,32 @@ export default class UserSearch extends React.Component {
 		// check to see if there are query params in the url
 
 		if(this.props.location.query.skills){
-			const query = this.props.location.query.skills.split(',')
-			const locationString = `&location=${this.props.location.query.location}`
+			const query = this.convertQueryParamsToArray(this.props.location.query.skills)
+			const location = this.props.location.query.location
+			const locationString = this.setLocationString(location)
 			this.setState({
 				searchItems: query,
 				locationString: locationString,
-				dropdownLabel: this.props.location.query.location || 'Alle Standorte'
+				dropdownLabel: typeof location != 'undefined' ? location : 'Alle Standorte'
 			})
-			this.requestSearch(query, this.state.locationString);
+			this.requestSearch(query, this.state.locationString)
+			this.handleDropdownSelect(location)
+		}
+	}
+
+	convertQueryParamsToArray(query){
+		if (typeof query != 'undefined'){
+			return query.split(',')
+		} else {
+			return
+		}
+	}
+
+	setLocationString(location){
+		if (typeof location != 'undefined'){
+			return `&location=${this.props.location.query.location}`
+		} else {
+			return
 		}
 	}
 
@@ -67,7 +85,7 @@ export default class UserSearch extends React.Component {
 	}
 
 	handleDropdownSelect(val) {
-		if (val != "all") {
+		if (val != "all" && typeof val != 'undefined') {
 			this.setState({
 				locationTerm: `&location=${val}`,
 				dropdownLabel: val,
