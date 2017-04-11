@@ -24,70 +24,21 @@ export default class UserSearch extends React.Component {
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
-		this.setInitialStateFromURL()
-	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-		const queryTerms = this.props.params.searchTerms
-
-		//Get searchTerm out of route queries
-		if (queryTerms != undefined) {
-			let set = new Set(this.props.params.searchTerms.split(','))
-			let arr = Array.from(set)
-=======
 		// check to see if there are query params in the url
 		if(this.props.location.query.skills){
 			const query = this.props.location.query.skills.split(',')
->>>>>>> feature/use-query-params
-=======
-	setInitialStateFromURL(){
-		if(typeof this.props.location.query.skills != 'undefined'){
-			const query = this.props.location.query.skills
-			const location = this.props.location.query.location
-			const dropdownLabel = typeof location != 'undefined' ? location : 'Alle Standorte'
-			const queryArray = this.convertQueryParamsToArray(this.props.location.query.skills)
-			const locationString = this.convertLocationToString(location)
->>>>>>> feature/use-query-params-for-location
 
 			this.setState({
-				searchItems: queryArray,
-				locationString: locationString,
-				dropdownLabel: dropdownLabel
+				searchItems: query,
+				locationTerm: location
 			})
-			this.requestSearch(this.state.searchItems, this.state.locationString)
-			this.handleDropdownSelect(location)
+			this.requestSearch(query);
 		}
 	}
 
-	convertQueryParamsToArray(query){
-		if (typeof query != 'undefined'){
-			return query.split(',')
-		} else {
-			return
-		}
-	}
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-	requestSearch(e, searchTerms) {
-		fetch(`${config.backendServer}/users?skills=${searchTerms}`)
-=======
 	requestSearch(searchTerms, locationTerm = ''){
 		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationTerm}`)
->>>>>>> feature/use-query-params
-=======
-	convertLocationToString(location){
-		if (typeof location != 'undefined'){
-			return `&location=${this.props.location.query.location}`
-		} else {
-			return
-		}
-	}
-
-	requestSearch(searchTerms, locationString = ''){
-		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
->>>>>>> feature/use-query-params-for-location
 		.then(r => {
 			if (r.status === 400) {
 				this.setState({
@@ -102,7 +53,7 @@ export default class UserSearch extends React.Component {
 							results: data,
 							searchStarted: true,
 							searchItems: searchTerms,
-							route: `search?skills=${searchTerms}${locationString}`,
+							route: `search?skills=${searchTerms}${locationTerm}`,
 							shouldUpdate: true,
 						})
 				})
@@ -114,11 +65,10 @@ export default class UserSearch extends React.Component {
 	}
 
 	handleDropdownSelect(val) {
-		if (val != "all" && typeof val != 'undefined') {
+		if (val != "all") {
 			this.setState({
 				locationTerm: `&location=${val}`,
-				dropdownLabel: val,
-				searchStarted: true
+				dropdownLabel: val
 			})
 		} else {
 			this.setState({
@@ -126,8 +76,9 @@ export default class UserSearch extends React.Component {
 				dropdownLabel: "Alle Standorte"
 			})
 		}
+
 		if (this.state.searchStarted) {
-			this.requestSearch(this.state.searchItems, this.state.locationTerm)
+			this.requestSearch(this.state.searchItems)
 		}
 	}
 
@@ -158,7 +109,7 @@ export default class UserSearch extends React.Component {
 
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
-		if (results && results.length > 0){
+		if (results.length > 0){
 			return(
 				<Results
 					results={results}
@@ -178,10 +129,7 @@ export default class UserSearch extends React.Component {
 	}
 
 	render() {
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/use-query-params
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
 		return(
 			<div class="searchbar">
