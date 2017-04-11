@@ -32,7 +32,6 @@ render(
 	</AppContainer>, document.querySelector("#app"));
 
 /*if (module && module.hot) {
-	console.log('hot hot')
 	module.hot.accept('./app.jsx', () => {
 		const App = require('./app.jsx').default;
 		render(
