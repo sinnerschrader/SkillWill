@@ -24,21 +24,44 @@ export default class UserSearch extends React.Component {
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
+		this.setInitialStateFromURL()
+	}
 
-		// check to see if there are query params in the url
-		if(this.props.location.query.skills){
-			const query = this.props.location.query.skills.split(',')
+	setInitialStateFromURL(){
+		if(typeof this.props.location.query.skills != 'undefined'){
+			const query = this.props.location.query.skills
+			const location = this.props.location.query.location
+			const dropdownLabel = typeof location != 'undefined' ? location : 'Alle Standorte'
+			const queryArray = this.convertQueryParamsToArray(this.props.location.query.skills)
+			const locationString = this.convertLocationToString(location)
 
 			this.setState({
 				searchItems: query,
 				locationTerm: location
 			})
-			this.requestSearch(query);
+			this.requestSearch(this.state.searchItems, this.state.locationString)
+			this.handleDropdownSelect(location)
 		}
 	}
 
-	requestSearch(searchTerms, locationTerm = ''){
-		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationTerm}`)
+	convertQueryParamsToArray(query){
+		if (typeof query != 'undefined'){
+			return query.split(',')
+		} else {
+			return
+		}
+	}
+
+	convertLocationToString(location){
+		if (typeof location != 'undefined'){
+			return `&location=${this.props.location.query.location}`
+		} else {
+			return
+		}
+	}
+
+	requestSearch(searchTerms, locationString = ''){
+		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
 		.then(r => {
 			if (r.status === 400) {
 				this.setState({
