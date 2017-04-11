@@ -18,23 +18,22 @@ export default class SkillSearch extends React.Component {
     this.requestSearch = this.requestSearch.bind(this)
   }
 
-  requestSearch(e, searchTerms) {
-    fetch(config.backendServer + "/skills?"+ "search="+ searchTerms)
+  requestSearch(searchTerms) {
+
+    fetch(`${config.backendServer}/skills?search=${searchTerms}`)
     .then(r => {
-      console.log(config.backendServer +"/skills?"+ "search="+ searchTerms)
-      return r.json()
-    })
-    .then(data => {
-        e.setState({
+      r.json().then(data => {
+        this.setState({
           results: data,
           searchStarted: true,
           searchItems: searchTerms,
           shouldUpdate: true
         })
+    	})
     })
     .catch(error => {
         console.error("requestSearch" + error)
-        e.setState({results: null})
+        this.setState({results: null})
     })
   }
 
@@ -56,7 +55,7 @@ export default class SkillSearch extends React.Component {
     /* display Results component only when there has been an inital search */
 		if (searchStarted){
 			return(
-				<Results results={results} searchTerms={searchItems} noResultsLabel={"Kein passenden Skill gefunden?"}>
+				<Results results={results} searchTerms={searchItems} noResultsLabel={"Keinen passenden Skill gefunden?"}>
 					<Skill handleEdit={this.props.handleEdit} userData={this.props.data}/>
 				</Results>
 			)
