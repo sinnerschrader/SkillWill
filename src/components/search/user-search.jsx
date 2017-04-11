@@ -18,49 +18,60 @@ export default class UserSearch extends React.Component {
 			searchItems: [],
 			searchStarted: false,
 			shouldUpdate: false,
-			route: ""
+			route: this.props.location.pathname
 		}
+
 		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.requestSearch = this.requestSearch.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
 
+<<<<<<< HEAD
 		const queryTerms = this.props.params.searchTerms
 
 		//Get searchTerm out of route queries
 		if (queryTerms != undefined) {
 			let set = new Set(this.props.params.searchTerms.split(','))
 			let arr = Array.from(set)
+=======
+		// check to see if there are query params in the url
+		if(this.props.location.query.skills){
+			const query = this.props.location.query.skills.split(',')
+>>>>>>> feature/use-query-params
 
 			this.setState({
-				searchItems: arr,
-				shouldUpdate: true,
+				searchItems: query,
+				locationTerm: location
 			})
-			this.requestSearch(this, this.state.searchItems);
+			this.requestSearch(query);
 		}
 	}
 
+<<<<<<< HEAD
 	requestSearch(e, searchTerms) {
 		fetch(`${config.backendServer}/users?skills=${searchTerms}`)
+=======
+	requestSearch(searchTerms, locationTerm = ''){
+		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationTerm}`)
+>>>>>>> feature/use-query-params
 		.then(r => {
 			if (r.status === 400) {
-					e.setState({
+				this.setState({
 					results: [],
-					searchStarted: true,
-					shouldUpdate: true,
-				})
-				return []
-			} else {
-				return r.json()
-			}
-		})
-		.then(data => {
-				e.setState({
-					results: data,
-					searchStarted: true,
 					searchItems: searchTerms,
-					route: `search?skills=${searchTerms}`,
+					searchStarted: true,
 					shouldUpdate: true,
 				})
+			} else {
+				r.json().then(data => {
+						this.setState({
+							results: data,
+							searchStarted: true,
+							searchItems: searchTerms,
+							route: `search?skills=${searchTerms}${locationTerm}`,
+							shouldUpdate: true,
+						})
+				})
+			}
 		})
 		.catch(error => {
 				console.error(`requestSearch:${error}`)
@@ -70,7 +81,7 @@ export default class UserSearch extends React.Component {
 	handleDropdownSelect(val) {
 		if (val != "all") {
 			this.setState({
-				locationTerm: `location=${val}&`,
+				locationTerm: `&location=${val}`,
 				dropdownLabel: val
 			})
 		} else {
@@ -81,24 +92,24 @@ export default class UserSearch extends React.Component {
 		}
 
 		if (this.state.searchStarted) {
-			this.requestSearch(this, this.state.searchItems)
+			this.requestSearch(this.state.searchItems)
 		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const {searchItems, route, results} = this.state
+		const {route} = this.state
+		const prevSearchString = `search${prevProps.location.search}`
 		document.SearchBar.SearchInput.focus()
-		if ((this.props.params.searchTerms != searchItems) && results.length > 0) {
-			browserHistory.replace(route)
+		if (prevSearchString != route) {
+			browserHistory.push(route)
 		}
-
 	}
 
 	// update component only if search has changed
 	shouldComponentUpdate(nextProps, nextState) {
-		const {searchItems} = this.state
+		const {searchItems, shouldUpdate} = this.state
 		const haveSearchItemsChanged = searchItems.length != nextState.searchItems.length
-		if (nextState.shouldUpdate && haveSearchItemsChanged){
+		if (nextState.shouldUpdate){
 			return true
 		}
 		return false
@@ -112,7 +123,7 @@ export default class UserSearch extends React.Component {
 
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
-		if (searchStarted){
+		if (results.length > 0){
 			return(
 				<Results
 					results={results}
@@ -132,6 +143,10 @@ export default class UserSearch extends React.Component {
 	}
 
 	render() {
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/use-query-params
 		const {results, dropdownLabel, searchItems, searchStarted} = this.state
 		return(
 			<div class="searchbar">

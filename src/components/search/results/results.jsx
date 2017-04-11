@@ -3,20 +3,17 @@ import React from 'react'
 export default class Results extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			resultArray: []
-		}
 		this.scrollToResults = this.scrollToResults.bind(this)
 	}
-
 	scrollToResults(e) {
 		e.preventDefault()
-		const scrollTo = document.getElementsByClassName("results")
-		scrollTo.scrollIntoView()
+		const scrollTo = e.target
+		console.log(scrollTo)
+		scrollTo.scrollIntoView({behavior: "smooth"})
 	}
 
 	render() {
-		if (this.props.results.length != 0) {
+		if (this.props.results.length > 0) {
 			return(
 				<div class="results-container">
 					<a class="counter" onClick={this.scrollToResults}>
@@ -27,7 +24,7 @@ export default class Results extends React.Component {
 							return (
 								<li class="result-item" key={i}>
 									{React.cloneElement(this.props.children, { data: data })}
-								</li>
+							</li>
 							)
 						})}
 					</ul>
