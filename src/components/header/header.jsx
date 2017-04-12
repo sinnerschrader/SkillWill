@@ -3,49 +3,49 @@ import Cookies from 'react-cookie'
 import { Router, Link, browserHistory } from 'react-router'
 
 export default class Header extends React.Component {
-		constructor(props) {
-				super(props)
-				this.state = {
-						isNavOpen: false
-				}
-				this.handleClick = this.handleClick.bind(this)
-				this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
-
-				this.checkUserIdCookie()
+	constructor(props) {
+		super(props)
+		this.state = {
+			isNavOpen: false
 		}
+		this.handleClick = this.handleClick.bind(this)
+		this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
 
-		handleClick(e) {
-				this.setState({
-						isNavOpen: !this.state.isNavOpen
-				})
-				this.checkUserIdCookie()
-		}
+		this.checkUserIdCookie()
+	}
 
-		checkUserIdCookie() {
-			const user =  Cookies.load("user")
-			if (user != this.state.userId) {
-				this.setState({userId: user})
-			}
-			return !!user
-		}
+	handleClick(e) {
+		this.setState({
+				isNavOpen: !this.state.isNavOpen
+		})
+		this.checkUserIdCookie()
+	}
 
-		renderLogOut(){
-			if(this.checkUserIdCookie()){
-				return(
-					<li class="nav-item">
-						<Link class="nav-link" to={`/my-profile/logout`}>Logout</Link>
-					</li>
-				)
-			}
+	checkUserIdCookie() {
+		const user =  Cookies.load("user")
+		if (user != this.state.userId) {
+			this.setState({userId: user})
 		}
+		return !!user
+	}
 
-		returnMyProfileLink(){
-			if (typeof this.state.userId != 'undefined'){
-				return this.state.userId
-			} else {
-				return 'login'
-			}
+	renderLogOut(){
+		if(this.checkUserIdCookie()){
+			return(
+				<li class="nav-item">
+					<Link class="nav-link" to={`/my-profile/logout`}>Logout</Link>
+				</li>
+			)
 		}
+	}
+
+	returnMyProfileLink(){
+		if (typeof this.state.userId != 'undefined'){
+			return this.state.userId
+		} else {
+			return 'login'
+		}
+	}
 
 	render() {
 		return(
