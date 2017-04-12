@@ -6,34 +6,39 @@ import { Router, Link, browserHistory } from 'react-router'
 export default class Logout extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      user: undefined,
-      password: undefined,
-      errormessage: undefined
-    }
   }
 
-	checkUserIdCookie() {
-		const user =  Cookies.load("user")
-		if (user != this.state.userId) {
-			this.setState({userId: user})
-		}
-		return !!user
-	}
-
-	componentWillMount(){
+	generatePostData(){
 		const session = Cookies.load("session")
 		const postData = new FormData()
 		postData.append("session", session)
-		console.log('session',session)
-		fetch(`${config.backendServer}/logout`, {method: "POST", body: postData})
+		return postData
+	}
+
+	removeCookies(){
+		Cookies.remove('session', { path: '/' })
+		Cookies.remove('user', { path: '/' })
+	}
+
+	requestLogout(postData){
+		const options = {
+			method: "POST",
+			body: postData
+		}
+		fetch(`${config.backendServer}/logout`, options)
 			.then(response => {
-				console.log('logout', Cookies.remove('session') )
-				Cookies.remove('session', { path: '/' })
-				Cookies.remove('user', { path: '/' })
-				this.setState({userId: undefined, user: undefined})
-				console.log(this.props.router)
+				this.removeCookies()
+				this.setState({
+					userId: undefined,
+					user: undefined
+				})
+				browserHistory.push('/')
 		})
+	}
+
+	componentWillMount(){
+		const postData = this.generatePostData()
+		this.requestLogout(postData)
 	}
 
   render() {
