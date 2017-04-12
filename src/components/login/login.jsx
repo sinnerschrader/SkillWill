@@ -20,7 +20,6 @@ export default class Login extends React.Component {
 	}
 
 	componentWillMount(){
-		console.log(this.state.isUserLogedIn, this.state.user)
 		if(this.state.isUserLogedIn){
 			browserHistory.push("/my-profile/" + this.state.user)
 		}
