@@ -123,10 +123,8 @@ export default class Login extends React.Component {
 					</input>
 					<input
 						class="submit-btn"
-						autocomplete="off"
-							placeholder="password"
-							type="submit"
-							value="Login">
+						type="submit"
+						value="Login">
 					</input>
 					<p class="error">{this.state.errormessage}</p>
 				</form>
