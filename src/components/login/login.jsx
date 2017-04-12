@@ -15,13 +15,16 @@ export default class Login extends React.Component {
 
 		this.handleUserchange = this.handleUserchange.bind(this)
 		this.handlePasswordChange = this.handlePasswordChange.bind(this)
-		this.handleSubmit = this.handleSubmit.bind(this)
+		this.handleLogin = this.handleLogin.bind(this)
 		this.retrieveSession = this.retrieveSession.bind(this)
+		this.saveCookies = this.saveCookies.bind(this)
+		this.generatePostData = this.generatePostData.bind(this)
+		this.handleResponseStatus = this.handleResponseStatus.bind(this)
 	}
 
 	componentWillMount(){
 		if(this.state.isUserLogedIn){
-			browserHistory.push("/my-profile/" + this.state.user)
+			browserHistory.push(`/my-profile/${this.state.user}`)
 		}
 	}
 
@@ -33,51 +36,97 @@ export default class Login extends React.Component {
 		this.setState({password: e.target.value})
 	}
 
-	handleSubmit(e) {
-		e.preventDefault()
-		let postData = new FormData()
+	generatePostData(){
+		const postData = new FormData()
 		postData.append("username", this.state.user)
 		postData.append("password", this.state.password)
+		return postData
+	}
 
-		fetch(config.backendServer + "/login", {method: "POST", body: postData})
-			.then(res => {
-				if (res.status == 200) {
-					this.setState({password: undefined, errormessage: undefined})
-					return res.json()
-				} else if (res.status == 401) {
-					this.setState({user: undefined, password: undefined, errormessage: "User/Passwort falsch"})
-					throw Error(res.statusText)
-				} else {
-					this.setState({user: undefined, password: undefined, errormessage: "Da ging was nicht"})
-					throw Error(res.statusText)
-				}
-		})
-		.then(data => {
-			this.retrieveSession(data.session)
-		})
-		.catch(err => console.log(err))
+	saveCookies(session){
+		Cookies.save("session", session, { path: '/' })
+		Cookies.save("user", this.state.user, { path: '/' })
 	}
 
 	retrieveSession(session) {
-			if (!session) {
-				throw Error("session is unknown")
-			}
+		if (!session) {
+			throw Error("session is unknown")
+		}
+		this.saveCookies(session)
+		this.setState({
+			loginLayerOpen: false,
+			session: session,
+			isUserLogedIn: true
+		})
+		browserHistory.push(`/my-profile/${this.state.user}`)
+	}
 
-			Cookies.save("session", session, { path: '/' })
-			Cookies.save("user", this.state.user, { path: '/' })
-			this.setState({ loginLayerOpen: false, session: session, isUserLogedIn: true })
-			browserHistory.push("/my-profile/" + this.state.user)
+	handleResponseStatus(response){
+		if (response.status == 200) {
+			this.setState({
+				password: undefined,
+				errormessage: undefined
+			})
+			return true
+		} else if (response.status == 401) {
+			this.setState({
+				user: undefined,
+				password: undefined,
+				errormessage: "User/Passwort falsch"
+			})
+			throw Error(response.statusText)
+		} else {
+			this.setState({
+				user: undefined,
+				password: undefined,
+				errormessage: "Da ging was nicht"
+			})
+			throw Error(response.statusText)
+		}
+	}
+
+	handleLogin(event) {
+		event.preventDefault()
+		const postData = this.generatePostData()
+		const options = {
+			method: "POST",
+			body: postData
+		}
+		fetch(`${config.backendServer}/login`, options)
+			.then(response => {
+				if(this.handleResponseStatus(response)){
+					return response.json()
+				}
+			})
+			.then(data => this.retrieveSession(data.session))
+		.catch(err => console.log(err))
 	}
 
 	render() {
 		return(
 			<div class="login">
 				<h1 class="subtitle">Haaalt stop! Erstmal einloggen!</h1>
-				<form onSubmit={this.handleSubmit}>
-							<input autocomplete="off" placeholder="LDAP User" type="text" value={this.state.user} onChange={this.handleUserchange}></input>
-							<input autocomplete="off" placeholder="password" type="password" value={this.state.password} onChange={this.handlePasswordChange}></input>
-							<input class="submit-btn" autocomplete="off" placeholder="password" type="submit" value="Let's did it"></input>
-							<p class="error">{this.state.errormessage}</p>
+				<form onSubmit={this.handleLogin}>
+					<input
+						autocomplete="off"
+						placeholder="LDAP User"
+						type="text"
+						value={this.state.user}
+						onChange={this.handleUserchange}>
+					</input>
+					<input
+						autocomplete="off"
+						placeholder="password"
+						type="password"
+						value={this.state.password}
+						onChange={this.handlePasswordChange}>
+					</input>
+					<input
+						class="submit-btn"
+						type="submit"
+						value="Login">
+					</input>
+					<p class="error">{this.state.errormessage}</p>
 				</form>
 			</div>
 		)
