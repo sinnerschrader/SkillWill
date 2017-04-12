@@ -4,13 +4,13 @@ import Cookies from 'react-cookie'
 import { Router, Link, browserHistory } from 'react-router'
 
 export default class Logout extends React.Component {
-  constructor(props) {
-    super(props)
+	constructor(props) {
+		super(props)
 
 		this.generatePostData = this.generatePostData.bind(this)
 		this.removeCookies = this.removeCookies.bind(this)
 		this.requestLogout = this.requestLogout.bind(this)
-  }
+	}
 
 	generatePostData(){
 		const session = Cookies.load("session")
@@ -45,7 +45,7 @@ export default class Logout extends React.Component {
 		this.requestLogout(postData)
 	}
 
-  render() {
-    return null
-  }
+	render() {
+		return null
+	}
 }
