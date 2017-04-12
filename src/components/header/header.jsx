@@ -7,7 +7,6 @@ export default class Header extends React.Component {
         super(props)
         this.state = {
             isNavOpen: false,
-            userId: undefined
         }
         this.handleClick = this.handleClick.bind(this)
         this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
@@ -40,6 +39,14 @@ export default class Header extends React.Component {
 			}
 		}
 
+		returnMyProfileLink(){
+			if (typeof this.state.userId != 'undefined'){
+				return this.state.userId
+			} else {
+				return 'login'
+			}
+		}
+
     render() {
         return(
             //markup is inspired by the s2-website navigation
@@ -60,7 +67,7 @@ export default class Header extends React.Component {
                                 <Link class="nav-link" to="/">Suche</Link>
                             </li>
                             <li class="nav-item">
-                                <Link class="nav-link" to={`/my-profile/${this.state.userId}`}>Dein Profil</Link>
+                                <Link class="nav-link" to={`/my-profile/${this.returnMyProfileLink()}`}>Dein Profil</Link>
                             </li>
 														{this.renderLogOut()}
                         </ul>

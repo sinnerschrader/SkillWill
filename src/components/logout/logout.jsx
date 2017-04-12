@@ -20,6 +20,7 @@ export default class Logout extends React.Component {
 		}
 		return !!user
 	}
+
 	componentWillMount(){
 		const session = Cookies.load("session")
 		const postData = new FormData()
@@ -28,9 +29,10 @@ export default class Logout extends React.Component {
 		fetch(`${config.backendServer}/logout`, {method: "POST", body: postData})
 			.then(response => {
 				console.log('logout', Cookies.remove('session') )
-				Cookies.remove('session', { path: '/my-profile' })
-				Cookies.remove('user', { path: '/my-profile' })
+				Cookies.remove('session', { path: '/' })
+				Cookies.remove('user', { path: '/' })
 				this.setState({userId: undefined, user: undefined})
+				console.log(this.props.router)
 		})
 	}
 
