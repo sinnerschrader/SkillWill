@@ -108,14 +108,14 @@ export default class Login extends React.Component {
 				<h1 class="subtitle">Haaalt stop! Erstmal einloggen!</h1>
 				<form onSubmit={this.handleLogin}>
 					<input
-						autocomplete="off"
+						name="username"
 						placeholder="LDAP User"
 						type="text"
 						value={this.state.user}
 						onChange={this.handleUserchange}>
 					</input>
 					<input
-						autocomplete="off"
+						name="password"
 						placeholder="password"
 						type="password"
 						value={this.state.password}
