@@ -12,7 +12,7 @@
         line-height: @s-title-font-size;
         color: @s2-red;
         height: @3xl-stack;
-        margin-bottom: @5xl-stack;
+        margin-bottom: @xl-stack;
         opacity: 1;
 
          &::after {
@@ -39,13 +39,24 @@
             &:extend(.results-container .counter);
         }
         &::after {
-           content: none; 
+           content: none;
         }
     }
+		.sort-buttons {
+			display: flex;
+			justify-content: space-around;
+
+			.sort-button-name,
+			.sort-button-location,
+			.sort-button-fitness {
+				cursor: pointer;
+				text-decoration: underline;
+			}
+		}
 }
 
 .results {
-    padding: 0;  
+    padding: 0;
 }
 .result-item {
     width: auto;
@@ -54,6 +65,7 @@
 
     .user {
         display: flex;
+				justify-content: space-between;
     }
 
     .user-img {
@@ -63,11 +75,11 @@
         border: solid 1px #979797;
         border-radius: 34px;
         float: left;
-    }   
-   
+    }
+
     .info {
         padding-top: @m-stack;
-        flex-basis: 45%; 
+        flex-basis: 45%;
 
         .name {
             font-size: @s-title-font-size;
@@ -99,14 +111,14 @@
         flex-basis: 45%;
         display: inline-flex;
         flex-direction: row-reverse;
-        
+
         .skills-list {
             .skill-item {
                 padding-bottom: @s-stack;
 
                 .level {
                     width: 112px;
-                    display: inline-block;    
+                    display: inline-block;
                     padding-right: @m-inline;
                 }
 
@@ -115,8 +127,8 @@
                     font-weight: 800;
                     color: @s2-red;
                     margin-bottom: @xxs-stack;
-                    display: inline-block;    
-                    padding-right: @m-inline;  
+                    display: inline-block;
+                    padding-right: @m-inline;
                 }
 
                 &:last-child {
