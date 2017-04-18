@@ -4,7 +4,7 @@ export default class Results extends React.Component {
 	constructor(props) {
 		super(props)
 		 this.state = {
-      sortCriterion: 'fitness'
+      lastSortedBy: 'fitness'
     };
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
@@ -24,11 +24,8 @@ export default class Results extends React.Component {
 		this.sortResults('fitness')
 	}
 
-	componentDidMount(){
-		this.scrollToResults()
-	}
-
 	scrollToResults() {
+		console.log(this.results)
 		let dropdownRect = document.querySelector('.dropdown').getBoundingClientRect()
 		window.scrollBy({ top: `${dropdownRect.top-10}`, behavior: "smooth"})
 	}
