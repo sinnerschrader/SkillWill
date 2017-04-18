@@ -11,7 +11,7 @@ export default class UserSearch extends React.Component {
 		super(props)
 		this.state = {
 			results: [],
-			locationTerm: "",
+			locationTerm: this.props.location.query.location || '',
 			dropdownLabel: "Alle Standorte",
 			searchItems: [],
 			searchStarted: false,
@@ -40,20 +40,20 @@ export default class UserSearch extends React.Component {
 		}
 	}
 	convertQueryParamsToArray(query){
-		if (typeof query != 'undefined'){
+		if (typeof query != 'undefined' && query.length !== 0){
 			return query.split(',')
 		} else {
-			return
+			return []
 		}
 	}
 	convertLocationToString(location){
 		if (typeof location != 'undefined'){
 			return `&location=${this.props.location.query.location}`
 		} else {
-			return
+			return ''
 		}
 	}
-	requestSearch(searchTerms, locationString = ''){
+	requestSearch(searchTerms, locationString = this.state.locationTerm){
 		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
 		.then(r => {
 			if (r.status === 400) {
@@ -79,6 +79,7 @@ export default class UserSearch extends React.Component {
 				console.error(`requestSearch:${error}`)
 		})
 	}
+
 	handleDropdownSelect(val) {
 		if (val != "all" && typeof val != 'undefined') {
 			this.setState({
