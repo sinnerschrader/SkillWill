@@ -11,7 +11,6 @@ export default class Results extends React.Component {
 		this.onSortByNameClick = this.onSortByNameClick.bind(this)
 		this.onSortByLocationClick = this.onSortByLocationClick.bind(this)
 		this.onSortByFitnessClick = this.onSortByFitnessClick.bind(this)
-
 	}
 	results = this.props.results
 
@@ -25,10 +24,13 @@ export default class Results extends React.Component {
 		this.sortResults('fitness')
 	}
 
-	scrollToResults(e) {
-		e.preventDefault()
-		const scrollTo = e.target
-		scrollTo.scrollIntoView({behavior: "smooth"})
+	componentDidMount(){
+		this.scrollToResults()
+	}
+
+	scrollToResults() {
+		let dropdownRect = document.querySelector('.dropdown').getBoundingClientRect()
+		window.scrollBy({ top: `${dropdownRect.top-10}`, behavior: "smooth"})
 	}
 
 	sortResults(criterion){
@@ -50,9 +52,6 @@ export default class Results extends React.Component {
 		lastSortedBy: criterion
 	})
 	}
-
-
-	Component = this.props.component
 
 	render() {
 		if (this.results.length > 0) {
