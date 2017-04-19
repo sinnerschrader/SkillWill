@@ -1,7 +1,8 @@
-const webpack = require('webpack');
-const path = require('path');
-const loaders = require('./webpack.loaders');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+"use strict";
+var webpack = require('webpack');
+var path = require('path');
+var loaders = require('./webpack.loaders');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || "8888";
@@ -24,7 +25,7 @@ loaders.push({
 		'css',
 		'postcss',
 		'less?{"ieCompat": false, "strictMath": true, "paths": "src"}',
-
+		
 	]
 });
 
@@ -54,7 +55,7 @@ module.exports = {
 		extensions: ['', '.js', '.jsx'],
     	"alias": {
 			"react": "preact-compat",
-      "react-dom": "preact-compat"
+      		"react-dom": "preact-compat"
 		}
 	},
 	module: {
