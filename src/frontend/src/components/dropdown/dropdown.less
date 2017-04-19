@@ -29,13 +29,14 @@
 
     &::after {
         content: "\2303";
-        height: 0;
+        height: 20px;
         font-size: @base-font-size;
+        font-family: Arial; //otherwise some mobile devices can't display UTF-8 Symbols
         line-height: @base-font-size;
         right: 3px;
         top: 15px;
         position: absolute;
         pointer-events: none;
-        transform: rotate(180deg);
+        transform: rotate(180deg) translateY(23px);
     }
 }

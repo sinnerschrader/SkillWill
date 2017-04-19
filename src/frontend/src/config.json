@@ -1,5 +1,3 @@
 {
-    "backendServer": "http://localhost:1337",
-    "skillLegend": ["Grundkenntnisse", "Fortgeschritten", "Experte", "Topic Guide"],
-    "willLegend": ["Will ich nicht", "Ist OK", "Mach ich gerne", "Will ich unbedingt!"]
+    "backendServer": "http://localhost:1337"
 }
