@@ -4,8 +4,8 @@ export default class Results extends React.Component {
 	constructor(props) {
 		super(props)
 		 this.state = {
-      lastSortedBy: 'fitness'
-    };
+			lastSortedBy: 'fitness'
+		};
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
 		this.onSortByNameClick = this.onSortByNameClick.bind(this)
