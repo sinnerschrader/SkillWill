@@ -1,6 +1,6 @@
 import React from 'react'
 import SearchBar from './search-bar.jsx'
-import Results from './results/results.jsx'
+import Results from '../results/results.jsx'
 import Skill from '../skill/skill.jsx'
 import config from '../../config.json'
 

@@ -2,7 +2,6 @@ import React from 'react'
 import { Router, Link, browserHistory } from 'react-router'
 import BasicProfile from "./basic-profile.jsx"
 import config from '../../config.json'
-import sortAlphabetically from '../../libs/sortAlphabetically.jsx'
 
 export default class OthersProfile extends React.Component {
     constructor(props) {
@@ -69,7 +68,6 @@ export default class OthersProfile extends React.Component {
                 {this.state.dataLoaded ?
                     <div>
                         <BasicProfile data={this.state.data} infoLayer={this.infoLayer} additionalSkillListing={this.searchedSkills()} />
-                        <sortAlphabetically items={this.state.data.skills} />
                     </div>
                     :""
                 }

@@ -1,14 +1,30 @@
 import React from 'react'
+import config from '../../config.json'
+import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
+import User from '../user/user'
 
 export default class Results extends React.Component {
 	constructor(props) {
 		super(props)
+		const {searchItems, locationString, dropdownLabel} = getStateObjectFromURL(this.props.location.query)
 		 this.state = {
+			searchItems,
+			locationString,
+			dropdownLabel,
 			lastSortedBy: 'fitness',
-			results: this.props.results
+			results: [],
+			locationTerm: this.props.location.query.location || '',
+			searchStarted: false,
+			shouldUpdate: false,
+			route: this.props.location.pathname
 		};
 		this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
+		this.requestSearch = this.requestSearch.bind(this)
+		this.requestSearch(searchItems, locationString)
+	}
+
+	componentDidMount(){
 	}
 
 	scrollToResults() {
@@ -16,25 +32,53 @@ export default class Results extends React.Component {
 		window.scrollBy({ top: `${searchbarRect.top-10}`, behavior: "smooth"})
 	}
 
+	requestSearch(searchTerms, locationString = this.state.locationTerm){
+		fetch(`${config.backendServer}/users?skills=${searchTerms}${locationString}`)
+		.then(r => {
+			if (r.status === 400) {
+				this.setState({
+					results: [],
+					searchItems: searchTerms,
+					searchStarted: true,
+					shouldUpdate: true
+				})
+			} else {
+				r.json().then(data => {
+						this.setState({
+							results: data,
+							searchStarted: true,
+							searchItems: searchTerms,
+							route: `search?skills=${searchTerms}${locationString}`,
+							shouldUpdate: true
+						})
+				})
+			}
+		})
+		.catch(error => {
+				console.error(`requestSearch:${error}`)
+		})
+	}
+
 	sortResults(criterion){
-		let results
+		let sortedResults
+		const {results, sortOrder} = this.state
 		if (this.state.lastSortedBy === criterion) {
-			results = this.props.results.reverse()
+			sortedResults = results.reverse()
 		} else if (criterion === 'fitness') {
-			results = this.props.results.sort((a,b) => {
+			sortedResults = results.sort((a,b) => {
 				return a[criterion] > b[criterion] ? -1 : 1
 			})
 		} else {
-			results = this.props.results.sort((a,b) => {
+			sortedResults = results.sort((a,b) => {
 				return a[criterion] < b[criterion] ? -1 : 1
 			})
 		}
 		this.forceUpdate()
 
 		this.setState({
-			sortOrder: this.state.sortOrder,
+			sortOrder: sortOrder,
 			lastSortedBy: criterion,
-			results: results
+			results: sortedResults
 		})
 	}
 
@@ -55,7 +99,7 @@ export default class Results extends React.Component {
 						{results.map((data, i) => {
 							return (
 								<li class="result-item" key={i}>
-									{React.cloneElement(this.props.children, { data: data })}
+									<User data={data} searchTerms={this.state.searchItems}/>
 							</li>
 							)
 						})}

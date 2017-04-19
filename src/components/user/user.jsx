@@ -1,6 +1,6 @@
 import React from 'react'
 import { Router, Route, Link, browserHistory } from 'react-router'
-import Levels from  '../level/level.jsx'
+import Levels from '../level/level.jsx'
 
 export default class User extends React.Component {
 	constructor(props) {
@@ -25,24 +25,24 @@ export default class User extends React.Component {
 		document.body.classList.add('layer-open')
 	}
 
-	renderLevelIcons(icon, level){
-		if(level === 0) {
+	renderLevelIcons(icon, level) {
+		if (level === 0) {
 			return '💩'
 		}
 		return icon.repeat(level)
 	}
 
 	render() {
-		return(
+		return (
 			<ul class="user">
 				<li class="info">
 					<Link
 						class="name"
-						to={`${location.pathname}/profile/${this.props.data.id}`}
+						to={`/profile/${this.props.data.id}`}
 						activeClassName="active"
 						id={`${this.props.data.id}`}
 						onClick={this.handleClick}>
-						{this.props.data.firstName} {this.props.data.lastName}
+						{`${this.props.data.firstName} ${this.props.data.lastName}`}
 					</Link>
 					<span class="id">{this.props.data.id}</span>
 					<span class="department">{this.props.data.title}</span>
@@ -51,9 +51,9 @@ export default class User extends React.Component {
 				<li class="skills">
 					<ul class="skills-list">
 						{this.state.skillsToShow.map((data, i) => {
-							return(
+							return (
 								<li key={i} class="skill-item">
-									<Levels skill={data}/>
+									<Levels skill={data} />
 								</li>
 							)
 						})}

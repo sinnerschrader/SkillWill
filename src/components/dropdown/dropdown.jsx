@@ -3,11 +3,11 @@ import React from 'react'
 export default class Dropdown extends React.Component {
   constructor(props) {
     super(props)
-    this.handleDropdownChange = this.handleDropdownChange.bind(this)
-		this.setInitialValue = this.setInitialValue.bind(this)
     this.state = {
       dropdownLabel: this.props.dropdownLabel
     }
+    this.handleDropdownChange = this.handleDropdownChange.bind(this)
+		this.setInitialValue = this.setInitialValue.bind(this)
   }
 
   handleDropdownChange(e) {
