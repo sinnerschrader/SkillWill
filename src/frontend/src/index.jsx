@@ -9,7 +9,6 @@ import Layer from './components/layer/layer.jsx';
 import MyProfile from './components/profile/my-profile.jsx';
 import OthersProfile from './components/profile/others-profile.jsx';
 import Login from './components/login/login.jsx';
-import Logout from './components/logout/logout.jsx';
 import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
 
 render(
@@ -24,7 +23,6 @@ render(
 				</Route>
 				<Route path="my-profile" component={Layer}>
 					<Route path="login" component={Login} />
-					<Route path="logout" component={Logout} />
 					<Route path=":id" component={MyProfile}>
 						<Route path="add-skill" component={Login} />
 					</Route>
@@ -34,6 +32,7 @@ render(
 	</AppContainer>, document.querySelector("#app"));
 
 /*if (module && module.hot) {
+	console.log('hot hot')
 	module.hot.accept('./app.jsx', () => {
 		const App = require('./app.jsx').default;
 		render(
