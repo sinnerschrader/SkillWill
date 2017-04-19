@@ -25,7 +25,6 @@ export default class Results extends React.Component {
 	}
 
 	scrollToResults() {
-		console.log(this.results)
 		let dropdownRect = document.querySelector('.dropdown').getBoundingClientRect()
 		window.scrollBy({ top: `${dropdownRect.top-10}`, behavior: "smooth"})
 	}

@@ -6,6 +6,7 @@ import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
 import User from '../user/user.jsx'
 import config from '../../config.json'
 import { Router, Route, Link, browserHistory } from 'react-router'
+
 export default class UserSearch extends React.Component {
 	constructor(props) {
 		super(props)
@@ -97,14 +98,16 @@ export default class UserSearch extends React.Component {
 			this.requestSearch(this.state.searchItems, this.state.locationTerm)
 		}
 	}
+
 	componentDidUpdate(prevProps, prevState) {
 		const {route} = this.state
 		const prevSearchString = `search${prevProps.location.search}`
 		document.SearchBar.SearchInput.focus()
 		if (prevSearchString != route) {
-			browserHistory.push(route)
+			this.context.router.push(route)
 		}
 	}
+
 	// update component only if search has changed
 	shouldComponentUpdate(nextProps, nextState) {
 		const {searchItems, shouldUpdate} = this.state
