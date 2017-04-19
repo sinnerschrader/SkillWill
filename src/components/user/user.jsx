@@ -10,7 +10,7 @@ export default class User extends React.Component {
 		}
 
 		const allSkills = this.props.data.skills
-		allSkills.map((skill,i) => {
+		allSkills.map((skill) => {
 			const indexOfSearchedSkill = this.props.searchTerms.indexOf(skill.name)
 			if (indexOfSearchedSkill > -1) {
 				this.setState({
@@ -34,32 +34,32 @@ export default class User extends React.Component {
 
 	render() {
 		return(
-				<ul class="user">
-						<li class="info">
-							<Link
-								class="name"
-								to={`${location.pathname}/profile/${this.props.data.id}`}
-								activeClassName="active"
-								id={`${this.props.data.id}`}
-								onClick={this.handleClick}>
-								{this.props.data.firstName} {this.props.data.lastName}
-							</Link>
-							<span class="id">{this.props.data.id}</span>
-							<span class="department">{this.props.data.title}</span>
-						</li>
-						<li class="location">{this.props.data.location}</li>
-						<li class="skills">
-							<ul class="skills-list">
-								{this.state.skillsToShow.map((data, i) => {
-									return(
-										<li key={i} class="skill-item">
-											<Levels skill={data}/>
-										</li>
-									)
-								})}
-							</ul>
-						</li>
-				</ul>
+			<ul class="user">
+				<li class="info">
+					<Link
+						class="name"
+						to={`${location.pathname}/profile/${this.props.data.id}`}
+						activeClassName="active"
+						id={`${this.props.data.id}`}
+						onClick={this.handleClick}>
+						{this.props.data.firstName} {this.props.data.lastName}
+					</Link>
+					<span class="id">{this.props.data.id}</span>
+					<span class="department">{this.props.data.title}</span>
+				</li>
+				<li class="location">{this.props.data.location}</li>
+				<li class="skills">
+					<ul class="skills-list">
+						{this.state.skillsToShow.map((data, i) => {
+							return(
+								<li key={i} class="skill-item">
+									<Levels skill={data}/>
+								</li>
+							)
+						})}
+					</ul>
+				</li>
+			</ul>
 		)
 	}
 }
