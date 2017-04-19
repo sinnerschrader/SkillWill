@@ -1,11 +1,11 @@
 import React from 'react'
 
 export default class Levels extends React.Component {
-		constructor(props) {
+	constructor(props) {
 		super(props)
 
 		this.renderLevelIcons = this.renderLevelIcons.bind(this)
-}
+	}
 
 	renderLevelIcons(icon, level){
 		if(level === 0) {
