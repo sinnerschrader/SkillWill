@@ -8,30 +8,40 @@ import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 export default class UserSearch extends React.Component {
 	constructor(props) {
 		super(props)
-		const {searchItems, locationString, dropdownLabel} = getStateObjectFromURL(this.props.location.query)
+		const { searchItems, locationString, dropdownLabel } = getStateObjectFromURL(this.props.location.query)
 		this.state = {
 			searchItems,
 			locationString,
 			dropdownLabel,
+			route: 'search',
 			results: [],
 			searchStarted: false,
 			shouldUpdate: false,
-			route: this.props.location.pathname,
 		}
-		console.log('props',this.props)
-		console.log('searchitems',this.state.searchItems)
-		this.toggleUpdate = this.toggleUpdate.bind(this)
 		this.handleDropdownSelect = this.handleDropdownSelect.bind(this)
+		this.handleSearchBarInput = this.handleSearchBarInput.bind(this)
+		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 	}
 
+	handleSearchBarInput(searchString) {
+		this.setState({
+			searchItems: this.state.searchItems.concat([searchString])
+		})
+	}
 
+	handleSearchBarDelete(deleteItem) {
+		const { searchItems } = this.state
+		searchItems.splice(searchItems.indexOf(deleteItem), 1)
+		this.setState({
+			searchItems
+		})
+	}
 
-	handleDropdownSelect(val) {
-		if (val !== "all" && typeof val !== 'undefined') {
-			console.log('this.props.onDropdownSelect')
+	handleDropdownSelect(location) {
+		if (location !== "all" && typeof location !== 'undefined') {
 			this.setState({
-				locationString: `&location=${val}`,
-				dropdownLabel: val,
+				locationString: `&location=${location}`,
+				dropdownLabel: location,
 				searchStarted: true
 			})
 		} else {
@@ -40,15 +50,11 @@ export default class UserSearch extends React.Component {
 				dropdownLabel: "Alle Standorte"
 			})
 		}
-		// if (this.state.searchStarted) {
-		// 	this.requestSearch(this.state.searchItems, this.state.locationTerm)
-		// }
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const {route, searchItems, locationString} = this.state
-		console.log('state',this.state)
-		const newRoute = route + searchItems + locationString
+		const { route, searchItems, locationString } = this.state
+		const newRoute = `${route}?skills=${searchItems}${locationString}`
 		const prevSearchString = `search${prevProps.location.search}`
 		document.SearchBar.SearchInput.focus()
 		if (prevSearchString !== newRoute) {
@@ -56,24 +62,19 @@ export default class UserSearch extends React.Component {
 		}
 	}
 
-	toggleUpdate(bool) {
-		this.setState({
-			shouldUpdate: bool
-		})
-	}
 	renderResults(searchStarted, results, searchItems) {
 		/* display Results component only when there has been an inital search */
-		if (results && results.length > 0){
-			return(
+		if (results && results.length > 0) {
+			return (
 				<Results
 					results={results}
 					searchTerms={searchItems}
 					noResultsLabel={"Keine Ergebnisse"}>
-					<User searchTerms={searchItems}/>
+					<User searchTerms={searchItems} />
 				</Results>
 			)
 		} else {
-			return(
+			return (
 				<div class="info-text">
 					Du bist auf der Suche nach speziellen Talenten oder Personen mit bestimmten Skills bei SinnerSchrader?
 					Dann gib Deinen Suchbegriff ein und Du bekommst eine Liste mit potentiellen Kandidaten angezeigt.
@@ -81,22 +82,24 @@ export default class UserSearch extends React.Component {
 			)
 		}
 	}
+
 	render() {
-		const {results, dropdownLabel, searchItems, searchStarted} = this.state
-		return(
+		const { results, dropdownLabel, searchItems, searchStarted } = this.state
+		return (
 			<div class="searchbar">
 				<Dropdown
 					onDropdownSelect={this.handleDropdownSelect}
-					dropdownLabel={dropdownLabel}/>
+					dropdownLabel={dropdownLabel} />
 				<SearchBar
-					handleRequest={this.requestSearch}
-					toggleUpdate={this.toggleUpdate}
+					onInputChange={this.handleSearchBarInput}
+					onInputDelete={this.handleSearchBarDelete}
 					parent={this}
 					searchTerms={searchItems}
-					noResults={results.length === 0}>
+					noResults={results.length === 0}
+					queryParams={this.props.location.query}>
 					<SearchSuggestions
 						searchTerms={searchItems}
-						noResults={results.length === 0}/>
+						noResults={results.length === 0} />
 				</SearchBar>
 				{/*{this.renderResults(searchStarted, results, searchItems)}*/}
 				{this.props.children}

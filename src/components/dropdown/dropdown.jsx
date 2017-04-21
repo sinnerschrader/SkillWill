@@ -11,14 +11,14 @@ export default class Dropdown extends React.Component {
   }
 
   handleDropdownChange(e) {
-    const val = e.target.value
-    if (this.props.dropdownLabel != val) {
+    const location = e.target.value
+    if (this.props.dropdownLabel != location) {
       this.setState({
-        dropdownLabel: val
+        dropdownLabel: location
       })
       /* calls onChange method, defined as a prop in the parent component.
       This prop is necessary to give the parent access to the selected value */
-      this.props.onDropdownSelect(val)
+      this.props.onDropdownSelect(location)
     }
   }
 

@@ -10,13 +10,13 @@ export default function setInitialStateFromURL(queryObject) {
 		return({
 			searchItems: queryArray,
 			locationString: locationString,
-			dropdownLabel: dropdownLabel
+			dropdownLabel: dropdownLabel,
 		})
 	} else {
 		return({
 			searchItems: [],
 			locationString: '',
-			dropdownLabel: 'Alle Standorte'
+			dropdownLabel: 'Alle Standorte',
 		})
 	}
 }
