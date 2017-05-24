@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.annotation.PostConstruct;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,66 @@ public class MockData {
   @Value("${mockPersonsFilePath}")
   private String personsPath;
 
+  private JSONArray readMockFileToJsonArray(String path) throws IOException {
+    InputStreamReader reader = new InputStreamReader(getClass()
+      .getResourceAsStream("/mockdata/" + path));
+
+    BufferedReader bufferedReader = new BufferedReader(reader);
+    String jsonString = "";
+
+    String line = "";
+    while ((line = bufferedReader.readLine()) != null) {
+      jsonString += line;
+    }
+
+    return new JSONArray(jsonString);
+  }
+
+  private void mockPersons() throws IOException {
+    logger.warn("Deleting all persons in DB");
+    personRepo.deleteAll();
+
+    JSONArray persons = readMockFileToJsonArray(personsPath);
+    for (int i = 0; i < persons.length(); i++) {
+      JSONObject personJson = persons.getJSONObject(i);
+      Person person = new Person(personJson.getString("id"));
+
+      JSONArray skills = personJson.getJSONArray("skills");
+      for (int j = 0; j < skills.length(); j++) {
+        JSONObject skillJson = skills.getJSONObject(j);
+        person.addUpdateSkill(
+          skillJson.getString("name"),
+          skillJson.getInt("skillLevel"),
+          skillJson.getInt("willLevel"),
+          false
+        );
+      }
+
+      logger.info("Inserting person " + person.getId());
+      personRepo.save(person);
+    }
+  }
+
+  private void mockSkills() throws IOException {
+    logger.warn("Deleting all skills in DB");
+    skillRepo.deleteAll();
+    JSONArray skills = readMockFileToJsonArray(skillsPath);
+
+    for (int i = 0; i < skills.length(); i++) {
+      JSONObject skillJson = skills.getJSONObject(i);
+      KnownSkill skill = new KnownSkill(skillJson.getString("name"), "foo");
+      skill.setHidden(skillJson.getBoolean("hidden"));
+
+      JSONArray subskillJson = skillJson.getJSONArray("subskills");
+      for (int j = 0; j < subskillJson.length(); j++) {
+        skill.addSubSkillName(subskillJson.getString(j));
+      }
+
+      logger.info("Inserting skill " + skill.getName());
+      skillRepo.save(skill);
+    }
+  }
+
   @PostConstruct
   public void init() throws IOException {
     if (!initmock) {
@@ -52,45 +114,12 @@ public class MockData {
     }
 
     logger.warn("Mocking is enabled, this will overwrite all data in your DB");
-    personRepo.deleteAll();
-    skillRepo.deleteAll();
+    mockSkills();
+    mockPersons();
 
-    InputStreamReader skillsIS = new InputStreamReader(getClass()
-        .getResourceAsStream("/mockdata/" + skillsPath));
-    InputStreamReader personsIS = new InputStreamReader(getClass()
-        .getResourceAsStream("/mockdata/" + personsPath));
-
-    // insert skills
-    // skills file is a list of known Skills
-    // new line -> new skill
-    BufferedReader br = new BufferedReader(skillsIS);
-    String line = "";
-    while ((line = br.readLine()) != null) {
-      skillRepo.insert(new KnownSkill(line, "put icon descriptor here"));
-      logger.info("Successfully inserted mock skill {}", line);
-    }
-
-    // insert person
-    // Structure:
-    // 	* 1st line -> id
-    //  * 2nd - nth line -> skillname, skilllevel, willlevel (i.E "Java, 3, 1")
-    //  * separator "====" (exactly FOUR equal signs)
-    Person curr = null;
-    br = new BufferedReader(personsIS);
-    while ((line = br.readLine()) != null) {
-      if (line.equals("====")) {
-        personRepo.insert(curr);
-        logger.info("Successfully inserted mock person {}", curr.getId());
-        curr = null;
-      } else if (curr == null) {
-        curr = new Person(line);
-      } else {
-        String[] split = line.split("\\s*,\\s*");
-        curr.addUpdateSkill(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-      }
-    }
-
+    logger.info("Syncing mocked users with LDAP");
     ldapSyncJob.run();
+    logger.info("Finished mock data setup");
   }
 
 }

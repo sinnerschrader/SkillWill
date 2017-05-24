@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
@@ -46,7 +47,13 @@ public class Person {
     return this.id;
   }
 
-  public List<PersonalSkill> getSkills() {
+  public List<PersonalSkill> getSkillsExcludeHidden() {
+    return this.skills.stream()
+      .filter(s -> !s.isHidden())
+      .collect(Collectors.toList());
+  }
+
+  public List<PersonalSkill>  getSkills() {
     return this.skills;
   }
 
@@ -55,6 +62,11 @@ public class Person {
         .filter(s -> s.getName().equals(name))
         .findFirst()
         .orElse(null);
+  }
+
+  public PersonalSkill getSkillExcludeHidden(String name) {
+    PersonalSkill skill = this.getSkill(name);
+    return skill == null || skill.isHidden() ? null : skill;
   }
 
   public void deleteSkill(String name) {
@@ -72,7 +84,7 @@ public class Person {
     this.ldapDetails = ldapDetails;
   }
 
-  public void addUpdateSkill(String name, int skillLevel, int willLevel) {
+  public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden) {
     // Remove old skill if existing...
     Optional<PersonalSkill> existing = skills.stream()
         .filter(s -> s.getName().equals(name))
@@ -81,7 +93,7 @@ public class Person {
       existing.get().setSkillLevel(skillLevel);
       existing.get().setWillLevel(willLevel);
     } else {
-      this.skills.add(new PersonalSkill(name, skillLevel, willLevel));
+      this.skills.add(new PersonalSkill(name, skillLevel, willLevel, hidden));
     }
   }
 
@@ -131,12 +143,13 @@ public class Person {
       obj.put("fitness", this.fitnessScore.getValue());
     }
 
-    JSONArray skills = new JSONArray();
-    for (PersonalSkill s : this.skills) {
-      skills.put(s.toJSON());
-    }
+    JSONArray skillsArr = new JSONArray();
+    this.skills.stream()
+      .filter(s -> !s.isHidden())
+      .map(PersonalSkill::toJSON)
+      .forEach(skillsArr::put);
 
-    obj.put("skills", skills);
+    obj.put("skills", skillsArr);
     return obj;
   }
 

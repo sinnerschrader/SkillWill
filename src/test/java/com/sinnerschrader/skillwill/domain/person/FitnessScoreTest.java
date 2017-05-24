@@ -30,8 +30,8 @@ public class FitnessScoreTest {
   @Test
   public void testSearchedSkillsOnly() {
     Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 3, 3);
-    person.addUpdateSkill("AEM", 3, 3);
+    person.addUpdateSkill("Java", 3, 3, false);
+    person.addUpdateSkill("AEM", 3, 3, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java", "javaicon"));
@@ -42,8 +42,8 @@ public class FitnessScoreTest {
   @Test
   public void testNoSearchedSkills() {
     Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 3, 3);
-    person.addUpdateSkill("AEM", 3, 3);
+    person.addUpdateSkill("Java", 3, 3, false);
+    person.addUpdateSkill("AEM", 3, 3, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Ruby", "rubyicon"));
@@ -53,10 +53,10 @@ public class FitnessScoreTest {
   @Test
   public void testMaximumScore() {
     Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 3, 3);
-    person.addUpdateSkill("AEM", 3, 3);
-    person.addUpdateSkill("Foo", 0, 0);
-    person.addUpdateSkill("Bar", 0, 0);
+    person.addUpdateSkill("Java", 3, 3, false);
+    person.addUpdateSkill("AEM", 3, 3, false);
+    person.addUpdateSkill("Foo", 0, 0, false);
+    person.addUpdateSkill("Bar", 0, 0, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java", "javaicon"));
@@ -67,10 +67,10 @@ public class FitnessScoreTest {
   @Test
   public void testMinimalScore() {
     Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 0, 0);
-    person.addUpdateSkill("AEM", 0, 0);
-    person.addUpdateSkill("Foo", 3, 3);
-    person.addUpdateSkill("Bar", 3, 3);
+    person.addUpdateSkill("Java", 0, 0, false);
+    person.addUpdateSkill("AEM", 0, 0, false);
+    person.addUpdateSkill("Foo", 3, 3, false);
+    person.addUpdateSkill("Bar", 3, 3, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java", "javaicon"));
@@ -81,10 +81,10 @@ public class FitnessScoreTest {
   @Test
   public void testRealisticScore() {
     Person person = new Person("foobar");
-    person.addUpdateSkill("Java", 2, 3);
-    person.addUpdateSkill("AEM", 2, 2);
-    person.addUpdateSkill("Foo", 1, 3);
-    person.addUpdateSkill("Bar", 1, 0);
+    person.addUpdateSkill("Java", 2, 3, false);
+    person.addUpdateSkill("AEM", 2, 2, false);
+    person.addUpdateSkill("Foo", 1, 3, false);
+    person.addUpdateSkill("Bar", 1, 0, false);
 
     Collection<KnownSkill> searchItems = new ArrayList<>();
     searchItems.add(new KnownSkill("Java", "javaicon"));

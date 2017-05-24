@@ -1,16 +1,14 @@
 package com.sinnerschrader.skillwill.misc;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
+import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import com.sinnerschrader.skillwill.repositories.PersonRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
@@ -35,15 +33,19 @@ public class StatisticsInfoContributor implements InfoContributor {
 
   private void contributeUsedSkillCount(List<Person> users, Info.Builder builder) {
     int usedSkillCount = (int) users.stream()
-      .flatMap(p -> p.getSkills().stream())
+      .flatMap(p -> p.getSkillsExcludeHidden().stream())
       .map(PersonalSkill::getName)
       .distinct()
       .count();
     builder.withDetail("skills_used", usedSkillCount);
   }
 
+  private void contributeHiddenSkillCount(Info.Builder builder) {
+    builder.withDetail("skills_hidden", skillRepository.findAll().stream().filter(KnownSkill::isHidden).count());
+  }
+
   private void contributeUserSkills(List<Person> users, Info.Builder builder) {
-    IntSummaryStatistics stats = users.stream().mapToInt(u -> u.getSkills().size()).summaryStatistics();
+    IntSummaryStatistics stats = users.stream().mapToInt(u -> u.getSkillsExcludeHidden().size()).summaryStatistics();
 
     Map<String, Double> details = new HashMap<>();
     details.put("total", (double) stats.getSum());
@@ -61,6 +63,7 @@ public class StatisticsInfoContributor implements InfoContributor {
     contributeUserCount(builder);
     contributeSkillCount(builder);
     contributeUsedSkillCount(users, builder);
+    contributeHiddenSkillCount(builder);
     contributeUserSkills(users, builder);
   }
 

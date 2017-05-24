@@ -124,9 +124,10 @@ public class UserService {
       throw new UserNotFoundException("user not found");
     }
 
-    if (skillRepository.findByName(skillName) == null) {
-      logger.debug("Failed to add/modify {}'s skill {}: skill not found", username, skillName);
-      throw new SkillNotFoundException("skill not found");
+    KnownSkill skill = skillRepository.findByName(skillName);
+    if (skill == null || skill.isHidden()) {
+      logger.debug("Failed to add/modify {}'s skill {}: skill not found or hidden", username, skillName);
+      throw new SkillNotFoundException("skill not found/hidden");
     }
 
     if (!isValidLevelConfiguration(skillLevel, willLevel)) {
@@ -135,7 +136,7 @@ public class UserService {
       throw new IllegalLevelConfigurationException("Invalid Skill-/WillLevel Configuration");
     }
 
-    person.addUpdateSkill(skillName, skillLevel, willLevel);
+    person.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName));
     personRepository.save(person);
 
     logger.info("Successfully updated {}'s skill {}", username, skillName);

@@ -15,11 +15,13 @@ public class PersonalSkill {
   private String name;
   private int skillLevel;
   private int willLevel;
+  private boolean hidden;
 
-  public PersonalSkill(String name, int skillLevel, int willLevel) {
+  public PersonalSkill(String name, int skillLevel, int willLevel, boolean hidden) {
     this.name = name;
     this.skillLevel = skillLevel;
     this.willLevel = willLevel;
+    this.hidden = hidden;
   }
 
   public String getName() {
@@ -40,6 +42,14 @@ public class PersonalSkill {
 
   public void setWillLevel(int willLevel) {
     this.willLevel = willLevel;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  public boolean isHidden() {
+    return this.hidden;
   }
 
   public JSONObject toJSON() {

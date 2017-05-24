@@ -25,21 +25,21 @@ public class PersonTest {
   @Before
   public void init() {
     person = new Person("foobar");
-    person.addUpdateSkill("skillname", 2, 3);
+    person.addUpdateSkill("skillname", 2, 3, false);
   }
 
   @Test
   public void testAddUpdateNewSkill() {
-    person.addUpdateSkill("new skill", 2, 3);
-    assertEquals(2, person.getSkills().size());
+    person.addUpdateSkill("new skill", 2, 3, false);
+    assertEquals(2, person.getSkillsExcludeHidden().size());
   }
 
   @Test
   public void testAddUpdateKnownSkill() {
-    person.addUpdateSkill("skillname", 0, 1);
-    assertEquals(1, person.getSkills().size());
-    assertEquals(0, person.getSkills().get(0).getSkillLevel());
-    assertEquals(1, person.getSkills().get(0).getWillLevel());
+    person.addUpdateSkill("skillname", 0, 1, false);
+    assertEquals(1, person.getSkillsExcludeHidden().size());
+    assertEquals(0, person.getSkillsExcludeHidden().get(0).getSkillLevel());
+    assertEquals(1, person.getSkillsExcludeHidden().get(0).getWillLevel());
   }
 
   @Test

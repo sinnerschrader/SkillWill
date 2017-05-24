@@ -19,10 +19,10 @@ public class JaccardFilter {
   }
 
   private static double getJaccardIndex(Person a, Person b) {
-    double intersectionCount = a.getSkills().stream()
+    double intersectionCount = a.getSkillsExcludeHidden().stream()
         .filter(s -> b.getSkill(s.getName()) != null)
         .count();
-    double unionCount = a.getSkills().size() + b.getSkills().size() - intersectionCount;
+    double unionCount = a.getSkillsExcludeHidden().size() + b.getSkillsExcludeHidden().size() - intersectionCount;
 
     return intersectionCount / unionCount;
   }

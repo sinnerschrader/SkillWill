@@ -1,5 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,13 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sinnerschrader.skillwill.domain.person.FitnessScore;
 import com.sinnerschrader.skillwill.domain.person.FitnessScoreProperties;
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
@@ -70,30 +71,32 @@ public class UserController {
    */
   @ApiOperation(value = "search users", nickname = "search users", notes = "Search users.")
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 500, message = "Failure")
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "skills", value = "Names of skills to search, separated by ','", paramType = "query", required = false),
-      @ApiImplicitParam(name = "location", value = "Location to filter results by", paramType = "query", required = false),
+    @ApiImplicitParam(name = "skills", value = "Names of skills to search, separated by ','", paramType = "query", required = false),
+    @ApiImplicitParam(name = "location", value = "Location to filter results by", paramType = "query", required = false),
   })
   @RequestMapping(path = "/users", method = RequestMethod.GET)
   public ResponseEntity<String> getUsers(@RequestParam(required = false) String skills,
-      @RequestParam(required = false) String location) {
+    @RequestParam(required = false) String location) {
 
     List<String> skillList = skills != null ? Arrays.asList(skills.split("\\s*,\\s*")) : Collections.emptyList();
-    Set<KnownSkill> sanitizedSkills = skillService.getSkillsByStems(skillList);
+    Set<KnownSkill> sanitizedSkills = skillService.getSkillsByStemsExcludeHidden(skillList);
     skillService.registerSkillSearch(sanitizedSkills);
 
-    List<Person> matches = userService.getUsers(sanitizedSkills, location);
+    List<Person> matches = CollectionUtils.isEmpty(sanitizedSkills) && !StringUtils.isEmpty(skills)
+      ? new ArrayList<>()
+      : userService.getUsers(sanitizedSkills, location);
 
     JSONObject returnJsonObj = new JSONObject();
-    returnJsonObj.put("results",  new JSONArray(matches.stream()
-        .map(Person::toJSON)
-        .collect(Collectors.toList())));
+    returnJsonObj.put("results", new JSONArray(matches.stream()
+      .map(Person::toJSON)
+      .collect(Collectors.toList())));
     returnJsonObj.put("searched", new JSONArray(sanitizedSkills.stream()
-        .map(KnownSkill::getName)
-        .collect(Collectors.toList())));
+      .map(KnownSkill::getName)
+      .collect(Collectors.toList())));
     return new ResponseEntity<>(returnJsonObj.toString(), HttpStatus.OK);
   }
 
@@ -103,9 +106,9 @@ public class UserController {
    */
   @ApiOperation(value = "get info", nickname = "user info", notes = "Returns the user with the given id")
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 404, message = "Not Found"),
-      @ApiResponse(code = 500, message = "Failure")
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 404, message = "Not Found"),
+    @ApiResponse(code = 500, message = "Failure")
   })
   @RequestMapping(path = "/users/{user}", method = RequestMethod.GET)
   public ResponseEntity<String> getUser(@PathVariable String user) {
@@ -123,22 +126,22 @@ public class UserController {
    */
   @ApiOperation(value = "modify skill", nickname = "modify skills", notes = "Create or edit a skill of a user")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 400, message = "Bad Request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not Found"),
-      @ApiResponse(code = 500, message = "Failure")
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 400, message = "Bad Request"),
+    @ApiResponse(code = 401, message = "Unauthorized"),
+    @ApiResponse(code = 404, message = "Not Found"),
+    @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "form", required = true),
-      @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "form", required = true),
-      @ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType = "form", required = true),
-      @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true)
+    @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "form", required = true),
+    @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "form", required = true),
+    @ApiImplicitParam(name = "skill_level", value = "Level of skill", paramType = "form", required = true),
+    @ApiImplicitParam(name = "will_level", value = "Level of will", paramType = "form", required = true)
   })
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.POST)
   public ResponseEntity<String> updateSkills(@PathVariable String user,
-      @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
-      @RequestParam("will_level") String will_level, @RequestParam("session") String sessionKey) {
+    @RequestParam("skill") String skill, @RequestParam("skill_level") String skill_level,
+    @RequestParam("will_level") String will_level, @RequestParam("session") String sessionKey) {
 
     if (!sessionService.isValidSession(user, sessionKey)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
@@ -160,24 +163,24 @@ public class UserController {
    */
   @ApiOperation(value = "remove skill", nickname = "remove skills", notes = "remove a skill from a user")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 400, message = "Bad Request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not Found"),
-      @ApiResponse(code = 500, message = "Failure")
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 400, message = "Bad Request"),
+    @ApiResponse(code = 401, message = "Unauthorized"),
+    @ApiResponse(code = 404, message = "Not Found"),
+    @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
-      @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
+    @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
+    @ApiImplicitParam(name = "skill", value = "Name of skill", paramType = "query", required = true),
   })
   @RequestMapping(path = "/users/{user}/skills", method = RequestMethod.DELETE)
   public ResponseEntity<String> removeSkill(@PathVariable String user,
-      @RequestParam("skill") String skill, @RequestParam("session") String sessionKey) {
+    @RequestParam("skill") String skill, @RequestParam("session") String sessionKey) {
 
     if (!sessionService.isValidSession(user, sessionKey)) {
       logger.debug("Failed to modify {}'s skills: not logged in", user);
       return new ResponseEntity<>(new StatusJSON("user not logged in").toString(),
-          HttpStatus.UNAUTHORIZED);
+        HttpStatus.UNAUTHORIZED);
     }
 
     try {
@@ -196,20 +199,20 @@ public class UserController {
    */
   @ApiOperation(value = "update details", nickname = "edit user's details", notes = "edit only the non-LDAP details of a user")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 400, message = "Bad Request"),
-      @ApiResponse(code = 401, message = "Unauthorized"),
-      @ApiResponse(code = 404, message = "Not Found"),
-      @ApiResponse(code = 500, message = "Failure")
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 400, message = "Bad Request"),
+    @ApiResponse(code = 401, message = "Unauthorized"),
+    @ApiResponse(code = 404, message = "Not Found"),
+    @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
-      @ApiImplicitParam(name = "comment", value = "new comment", paramType = "query"),
+    @ApiImplicitParam(name = "session", value = "users's active session key", paramType = "query", required = true),
+    @ApiImplicitParam(name = "comment", value = "new comment", paramType = "query"),
   })
   @RequestMapping(path = "/users/{user}/details", method = RequestMethod.PUT)
   public ResponseEntity<String> updateDetails(@PathVariable String user,
-      @RequestParam("session") String sessionKey,
-      @RequestParam(value = "comment", required = false) String comment) {
+    @RequestParam("session") String sessionKey,
+    @RequestParam(value = "comment", required = false) String comment) {
 
     if (!sessionService.isValidSession(user, sessionKey)) {
       logger.debug("Failed to modify {}'s details: not logged in", user);
@@ -234,17 +237,17 @@ public class UserController {
    */
   @ApiOperation(value = "get similar", nickname = "get similar", notes = "get users with similar skills sets")
   @ApiResponses({
-      @ApiResponse(code = 200, message = "Success"),
-      @ApiResponse(code = 404, message = "Not Found"),
-      @ApiResponse(code = 400, message = "Bad Request"),
-      @ApiResponse(code = 500, message = "Failure")
+    @ApiResponse(code = 200, message = "Success"),
+    @ApiResponse(code = 404, message = "Not Found"),
+    @ApiResponse(code = 400, message = "Bad Request"),
+    @ApiResponse(code = 500, message = "Failure")
   })
   @ApiImplicitParams({
-      @ApiImplicitParam(name = "count", value = "number of users to find (max)", paramType = "query", defaultValue = "10"),
+    @ApiImplicitParam(name = "count", value = "number of users to find (max)", paramType = "query", defaultValue = "10"),
   })
   @RequestMapping(path = "/users/{user}/similar", method = RequestMethod.GET)
   public ResponseEntity<String> getSimilar(@PathVariable String user,
-      @RequestParam(value = "count", required = false, defaultValue = "10") int count) {
+    @RequestParam(value = "count", required = false, defaultValue = "10") int count) {
 
     List<Person> similar;
 
@@ -259,7 +262,7 @@ public class UserController {
     }
 
     JSONArray arr = new JSONArray(
-        similar.stream().map(Person::toJSON).collect(Collectors.toList()));
+      similar.stream().map(Person::toJSON).collect(Collectors.toList()));
     logger.debug("Successfully found {} users similar to {}", arr.length(), user);
     return new ResponseEntity<>(arr.toString(), HttpStatus.OK);
   }
