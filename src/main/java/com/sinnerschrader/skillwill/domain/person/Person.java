@@ -5,6 +5,7 @@ import com.sinnerschrader.skillwill.domain.skills.PersonalSkill;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -146,6 +147,7 @@ public class Person {
     JSONArray skillsArr = new JSONArray();
     this.skills.stream()
       .filter(s -> !s.isHidden())
+      .sorted(Comparator.comparing(PersonalSkill::getName))
       .map(PersonalSkill::toJSON)
       .forEach(skillsArr::put);
 
