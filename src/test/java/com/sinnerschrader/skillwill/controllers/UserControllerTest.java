@@ -1,21 +1,8 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import java.io.IOException;
-import java.util.Date;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.sinnerschrader.skillwill.domain.person.Person;
 import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
@@ -25,10 +12,21 @@ import com.sinnerschrader.skillwill.repositories.SessionRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.IOException;
+import java.util.Date;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Integration test for UserController
@@ -38,8 +36,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class UserControllerTest {
-
-  private static final Logger logger = LoggerFactory.getLogger(LoginControllerTest.class);
 
   @Autowired
   private UserController userController;
@@ -76,7 +72,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUserValid() throws JSONException {
-    logger.debug("Testing UserController: get valid user");
 
     ResponseEntity<String> res = userController.getUser("foobar");
     assertEquals(HttpStatus.OK, res.getStatusCode());
@@ -93,13 +88,11 @@ public class UserControllerTest {
 
   @Test
   public void testGetUserInvalid() {
-    logger.debug("Testing UserController: get invalid user");
     assertEquals(HttpStatus.NOT_FOUND, userController.getUser("barfoo").getStatusCode());
   }
 
   @Test
   public void testGetUsersValid() throws JSONException {
-    logger.debug("Testing UserController: get valid users");
     ResponseEntity<String> res = userController.getUsers("Java", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -111,7 +104,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillsEmpty() throws JSONException {
-    logger.debug("Testing UserController: get users with empty skill");
     ResponseEntity<String> res = userController.getUsers("", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -122,7 +114,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillsNull() throws JSONException {
-    logger.debug("Testing UserController: get users with empty skill");
     ResponseEntity<String> res = userController.getUsers(null, "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -133,14 +124,12 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersNoFitnessInEmptySearch() throws JSONException {
-    logger.debug("Testing UserController: get users with empty skills -> no fitness in JSON");
     ResponseEntity<String> res = userController.getUsers("", "Hamburg");
     assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersLocationEmpty() throws JSONException {
-    logger.debug("Testing UserController: get users for empty location");
     ResponseEntity<String> res = userController.getUsers("Java", "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -152,7 +141,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersSkillsEmptyLocationEmpty() throws JSONException {
-    logger.debug("Testing UserController: get users for empty skill and empty location");
     ResponseEntity<String> res = userController.getUsers("", "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -163,7 +151,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersIgnoreSkillCase() throws JSONException {
-    logger.debug("Testing UserController: get users - skill case insensitive");
     ResponseEntity<String> res = userController.getUsers("JaVa", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -175,7 +162,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersIgnoreNonAlphanumerics() throws JSONException {
-    logger.debug("Testing UserController: get users - skill case insensitive");
     ResponseEntity<String> res = userController.getUsers("j#a)_V®a", "Hamburg");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertTrue(new JSONObject(res.getBody()).has("searched"));
@@ -187,7 +173,6 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersLocationUnknown() throws JSONException {
-    logger.debug("Testing UserController: get users with unknown location");
     ResponseEntity<String> res = userController.getUsers("Java", "IAmUnknown");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(0, new JSONObject(res.getBody()).getJSONArray("results").length());
@@ -195,7 +180,6 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsValid() {
-    logger.debug("Testing UserController: modify skill");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "3", "0", "abc123");
     assertEquals(HttpStatus.OK, res.getStatusCode());
     assertEquals(3, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
@@ -204,21 +188,18 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsLevelsZero() {
-    logger.debug("Testing UserController: modify skill with both levels zero");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testModifySkillsLevelOverMax() {
-    logger.debug("Testing UserController: modify skill with both level over max");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "4", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testModifySkillsSessionInvalid() {
-    logger.debug("Testing UserController: modify user with invalid session");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "0", "InvalidSession");
     assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
@@ -227,7 +208,6 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsUserUnknown() {
-    logger.debug("Testing UserController: modify skills for unknown user");
 
     sessionRepo.deleteAll();
     Session session = new Session("2342", "IAmUnknown", new Date());
@@ -242,7 +222,6 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsSkillUnknown() {
-    logger.debug("Testing UserController: modify skill for unknown skill");
     ResponseEntity<String> res = userController.updateSkills("foobar", "UnknownSkill", "0", "0", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
@@ -251,7 +230,6 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsSkillLevelOutOfRange() {
-    logger.debug("Testing UserController: modify skill with skill out of range");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "5", "0", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
@@ -260,7 +238,6 @@ public class UserControllerTest {
 
   @Test
   public void testModifySkillsWillLevelOutOfRange() {
-    logger.debug("Testing UserController: modify skill with will out of range");
     ResponseEntity<String> res = userController.updateSkills("foobar", "Java", "0", "5", "abc123");
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     assertEquals(2, personRepo.findById("foobar").getSkills().get(0).getSkillLevel());
@@ -269,35 +246,42 @@ public class UserControllerTest {
 
   @Test
   public void testRemoveSkill() {
-    logger.debug("Testing UserController: remove skill");
-    ResponseEntity<String> res = userController.removeSkill("foobar", "Java", "abc123");
+    MultiValueMap<String, String> reqBody = new LinkedMultiValueMap<>();
+    reqBody.add("skill", "Java");
+    reqBody.add("session", "abc123");
+    ResponseEntity<String> res = userController.removeSkill("foobar", reqBody);
     assertEquals(HttpStatus.OK, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillSkillUnknown() {
-    logger.debug("Testing UserController: remove skill");
-    ResponseEntity<String> res = userController.removeSkill("foobar", "UNKNOWN", "abc123");
+    MultiValueMap<String, String> reqBody = new LinkedMultiValueMap<>();
+    reqBody.add("skill", "UNKNOWN");
+    reqBody.add("session", "abc123");
+    ResponseEntity<String> res = userController.removeSkill("foobar", reqBody);
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserUnknown() {
-    logger.debug("Testing UserController: remove skill");
-    ResponseEntity<String> res = userController.removeSkill("IAmUnknown", "Java", "abc123");
+    MultiValueMap<String, String> reqBody = new LinkedMultiValueMap<>();
+    reqBody.add("skill", "Java");
+    reqBody.add("session", "abc123");
+    ResponseEntity<String> res = userController.removeSkill("IAmUnknown", reqBody);
     assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserUnauthorized() {
-    logger.debug("Testing UserController: remove skill");
-    ResponseEntity<String> res = userController.removeSkill("foobar", "Java", "IAmUnknown");
+    MultiValueMap<String, String> reqBody = new LinkedMultiValueMap<>();
+    reqBody.add("skill", "Java");
+    reqBody.add("session", "IAmUnknown");
+    ResponseEntity<String> res = userController.removeSkill("foobar", reqBody);
     assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
   }
 
   @Test
   public void testSetCommentValid() throws JSONException {
-    logger.debug("Testing Usercontroller: set valid comment");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "insert comment here");
     assertEquals(HttpStatus.OK, res.getStatusCode());
 
@@ -307,7 +291,6 @@ public class UserControllerTest {
 
   @Test
   public void testSetCommentUnicode() throws JSONException {
-    logger.debug("Testing Usercontroller: set unicode comment");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "本产品可能含有网络的痕迹");
     assertEquals(HttpStatus.OK, res.getStatusCode());
 
@@ -317,7 +300,6 @@ public class UserControllerTest {
 
   @Test
   public void testSetCommentEmpty() throws JSONException {
-    logger.debug("Testing Usercontroller: set empty comment");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", "");
     assertEquals(HttpStatus.OK, res.getStatusCode());
 
@@ -327,7 +309,6 @@ public class UserControllerTest {
 
   @Test
   public void testSetCommentNull() throws JSONException {
-    logger.debug("Testing Usercontroller: update details, ignore null");
     userController.updateDetails("foobar", "abc123", "insert comment here");
     ResponseEntity<String> res = userController.updateDetails("foobar", "abc123", null);
     assertEquals(HttpStatus.OK, res.getStatusCode());
@@ -338,14 +319,12 @@ public class UserControllerTest {
 
   @Test
   public void testSetCommentUserNotLoggedIn() {
-    logger.debug("Testing Usercontroller: update details with unauthorized user");
     ResponseEntity<String> res = userController.updateDetails("foobar", "ThisIsNotASessionKey", "comment");
     assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
   }
 
   @Test
   public void testGetSimilarUser() throws JSONException {
-    logger.debug("Testing Usercontroller: get similar users");
 
     Person p1 = new Person("abc");
     p1.addUpdateSkill("Java", 1, 2);
@@ -369,14 +348,12 @@ public class UserControllerTest {
 
   @Test
   public void testGetSimilarUserNotFound() {
-    logger.debug("Testing Usercontroller: get similar users for unknown user");
     ResponseEntity<String> res = userController.getSimilar("IAmUnknown", 42);
     assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
   }
 
   @Test
   public void testGetSimilarUserCountNegative() {
-    logger.debug("Testing Usercontroller: get similar users with negative count");
     ResponseEntity<String> res = userController.getSimilar("foobar", -1);
     assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
   }
