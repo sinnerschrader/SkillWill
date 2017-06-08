@@ -8,7 +8,7 @@ html {
     height: 100%;
 }
 
- body {
+body {
     background-color: @s2-white;
     position: relative; //is needed both in body and html to hide overflow in Safari
     overflow-x: hidden;
@@ -41,31 +41,11 @@ a {
     display: none;
 }
 
-.background-layer {
-   &::after{
-    z-index: -1;
-    content:"";
-    height: 455px;
-    width: 200%;
-    background-color: @s2-grey;
-    position: absolute;
-    top: 160px;
-    left: -50%;
-    transform: rotate(-22deg);
-   }
-}
-
-.content {
-    padding-top: @4xl-stack;
+.container {
     margin: 0 @tower;
 
     @media (min-width: @tablet-portrait-up) {
         margin: 0 @tower-desktop;
-        background-image: data-uri("@{image-path}/header-img.svg");
-        background-repeat: no-repeat;
-        background-position-x: 50%;
-        background-position-y: 0%;
-        background-size: 65vw;
     }
 }
 
@@ -92,4 +72,3 @@ a {
 .error {
     color: @s2-red;
 }
-
