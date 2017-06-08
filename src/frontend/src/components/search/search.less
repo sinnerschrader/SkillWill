@@ -1,3 +1,36 @@
+.search {
+  background-color: @s2-blackish;
+	height: auto;
+	min-height: 100vh;
+	transform: height 0.4s ease-in;
+
+	&:after {
+		content: "";
+		display: block;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+	}
+
+	.heading {
+		position: absolute;
+		width: 100%;
+		top: @5xl-stack;
+		left: 0;
+
+		.subtitle {
+			margin-top: 0.5em;
+		}
+
+	}
+
+	.container {
+		padding-top: @6xl-stack;
+		padding-bottom: @4xl-stack;
+	}
+
+}
 
 .searchbar {
   margin-top: @4xl-stack;
@@ -5,27 +38,45 @@
 
   .search-container {
     display: flex;
+		position: relative;
 
     .input-container {
       display: flex;
       flex-wrap: wrap;
-      width: 95%;
+      width: 100%;
       border-radius: 0;
       border-bottom: @base-border;
       float: left;
 
       input {
-        padding: @s-stack;
+        padding: @m-stack 0 @m-stack 0;
         box-sizing: content-box;
         background-color: transparent;
         flex: 2 1 auto;
-        appearance: none;
         border: none;
         border-radius: 0;
+				color: @s2-white;
+				z-index: 4;
+
+				&::placeholder {
+					color: white;
+					transition: color 0.1s ease-in;
+				}
+
+				&:focus::placeholder {
+					color: @s2-border-color;
+				}
 
         &:focus {
           outline: none;
+					-webkit-appearance: none;
         }
+
+				&::-webkit-search-decoration,
+				&::-webkit-search-cancel-button {
+					-webkit-appearance: none;
+				}
+
       }
 
       .search-term {
@@ -56,6 +107,11 @@
     }
 
     button {
+			position: absolute;
+			top: 0;
+			right: 0;
+			z-index: 5;
+
       width: 5%;
       max-width: 21px;
       min-height: 42px;
