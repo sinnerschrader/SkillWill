@@ -69,26 +69,32 @@ class Results extends React.Component {
 					<a className="counter" onClick={this.scrollToResults}>
 						<span>{filteredUser.length} Ergebnisse</span>
 					</a>
-					<ul className="results">
-						<ul className="sort-buttons">
-							<li className="sort-button sort-button-name" onClick={() => this.sortResults('lastName')}>
-								<span className="sort-button-label">Sort by Name</span>
-							</li>
-							<li className="sort-button sort-button-location" onClick={() => this.sortResults('location')}>
-								<span className="sort-button-label">Sort by Location</span>
-							</li>
-							<li className="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
-								<span className="sort-button-label">Sort by Match</span>
-							</li>
+					<div className="results">
+						<div className="sort-buttons-wrapper">
+							<div className="container">
+								<ul className="sort-buttons">
+									<li className="sort-button sort-button-name" onClick={() => this.sortResults('lastName')}>
+										<span className="sort-button-label">Sort by Name</span>
+									</li>
+									<li className="sort-button sort-button-location" onClick={() => this.sortResults('location')}>
+										<span className="sort-button-label">Sort by Location</span>
+									</li>
+									<li className="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
+										<span className="sort-button-label">Sort by Fitness</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<ul className="results-list container">
+							{filteredUser.map((user, i) => {
+								return (
+									<li className="result-item" key={user.id}>
+										<User user={user} searchTerms={searched} />
+									</li>
+								)
+							})}
 						</ul>
-						{filteredUser.map((user, i) => {
-							return (
-								<li className="result-item" key={user.id}>
-									<User user={user} searchTerms={searched} />
-								</li>
-							)
-						})}
-					</ul>
+					</div>
 				</div>
 			)
 		}
