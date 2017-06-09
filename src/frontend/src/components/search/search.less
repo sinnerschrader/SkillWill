@@ -19,7 +19,12 @@
 		top: @5xl-stack;
 		left: 0;
 
+    .title {
+      color: @s2-red;
+    }
+
 		.subtitle {
+      color: @s2-white;
 			margin-top: 0.5em;
 		}
 
@@ -46,6 +51,7 @@
       width: 100%;
       border-radius: 0;
       border-bottom: @base-border;
+			padding-right: 60px;
       float: left;
 
       input {
@@ -81,41 +87,44 @@
 
       .search-term {
         display: inline-block;
-        border: @base-border;
+        border: 1px solid rgba(255,255,255, 0.5);
+				color: @s2-white;
         padding: @s-stack;
         padding-right: @s-inline;
-        margin: @xs-inline;
-        margin-bottom: @xxs-inline;
+        margin: @xs-inline @s-inline @xs-inline 0;
         line-height: @base-font-size;
-        cursor: pointer;
 
         &:hover {
-            color: @s2-red;
-            border-color: @s2-red;
 
             a {
-              color: @s2-red;
+              opacity: 1;
             }
         }
 
         a {
+					display: inline-block;
+					background-image: data-uri("@{image-path}/x.svg");
+					width: 12px;
+					height: 10px;
+					text-indent: -9999px;
+					overflow: hidden;
           cursor: pointer;
           margin-left: @s-inline;
-          color: @s2-black;
+          opacity: 0.5;
         }
       }
     }
 
     button {
 			position: absolute;
-			top: 0;
+			bottom: @xs-stack;
 			right: 0;
 			z-index: 5;
-
       width: 5%;
       max-width: 21px;
       min-height: 42px;
       margin-left: 5px;
+			margin-right: @m-stack;
       background-color: transparent;
       border: none;
       cursor: pointer;
