@@ -23,7 +23,6 @@ class OthersProfile extends React.Component {
 	}
 
 	render() {
-		const { dataLoaded, user } = this.state
 		return (
 			this.props.userLoaded ?
 				<div className="profile">
