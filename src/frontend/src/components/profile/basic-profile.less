@@ -29,17 +29,20 @@
 			font-size: @s-title-font-size;
 			line-height: @s-title-font-size;
 			font-weight: bold;
+			padding-bottom: @s-stack;
 		}
-		.id,
-		.department {
+		.id {
 			display: block;
-			padding: @xxs-stack 0;
+			padding: 0 0 @xxs-stack;
 			font-size: @m-base-font-size;
 			line-height: @m-base-font-size;
 			font-weight: 300;
 		}
 		.department {
-			text-transform: uppercase;
+			display: block;
+			padding: @xs-stack 0;
+			font-size: @m-base-font-size;
+			line-height: @m-base-font-size;
 			font-weight: 500;
 		}
 		.location {
@@ -49,29 +52,35 @@
 		.move,
 		.slack {
 			display: inline-block;
-			margin: @s-stack @m-inline;
+			margin: @m-inline @s-inline;
+			vertical-align: middle;
+			&:hover {
+				filter: grayscale(1);
+			}
 		}
 		.mail {
 			&::before {
 				content: data-uri("@{image-path}/mail.svg");
-				height: 25px;
-				width: 25px;
+				height: 1px;
+				width: 35px;
 				display: inline-block;
+				fill: @s2-red;
+				stroke: @s2-red;
 			}
 		}
 		.slack {
 			&::before {
 				content: data-uri("@{image-path}/chat.svg");
-				height: 25px;
-				width: 25px;
+				height: 1px;
+				width: 37px;
 				display: inline-block;
 			}
 		}
 		.move {
 			&::before {
 				content: data-uri("@{image-path}/location.svg");
-				height: 25px;
-				width: 25px;
+				height: 1px;
+				width: 27px;
 				display: inline-block;
 			}
 		}
@@ -87,27 +96,11 @@
 		font-size: @xs-title-font-size;
 		line-height: @xs-title-font-size;
 		font-weight: @s-title-font-weight;
-		padding: @s-stack 0;
+		padding: @s-stack 0 @l-stack;
 	}
-	.skills-list {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		.skill-item {
-			padding-bottom: @m-stack;
-			width: 100%;
-			.level {
-				display: inline-block;
-				padding-right: @m-inline;
-			}
-			.skill-name {
-				font-weight: 800;
-				color: @s2-red;
-				margin-bottom: @xxs-stack;
-				display: inline-block;
-				padding-right: @m-inline;
-			}
-		}
+	.skill-name {
+		flex-basis: 48%;
+		white-space: nowrap;
 	}
 	.show-more-link {
 		color: @s2-red;

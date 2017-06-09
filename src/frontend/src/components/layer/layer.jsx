@@ -9,6 +9,10 @@ class Layer extends React.Component {
 		this.handleClose = this.handleClose.bind(this)
 	}
 
+	componentDidMount() {
+		document.body.classList.add('layer-open')
+	}
+
 	handleClose() {
 		//return to home if current page is login
 		if (this.props.location.pathname.startsWith('/my-profile')) {
