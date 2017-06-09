@@ -66,9 +66,22 @@ class Results extends React.Component {
 			const filteredUser = user.filter(this.filterUserByLocation)
 			return (
 				<div className="results-container animateable">
-					<a className="counter" onClick={this.scrollToResults}>
-						<span>{filteredUser.length} Ergebnisse</span>
-					</a>
+					<div className="counter" onClick={this.scrollToResults}>
+						{filteredUser.length} Ergebnisse, sortiert
+						<div className="dropdown">
+							<span className="dropdown-label">aufsteigend</span>
+							<select>
+								<option value="all">???</option>
+							</select>
+						</div>
+						nach
+						<div className="dropdown">
+							<span className="dropdown-label">Match</span>
+							<select>
+								<option value="all">???</option>
+							</select>
+						</div>
+					</div>
 					<div className="results">
 						<div className="sort-buttons-wrapper">
 							<div className="container">
