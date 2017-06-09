@@ -5,6 +5,7 @@ import { Router, Link, browserHistory } from 'react-router'
 export default class Header extends React.Component {
 	constructor(props) {
 		super(props)
+		this.state = {}
 		this.checkUserIdCookie = this.checkUserIdCookie.bind(this)
 	}
 	componentDidMount() {
@@ -35,6 +36,7 @@ export default class Header extends React.Component {
 	}
 
 	returnMyProfileLink() {
+
 		if (typeof this.state.userId != 'undefined') {
 			return this.state.userId
 		} else {
