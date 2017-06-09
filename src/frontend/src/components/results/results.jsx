@@ -12,7 +12,7 @@ class Results extends React.Component {
 		this.state = {
 			lastSortedBy: 'fitness'
 		}
-		this.scrollToResults = this.scrollToResults.bind(this)
+		// this.scrollToResults = this.scrollToResults.bind(this)
 		this.sortResults = this.sortResults.bind(this)
 		this.filterUserByLocation = this.filterUserByLocation.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
@@ -27,10 +27,10 @@ class Results extends React.Component {
 		ReactDOM.findDOMNode(this).removeEventListener('animationend', this.removeAnimationClass)
 	}
 
-	scrollToResults() {
-		const searchbarRect = document.querySelector('.searchbar').getBoundingClientRect()
-		window.scrollBy({ top: `${searchbarRect.top - 10}`, behavior: "smooth" })
-	}
+	// scrollToResults() {
+	// 	const searchbarRect = document.querySelector('.searchbar').getBoundingClientRect()
+	// 	window.scrollBy({ top: `${searchbarRect.top - 10}`, behavior: "smooth" })
+	// }
 
 	sortResults(criterion) {
 		const { results: { user } } = this.props
@@ -66,7 +66,7 @@ class Results extends React.Component {
 			const filteredUser = user.filter(this.filterUserByLocation)
 			return (
 				<div className="results-container animateable">
-					<div className="counter" onClick={this.scrollToResults}>
+					<div className="counter">
 						{filteredUser.length} Ergebnisse, sortiert
 						<div className="dropdown">
 							<span className="dropdown-label">aufsteigend</span>
