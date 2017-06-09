@@ -1,9 +1,12 @@
 .dropdown {
-    margin: 0 auto @l-stack auto;
-    width: @dropdown-width;
+		display: inline-block;
+		position: relative;
+		text-align: left;
+		color: @s2-white;
+    width: auto;
     position: relative;
     border-bottom: @base-border;
-    padding-bottom: @xs-stack;
+    padding: 0 30px @m-stack 0;
     position: relative;
 
     select {
@@ -28,14 +31,16 @@
     }
 
     &::after {
-        content: "\2303";
-        height: 0;
-        font-size: @base-font-size;
-        line-height: @base-font-size;
-        right: 3px;
-        top: 15px;
-        position: absolute;
+				background-image: data-uri("@{image-path}/chevron.svg");
+				background-repeat: no-repeat;
+				position: absolute;
+        content: "";
+				right: 3px;
+        bottom: 19px;
+				display: block;
+				width: 8px;
+				height: 13px;
         pointer-events: none;
-        transform: rotate(180deg);
+        transform: rotate(270deg);
     }
 }
