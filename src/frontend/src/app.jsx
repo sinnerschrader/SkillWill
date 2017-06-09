@@ -24,6 +24,7 @@ export default class App extends React.Component {
 					{this.props.children}
 				</div>
 				<Footer />
+				<div className="layer-overlay"></div>
 			</div>
 		)
 	}
