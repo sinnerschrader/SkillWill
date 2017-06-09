@@ -53,8 +53,11 @@ public class LdapService {
   @Value("${ldapPort}")
   private int ldapPort;
 
-  @Value("${ldapBaseDN}")
-  private String ldapBaseDN;
+  @Value("${ldapAuthBaseDN}")
+  private String ldapAuthBaseDN;
+
+  @Value("${ldapLookupBaseDN}")
+  private String ldapLookupBaseDN;
 
   @Value("${ldapEmbeded}")
   private boolean ldapEmbeded;
@@ -115,7 +118,7 @@ public class LdapService {
 
   public List<Person> syncUsers(List<Person> persons, boolean forceUpdate) {
     try {
-      ldapConnection.bind(new SimpleBindRequest("uid=" + ldapLookupUser + "," + ldapBaseDN, ldapLookupPassword));
+      ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
     } catch (LDAPException e) {
       logger.error("Failed to sync users: bind exception", e);
     }
@@ -144,9 +147,9 @@ public class LdapService {
           .map(p -> "(uid=" + p.getId() + ")")
           .collect(Collectors.joining("")) + ")";
       SearchResult res = ldapConnection
-          .search(new SearchRequest(ldapBaseDN, SearchScope.SUB, searchString));
+          .search(new SearchRequest(ldapAuthBaseDN, SearchScope.SUB, searchString));
       for (Person person : updatablePersons) {
-        SearchResultEntry entry = res.getSearchEntry("uid=" + person.getId() + "," + ldapBaseDN);
+        SearchResultEntry entry = res.getSearchEntry("uid=" + person.getId() + "," + ldapAuthBaseDN);
         try {
           PersonalLdapDetails newDetails = new PersonalLdapDetails(
               entry.getAttributeValue("givenName"),
@@ -175,7 +178,7 @@ public class LdapService {
 
   public boolean canAuthenticate(String username, String password) {
     try {
-      BindRequest bindRequest = new SimpleBindRequest("uid=" + username + "," + ldapBaseDN, password);
+      BindRequest bindRequest = new SimpleBindRequest("uid=" + username + "," + ldapAuthBaseDN, password);
       BindResult bindResult = ldapConnection.bind(bindRequest);
       return bindResult.getResultCode().equals(ResultCode.SUCCESS);
     } catch (LDAPBindException e) {

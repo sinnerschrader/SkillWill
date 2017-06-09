@@ -15,6 +15,15 @@ objectClass: top
 description: SinnerSchrader Users
 ou: users
 
+dn: ou=tech-user,dc=sinnerschrader,dc=com
+objectClass: organizationalUnit
+objectClass: top
+description: SinnerSchrader Users
+ou: tech-user
+
+dn: cn=tech-user,ou=tech-user,dc=sinnerschrader,dc=com
+userPassword: fleischcreme
+
 dn: uid=aalbry,ou=users,dc=sinnerschrader,dc=com
 objectClass: person
 objectClass: organizationalPerson
