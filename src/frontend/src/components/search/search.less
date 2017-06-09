@@ -88,30 +88,43 @@
 
       .search-term {
         display: inline-block;
+				position: relative;
         border: 1px solid rgba(255,255,255, 0.5);
 				color: @s2-white;
         padding: @s-stack;
-        padding-right: @s-inline;
+        padding-right: @xl-inline;
         margin: @xs-inline @s-inline @xs-inline 0;
         line-height: @base-font-size;
 
         &:hover {
 
             a {
-              opacity: 1;
+							transition: opacity 0.1s ease-in;
+              opacity: 0.8;
             }
         }
 
         a {
-					display: inline-block;
-					background-image: data-uri("@{image-path}/x.svg");
+					position: absolute;
+					right: 2px;
+					bottom: 6px;
+					display: block;
+					overflow: hidden;
 					width: 12px;
 					height: 10px;
-					text-indent: -9999px;
-					overflow: hidden;
-          cursor: pointer;
           margin-left: @s-inline;
+          cursor: pointer;
+					text-indent: -9999px;
           opacity: 0.5;
+					border: 10px solid transparent;
+					background-image: data-uri("@{image-path}/x.svg");
+					background-repeat: no-repeat;
+					background-position: right center;
+
+					&:hover {
+						transition: none;
+						opacity: 1;
+					}
         }
       }
     }
