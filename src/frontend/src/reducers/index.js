@@ -13,7 +13,9 @@ import {
 	TOGGLE_SKILLS_EDIT_MODE,
 	EDIT_SKILL,
 	EXIT_SKILLS_EDIT_MODE,
-	CLEAR_USER_DATA
+	CLEAR_USER_DATA,
+	SET_SORTED_USERS,
+	SET_FILTERED_USERS
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -41,6 +43,7 @@ function setSkillSearchTerms(state = [], action) {
 function setLocationFilter(state = [], action) {
 	switch (action.type) {
 		case SET_LOCATION_FILTER:
+			console.log('ap',action.payload)
 			return action.payload
 		default:
 			return state
@@ -93,6 +96,17 @@ function editSkill(state = {}, action) {
 	}
 }
 
+function sortedAndFilteredUsers(state = [], action) {
+	switch (action.type) {
+		case SET_SORTED_USERS:
+			return {...state, sortedUsers: action.sortedUsers, lastSortedBy: action.lastSortedBy}
+			case SET_FILTERED_USERS:
+				return {...state, sortedUsers: action.sortedUsers}
+		default:
+			return state
+	}
+}
+
 function setSkillsEditMode(state = false, action) {
 	switch (action.type) {
 		case TOGGLE_SKILLS_EDIT_MODE:
@@ -128,5 +142,6 @@ export default {
 	skillSearchTerms: setSkillSearchTerms,
 	isSkillEditActive: setSkillsEditMode,
 	editSkill,
-	shouldSkillsAnimate
+	shouldSkillsAnimate,
+	sortedAndFilteredUsers
 };
