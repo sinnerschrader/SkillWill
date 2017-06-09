@@ -6,23 +6,34 @@
 	display: flex;
 	justify-content: space-between;
 	padding-bottom: @s-stack;
-	&:last-child {
-		padding-bottom: @l-stack;
-	}
 }
 
 .skill-name {
-	flex-basis: 40%;
-	font-weight: 800;
-	color: @s2-red;
+	position: relative;
+	display: flex;
 	margin-bottom: @xxs-stack;
-	display: inline-block;
-	padding-right: @m-inline;
+	flex-basis: 48%;
+
+	span {
+		padding-right: @s-inline;
+	}
+
+	&:after {
+		bottom: 0;
+		display: flex;
+		width: 100%;
+		margin-right: @m-stack;
+		content: "";
+		background-image: linear-gradient(to right, @s2-darkgrey3 12%, rgba(255,255,255,0) 0%);
+		background-repeat: repeat-x;
+		background-position: 100% 80%;
+		background-size: 16px 2px;
+	}
 }
 .skill-level {
-	flex-basis: 50%;
-	display: flex;
 	position: relative;
+	display: flex;
+	flex-basis: 50%;
 }
 .level {
 	width: 50%;

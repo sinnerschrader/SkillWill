@@ -75,7 +75,7 @@ class SkillItem extends React.Component {
 		return (
 			this.state.renderSkill ?
 			<li key={key} className="skill-item">
-				<p className="skill-name">{name}</p>
+				<p className="skill-name"><span>{name}</span></p>
 				<div className="skill-level">
 					<div className="level">
 						<div className={`skillBar levelBar levelBar--${skillLevel}`}></div>

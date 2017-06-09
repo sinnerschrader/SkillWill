@@ -7,6 +7,7 @@
 .results-container {
 	display: inline-block;
 	width: 100%;
+	margin-top: -5px;
 
 	.counter {
 		position: absolute;
@@ -44,6 +45,7 @@
 .sort-buttons-wrapper {
 	background-color: @s2-red;
 	padding: @xl-stack 0;
+	text-transform: uppercase;
 }
 
 .sort-buttons {
@@ -52,30 +54,34 @@
 }
 
 .results-list {
-	padding: @xl-stack 0;
+	padding: 0 0 @xxl-stack;
 }
 
 .result-item {
 	width: auto;
 	height: auto;
-	border-bottom: @base-border;
-	background-position-y: bottom;
 	background-image: linear-gradient(to bottom, hsla(174, 22%, 56%, .1) 50%, transparent 50%);
 	background-size: 200% 200%;
+	background-position-y: bottom;
+	border-bottom: 1px solid @s2-grey2;
+	padding: 0;
 
-	&:hover {
-		animation: .2s ease-in .2s curtain;
-		animation-fill-mode: forwards;
+	a {
+		display: block;
+		padding: @xl-stack 0 @l-stack;
 	}
 
-	@keyframes curtain {
-		from {background-position-y: bottom;}
-		to {background-position-y: top;}
+	&:last-of-type {
+		border-bottom: none;
 	}
 
 	.user {
 		display: flex;
 		justify-content: space-between;
+
+		&:focus {
+			outline: none;
+		}
 	}
 
 	.user-img {
@@ -88,13 +94,15 @@
 	}
 
 	.info {
-		padding-top: @m-stack;
-		flex-basis: 45%;
+		flex-basis: 30%;
+		padding-bottom: @s-stack;
 
 		.name {
+			display: block;
 			font-size: @s-title-font-size;
-			line-height:  @s-title-font-size;
+			line-height: @s-title-font-size;
 			font-weight: bold;
+			margin: -0.3em 0 @xs-stack;
 		}
 
 		.id, .department {
@@ -108,19 +116,36 @@
 		.department {
 			text-transform: uppercase;
 			font-weight: 500;
+			padding-bottom: 0;
 		}
 	}
 
 	.location {
+		font-weight: 100;
 		flex-basis: 15%;
-		padding: @l-stack @l-inline 0 @l-inline;
+		padding: 0 @l-inline @s-inline @l-inline;
 	}
 
 	.skills {
-		padding-top: @l-stack;
 		flex-basis: 45%;
 		display: inline-flex;
 		flex-direction: row-reverse;
 
+	}
+
+	@media (min-width: @tablet-portrait-up) {
+
+		margin: 0 -@m-stack;
+		padding: 0 @m-stack;
+
+		&:hover {
+			animation: .15s ease-in .15s curtain;
+			animation-fill-mode: forwards;
+		}
+	}
+
+	@keyframes curtain {
+		from {background-position-y: bottom;}
+		to {background-position-y: top;}
 	}
 }
