@@ -5,14 +5,13 @@ import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import User from '../user/user'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-
+import { filterUserList, sortUserList } from '../../actions'
 class Results extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			lastSortedBy: 'fitness'
 		}
-		this.sortResults = this.sortResults.bind(this)
 		this.filterUserByLocation = this.filterUserByLocation.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
 	}
@@ -26,25 +25,6 @@ class Results extends React.Component {
 		ReactDOM.findDOMNode(this).removeEventListener('animationend', this.removeAnimationClass)
 	}
 
-	sortResults(criterion) {
-		const { results: { user } } = this.props
-		if (this.state.lastSortedBy === criterion) {
-			user.reverse()
-		} else if (criterion === 'fitness') {
-			user.sort((a, b) => {
-				return a[criterion] > b[criterion] ? -1 : 1
-			})
-		} else {
-			user.sort((a, b) => {
-				return a[criterion] < b[criterion] ? -1 : 1
-			})
-		}
-
-		this.setState({
-			lastSortedBy: criterion,
-		})
-	}
-
 	filterUserByLocation(user) {
 		const { locationFilter } = this.props
 		if (locationFilter === 'all') {
@@ -55,9 +35,14 @@ class Results extends React.Component {
 	}
 
 	render() {
-		const { locationFilter, results: { user, searched } } = this.props
-		if (user && user.length > 0) {
-			const filteredUser = user.filter(this.filterUserByLocation)
+		const {
+			locationFilter,
+			results: { searched },
+			sortedUsers: { sortedUsers: userResults },
+			sortUserList,
+			filterUserList
+		} = this.props
+		if (userResults && userResults.length > 0) {
 			return (
 				<div className="results-container animateable">
 					<div className="counter">
@@ -117,7 +102,8 @@ function mapStateToProps(state) {
 	return {
 		results: state.results,
 		searchTerms: state.searchTerms,
-		locationFilter: state.locationFilter
+		locationFilter: state.locationFilter,
+		sortedUsers: state.sortedAndFilteredUsers
 	}
 }
-export default connect(mapStateToProps)(Results)
+export default connect(mapStateToProps, { sortUserList })(Results)
