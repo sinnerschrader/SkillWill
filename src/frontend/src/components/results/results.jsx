@@ -100,7 +100,7 @@ class Results extends React.Component {
 		}
 		else {
 			return (
-				<div className="results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
+				<div className="no-results-container" data-isEmptyLabel={this.props.noResultsLabel}></div>
 			)
 		}
 	}
