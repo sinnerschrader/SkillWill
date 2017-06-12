@@ -11,6 +11,9 @@
   .layer-open & {
     height: 100vh;
   }
+  .my-profile-open & {
+    display: none;
+  }
 }
 
 .layer-container {
@@ -20,7 +23,7 @@
   z-index: 996;
   top: 0;
   left: 0;
-  padding: @xxl-stack 0;
+  padding: 0 0 @xxl-stack;
   height: 100vh;
   overflow: hidden;
 
@@ -55,6 +58,10 @@
         transform: rotate(45deg) translateX(-@m-inline) scale(0.5);
       }
     }
+    
+    .my-profile-open & {
+      display: none;
+    }
   }
 
   .close-layer {
@@ -64,14 +71,21 @@
     height: 100%;
     z-index: 998;
   }
+
+  .my-profile-open & {
+    background-color: @s2-white;
+    position: absolute;
+    height: auto;
+  }
 }
 
 .layer {
-  margin: 0 auto @xxl-stack auto;
+  box-sizing: border-box;
+  margin: @navigation-height auto @xxl-stack auto;
   max-width: 100vw;
   padding: @l-stack @s-stack;
   background-color: @s2-white;
-  height: 90vh;
+  height: calc(100vh - @navigation-height);
   overflow: auto;
   position: relative;
   z-index: 999;
@@ -79,6 +93,9 @@
   @media (min-width: @tablet-portrait-up) {
     max-width: @layer-width;
     padding: @xxl-stack @3xl-stack;
-    height: 80vh;
+
+    .my-profile-open & {
+      max-width: 100%;
+    }
   }
 }

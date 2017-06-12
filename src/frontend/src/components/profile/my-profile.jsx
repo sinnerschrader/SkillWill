@@ -37,6 +37,11 @@ class MyProfile extends React.Component {
 		if (!this.checkUser()) {
 			browserHistory.push("/my-profile/login")
 		}
+		document.body.classList.add('my-profile-open')
+	}
+
+	componentWillUnmount() {
+		document.body.classList.remove('my-profile-open')
 	}
 
 	getProfileData() {
@@ -152,8 +157,10 @@ class MyProfile extends React.Component {
 							deleteSkill={this.deleteSkill}
 							setLastSortedBy={this.props.setLastSortedBy}
 							lastSortedBy={this.props.lastSortedBy} />
-						<div className="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
-						<div className="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
+						<div className="profile-actions">
+							<div className="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
+							<div className="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
+						</div>
 					</div>
 				: null
 		)

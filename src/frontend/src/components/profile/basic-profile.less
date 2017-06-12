@@ -1,3 +1,12 @@
+.profile {
+  .my-profile-open & {
+    @media (min-width: @tablet-portrait-up) {
+      max-width: @layer-width;
+      margin: 0 auto;
+    }
+  }
+}
+
 .basic-profile {
 	flex-basis: 45%;
 	.info {
@@ -233,61 +242,18 @@
 	}
 }
 
+// content: data-uri("@{image-path}/cross_white.svg");
+
+// @media (min-width: @tablet-portrait-up) {
+//   transform: translateX(((@layer-width / 2) + @l-inline )) translateY(-80px);
+//   right: 60%;
+// }
+
 .add-skill-btn {
-	position: fixed;
-	right: 10vw;
-	transform: translateX(@l-inline ) translateY(-80px);
-	bottom: 0;
-	background-color: @s2-red;
-	height: 70px;
-	width: 70px;
-	border-radius: 70px;
-	font-size: 70px;
-	line-height: 70px;
-	color: @s2-white;
-	font-weight: 200;
-	text-align: center;
-	cursor: pointer;
-	box-shadow: @s2-box-shadow-dark;
-	&::after {
-		content: data-uri("@{image-path}/cross_white.svg");
-		height: 50px;
-		width: 50px;
-		display: inline-block;
-		transform: translateY(-8px) translateX(1px)
-	}
-	@media (min-width: @tablet-portrait-up) {
-		transform: translateX(((@layer-width / 2) + @l-inline )) translateY(-80px);
-		right: 50%;
-	}
+
 }
 .edit-skill-btn {
-	position: fixed;
-	right: 10vw;
-	transform: translateX(@l-inline ) translateY(-80px);
-	bottom: 0;
-	background-color: @s2-red;
-	height: 70px;
-	width: 70px;
-	border-radius: 70px;
-	font-size: 70px;
-	line-height: 70px;
-	color: @s2-white;
-	font-weight: 200;
-	text-align: center;
-	cursor: pointer;
-	box-shadow: @s2-box-shadow-dark;
-	&::after {
-		content: data-uri("@{image-path}/edit_white.svg");
-		height: 50px;
-		width: 50px;
-		display: inline-block;
-		transform: translateY(-8px) translateX(1px)
-	}
-	@media (min-width: @tablet-portrait-up) {
-		transform: translateX(((@layer-width / 2) + @l-inline )) translateY(-80px);
-		right: 60%;
-	}
+
 }
 
 .back-btn {

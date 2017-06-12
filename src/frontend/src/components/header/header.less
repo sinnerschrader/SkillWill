@@ -1,9 +1,15 @@
 .mod-navigation-container {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   margin: 0 auto;
+
+  .my-profile-open & {
+    position: relative;
+    background-color: @s2-verydarkblue;
+    z-index: 1000;
+  }
 }
 
 .mod-navigation {
