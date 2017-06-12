@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import config from '../../config.json'
-import getStateObjectFromURL from '../../utils/getStateObjectFromURL'
 import User from '../user/user'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { filterUserList, sortUserList } from '../../actions'
+import { setLocationFilter, setSortFilter } from '../../actions'
+import sortAndFilter from '../../utils/sortAndFilter.js'
+
 class Results extends React.Component {
 	constructor(props) {
 		super(props)
@@ -37,16 +38,16 @@ class Results extends React.Component {
 	render() {
 		const {
 			locationFilter,
-			results: { searched },
-			sortedUsers: { sortedUsers: userResults },
-			sortUserList,
-			filterUserList
+			lastSortedBy : {sortFilter, lastSortedBy},
+			results: { searched, users },
+			setSortFilter
 		} = this.props
-		if (userResults && userResults.length > 0) {
+		if (users && users.length > 0) {
+		const sortedUserList = sortAndFilter(users, sortFilter, 'desc', locationFilter)
 			return (
 				<div className="results-container animateable">
 					<div className="counter">
-						{filteredUser.length} Ergebnisse, sortiert
+						{sortedUserList.length} Ergebnisse, sortiert
 						<div className="dropdown">
 							<span className="dropdown-label">aufsteigend</span>
 							<select>
@@ -65,20 +66,20 @@ class Results extends React.Component {
 						<div className="sort-buttons-wrapper">
 							<div className="container">
 								<ul className="sort-buttons">
-									<li className="sort-button sort-button-name" onClick={() => this.sortResults('lastName')}>
+									<li className="sort-button sort-button-name" onClick={() => this.setSortFilter('lastName')}>
 										<span className="sort-button-label">Sort by Name</span>
 									</li>
-									<li className="sort-button sort-button-location" onClick={() => this.sortResults('location')}>
+									<li className="sort-button sort-button-location" onClick={() => this.setSortFilter('location')}>
 										<span className="sort-button-label">Sort by Location</span>
 									</li>
-									<li className="sort-button sort-button-fitness" onClick={() => this.sortResults('fitness')}>
+									<li className="sort-button sort-button-fitness" onClick={() => this.setSortFilter('fitness')}>
 										<span className="sort-button-label">Sort by Fitness</span>
 									</li>
 								</ul>
 							</div>
 						</div>
 						<ul className="results-list container">
-							{filteredUser.map((user, i) => {
+							{sortedUserList.map((user, i) => {
 								return (
 									<li className="result-item" key={user.id}>
 										<User user={user} searchTerms={searched} />
@@ -103,7 +104,7 @@ function mapStateToProps(state) {
 		results: state.results,
 		searchTerms: state.searchTerms,
 		locationFilter: state.locationFilter,
-		sortedUsers: state.sortedAndFilteredUsers
+		lastSortedBy: state.lastSortedBy
 	}
 }
-export default connect(mapStateToProps, { sortUserList })(Results)
+export default connect(mapStateToProps, { setLocationFilter, setSortFilter })(Results)
