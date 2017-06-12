@@ -13,6 +13,10 @@ class Layer extends React.Component {
 		document.body.classList.add('layer-open')
 	}
 
+	componentWillUnmount() {
+		document.body.classList.remove('layer-open')
+	}
+
 	handleClose() {
 		//return to home if current page is login
 		if (this.props.location.pathname.startsWith('/my-profile')) {
