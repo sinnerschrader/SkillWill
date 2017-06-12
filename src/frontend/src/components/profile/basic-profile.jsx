@@ -34,6 +34,12 @@ class BasicProfile extends React.Component {
 			topWills: this.sortSkills('willLevel', 'desc')
 		})
 	}
+	componentWillReceiveProps(nextProps){
+		this.setState({
+			sortedSkills: this.sortSkills(this.state.lastSortedBy, 'desc'),
+			topWills: this.sortSkills('willLevel', 'desc')
+		})
+	}
 
 	componentDidMount() {
 		ReactDOM.findDOMNode(this).addEventListener('animationend', this.removeAnimationClass)
@@ -189,7 +195,9 @@ class BasicProfile extends React.Component {
 				mail,
 				phone,
 				skills
-			}
+			},
+			prevUser,
+			nextUser
 		} = this.props
 
 		const {
@@ -226,7 +234,7 @@ class BasicProfile extends React.Component {
 				</li>
 			</ul>
 		)
-	}
+				}
 }
 
 function mapStateToProps(state) {
