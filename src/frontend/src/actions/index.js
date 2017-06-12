@@ -34,7 +34,6 @@ export function setLastSortedBy(sortFilter, lastSortedBy) {
 }
 export function setSortFilter(criterion) {
 	return function (dispatch, getState){
-		console.log('yep, thats me')
 		const { sortFilter } = getState().lastSortedBy
 		dispatch(setLastSortedBy(criterion, sortFilter))
 	}
