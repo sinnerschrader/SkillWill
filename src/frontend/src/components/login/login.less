@@ -1,38 +1,31 @@
 .login {
-      margin-top: @xxl-stack;
+  margin-top: @xxl-stack;
 
-      .submit-btn {
-        border: @base-border;
-        border-radius: 6px;
-        padding: @s-stack;
-        padding-right: @s-inline;
-        margin: @s-stack 0;
-        line-height: @base-font-size;
-        cursor: pointer;
-        background: @s2-blue;
-        color: @s2-white;
-        display: block;
+  .submit-btn {
+    display: block;
+  }
+  form {
+    margin: @xl-stack @s-stack 0 @s-stack;
 
-        &:hover {
-          opacity: 0.8;
-        }
+    input {
+      display: block;
+      box-sizing: border-box;
+			width: 100%;
+      margin: 0 0 @s-stack;
+      padding: @m-stack @l-stack;
+      border: 2px solid @s2-grey2;
+      border-radius: 0;
+      background-color: transparent;
+      appearance: none;
+
+      &:focus {
+				border-color: @s2-verydarkblue;
+        outline: none;
       }
-      form {
-        margin-top: @xl-stack;
+  	}
 
-        input {
-          border: @base-border;
-          padding: @s-stack;
-          box-sizing: content-box;
-          background-color: transparent;
-          appearance: none;
-          border-radius: 0;
-          margin-right: @xs-inline;
-          display: inline-block;
-
-          &:focus {
-            outline: none;
-          }
-      }
-    }
+		@media (min-width: @tablet-portrait-up) {
+			margin: @xxl-stack 5% 0 5%;
+		}
+	}
 }

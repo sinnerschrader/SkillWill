@@ -115,6 +115,7 @@ class Login extends React.Component {
 						name="username"
 						placeholder="LDAP User"
 						type="text"
+						spellCheck="false"
 						value={this.state.user}
 						onChange={this.handleUserchange}>
 					</input>
@@ -122,14 +123,15 @@ class Login extends React.Component {
 						name="password"
 						placeholder="password"
 						type="password"
+						spellCheck="false"
 						value={this.state.password}
 						onChange={this.handlePasswordChange}>
 					</input>
-					<input
+					<button
 						className="submit-btn"
-						type="submit"
-						value="Login">
-					</input>
+						type="submit">
+						Login
+					</button>
 					<p className="error">{this.state.errormessage}</p>
 				</form>
 			</div>
