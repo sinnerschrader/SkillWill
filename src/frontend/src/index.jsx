@@ -28,7 +28,8 @@ const store = createStore(
 	{
 		searchTerms: [],
 		skills: [],
-		locationFilter: 'all'
+		locationFilter: 'all',
+		lastSortedBy: 'fitness'
 	},
 	applyMiddleware(
 		ReduxPromise,
