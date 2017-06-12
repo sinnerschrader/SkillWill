@@ -83,3 +83,20 @@ a {
 .error {
     color: @s2-red;
 }
+
+.btn,
+.submit-btn {
+	min-width: 140px;
+	margin: @m-stack 0;
+	padding: @m-stack @l-stack;
+	cursor: pointer;
+	transition: all 0.2s ease-out;
+	color: @s2-verydarkblue;
+	border: 2px solid @s2-verydarkblue;
+	background-color: @s2-white;
+
+	&:hover {
+		color: @s2-white;
+		background-color: @s2-verydarkblue;
+	}
+}
