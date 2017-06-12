@@ -7,15 +7,14 @@ import {
 	ADD_SEARCH_TERMS,
 	DELETE_SEARCH_TERM,
 	SET_LOCATION_FILTER,
+	SET_LAST_SORTED_BY,
 	GET_PROFILE_DATA,
 	ADD_SKILL_SEARCH,
 	DELETE_SKILL_SEARCH,
 	TOGGLE_SKILLS_EDIT_MODE,
 	EDIT_SKILL,
 	EXIT_SKILLS_EDIT_MODE,
-	CLEAR_USER_DATA,
-	SET_SORTED_USERS,
-	SET_FILTERED_USERS
+	CLEAR_USER_DATA
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -40,22 +39,12 @@ function setSkillSearchTerms(state = [], action) {
 	}
 }
 
-function setLocationFilter(state = [], action) {
-	switch (action.type) {
-		case SET_LOCATION_FILTER:
-			console.log('ap',action.payload)
-			return action.payload
-		default:
-			return state
-	}
-}
-
 function fetchResultsBySearchTerms(state = [], action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
 			return {
 				state,
-				user: action.payload.results,
+				users: action.payload.results,
 				searched: action.payload.searched
 			}
 		default:
@@ -96,12 +85,22 @@ function editSkill(state = {}, action) {
 	}
 }
 
-function sortedAndFilteredUsers(state = [], action) {
+function lastSortedBy(state = '', action) {
 	switch (action.type) {
-		case SET_SORTED_USERS:
-			return {...state, sortedUsers: action.sortedUsers, lastSortedBy: action.lastSortedBy}
-			case SET_FILTERED_USERS:
-				return {...state, sortedUsers: action.sortedUsers}
+		case SET_LAST_SORTED_BY:
+			return { ...state,
+				sortFilter: action.sortFilter,
+				lastSortedBy: action.lastSortedBy
+			}
+		default:
+			return state
+	}
+}
+
+function locationFilter(state = '', action) {
+	switch (action.type) {
+		case SET_LOCATION_FILTER:
+			return action.payload
 		default:
 			return state
 	}
@@ -135,7 +134,6 @@ function shouldSkillsAnimate(state = true, action) {
 
 export default {
 	searchTerms: setSearchTerms,
-	locationFilter: setLocationFilter,
 	results: fetchResultsBySearchTerms,
 	user: getUserProfileData,
 	skills: fetchSkillsBySearchTerm,
@@ -143,5 +141,6 @@ export default {
 	isSkillEditActive: setSkillsEditMode,
 	editSkill,
 	shouldSkillsAnimate,
-	sortedAndFilteredUsers
+	lastSortedBy,
+	locationFilter
 };

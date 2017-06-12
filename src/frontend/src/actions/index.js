@@ -17,93 +17,26 @@ export function deleteSearchTerms(searchTerm) {
 }
 
 export const SET_LOCATION_FILTER = 'SET_LOCATION_FILTER'
-export function setLocationFilter(location) {
+export function setLocationFilter(locationFilter) {
 	return {
 		type: SET_LOCATION_FILTER,
-		payload: location
+		payload: locationFilter
 	}
 }
 
-export const SET_SORTED_USERS = 'SET_SORTED_USERS'
-export function setSortedUsers(userList, criterion) {
+export const SET_LAST_SORTED_BY = 'SET_LAST_SORTED_BY'
+export function setLastSortedBy(sortFilter, lastSortedBy) {
 	return {
-		type: SET_SORTED_USERS,
-		sortedUsers: userList,
-		lastSortedBy: criterion
+		type: SET_LAST_SORTED_BY,
+		sortFilter,
+		lastSortedBy
 	}
 }
-export const SET_FILTERED_USERS = 'SET_FILTERED_USERS'
-export function setFilteredUsers(userList) {
-	console.log('SET_FILTERED_USERS',userList)
-	return {
-		type: SET_FILTERED_USERS,
-		sortedUsers: userList
-	}
-}
-
-function setUserList(getState) {
-	const {
-		sortedAndFilteredUsers: {
-			lastSortedBy,
-			sortedUsers
-		},
-		results: {
-			user: results
-		}
-	} = getState()
-
-	if (sortedUsers && sortedUsers.length > 0) {
-		return {
-			userList: sortedUsers,
-			lastSortedBy
-		}
-	} else {
-		return {
-			userList: results,
-			lastSortedBy
-		}
-	}
-}
-
-export function sortUserList(criterion) {
-	return (dispatch, getState) => {
-		const {
-			userList,
-			lastSortedBy
-		} = setUserList(getState)
-		if (lastSortedBy === criterion) {
-			userList.reverse()
-		} else if (criterion === 'fitness') {
-			userList.sort((a, b) => {
-				return a[criterion] > b[criterion] ? -1 : 1
-			})
-		} else {
-			userList.sort((a, b) => {
-				return a[criterion] < b[criterion] ? -1 : 1
-			})
-		}
-		dispatch(setSortedUsers(userList, criterion))
-		return userList
-	}
-}
-
-export function filterUserList(location) {
-	return function (dispatch, getState) {
-		console.log(sortUserList('lastName'))
-		const {
-			userList
-		} = setUserList(getState)
-		const filteredUsers = userList.filter(user => {
-			if (location === 'all') {
-				return true
-			} else {
-				return user.location === location
-			}
-		})
-		console.log('filter mother',userList, 'filter child',filteredUsers)
-		console.log('location', location)
-		dispatch(setLocationFilter(location))
-		dispatch(setFilteredUsers(filteredUsers))
+export function setSortFilter(criterion) {
+	return function (dispatch, getState){
+		console.log('yep, thats me')
+		const { sortFilter } = getState().lastSortedBy
+		dispatch(setLastSortedBy(criterion, sortFilter))
 	}
 }
 
@@ -122,6 +55,7 @@ export function fetchResults(searchTerms) {
 
 export function getUserBySearchTerms(term, method) {
 	return function (dispatch, getState) {
+
 		if (method === 'delete') {
 			dispatch(deleteSearchTerms(term))
 		} else {
@@ -129,14 +63,10 @@ export function getUserBySearchTerms(term, method) {
 		}
 		const {
 			searchTerms,
-			sortedAndFilteredUsers: {
-				lastSortedBy
-			}
+			lastSortedBy
 		} = getState()
-		dispatch(fetchResults(searchTerms)).then(() => {
-			const sort = lastSortedBy || 'lastName'
-			dispatch(sortUserList(sort))
-		})
+		dispatch(fetchResults(searchTerms))
+		dispatch(setSortFilter(lastSortedBy))
 	}
 }
 
