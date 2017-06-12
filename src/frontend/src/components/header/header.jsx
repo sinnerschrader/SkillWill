@@ -19,6 +19,10 @@ export default class Header extends React.Component {
 		return !!user
 	}
 
+	handleClick(e) {
+		this.checkUserIdCookie()
+	}
+
 	renderLogOut() {
 		const user = Cookies.load("user")
 		if (!!user) {
