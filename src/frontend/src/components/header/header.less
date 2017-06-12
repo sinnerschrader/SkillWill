@@ -1,50 +1,50 @@
 .mod-navigation-container {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	margin: 0 auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .mod-navigation {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	padding: @m-stack 0;
-	margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: @m-stack 0;
+  margin: 0 auto;
 }
 
 .s2-logo {
-	display: flex;
-	position: relative;
-	margin-right: inherit;
+  display: flex;
+  position: relative;
+  margin-right: inherit;
   background-image: data-uri("@{image-path}/s2-logo.svg");
   background-repeat: no-repeat;
   background-size: contain;
-	margin-left: @l-stack;
+  margin-left: @l-stack;
   width: 131px;
   height: 30px;
 }
 
 .nav {
-	display: flex;
+  display: flex;
 }
 
 .nav-list {
-	display: inline-block;
+  display: inline-block;
 }
 
 .nav-item {
-	display: inline-block;
+  display: inline-block;
   text-align: right;
   padding-right: @l-inline;
-	.nav-link {
-		display: inline-block;
+  .nav-link {
+    display: inline-block;
     color: @s2-white;
-		&:hover {
-			color: @s2-red;
-		}
-	}
+    &:hover {
+      color: @s2-red;
+    }
+  }
 }

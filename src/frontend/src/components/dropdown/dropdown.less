@@ -1,46 +1,45 @@
 .dropdown {
-		display: inline-block;
-		position: relative;
-		text-align: left;
-		color: @s2-white;
-    width: auto;
-    position: relative;
-    border-bottom: @base-border;
-    padding: 0 30px @m-stack 0;
-    position: relative;
-		font-size: @l-base-font-size;
+  display: inline-block;
+  position: relative;
+  text-align: left;
+  color: @s2-white;
+  width: auto;
+  position: relative;
+  border-bottom: @base-border;
+  padding: 0 30px @m-stack 0;
+  position: relative;
+  font-size: @l-base-font-size;
 
-    select {
-        color: @s2-black;
-        opacity: 0;
-        display: block;
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        left: 0;
-				min-width: calc(100% + 22px);
+  select {
+    color: @s2-black;
+    opacity: 0;
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
 
-        &:focus, &:active {
-            outline: none;
-            border: none;
-        }
-
-        &:hover {
-            color: @s2-black-hover;
-        }
+    &:focus, &:active {
+      outline: none;
+      border: none;
     }
 
-    &::after {
-				background-image: data-uri("@{image-path}/chevron.svg");
-				background-repeat: no-repeat;
-				position: absolute;
-        content: "";
-				right: 3px;
-        bottom: 19px;
-				display: block;
-				width: 8px;
-				height: 13px;
-        pointer-events: none;
-        transform: rotate(270deg);
+    &:hover {
+      color: @s2-black-hover;
     }
+  }
+
+  &::after {
+    background-image: data-uri("@{image-path}/chevron.svg");
+    background-repeat: no-repeat;
+    position: absolute;
+    content: "";
+    right: 3px;
+    bottom: 19px;
+    display: block;
+    width: 8px;
+    height: 13px;
+    pointer-events: none;
+    transform: rotate(270deg);
+  }
 }

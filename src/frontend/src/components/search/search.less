@@ -1,51 +1,51 @@
 .search {
   background-color: @s2-verydarkblue;
-	height: auto;
-	min-height: 100vh;
-	transform: height 0.4s ease-in;
+  height: auto;
+  min-height: 100vh;
+  transform: height 0.4s ease-in;
 
-	&:after {
-		content: "";
-		display: block;
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		width: 100%;
-	}
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
 
-	.heading {
-		position: absolute;
-		width: 100%;
-		top: @5xl-stack;
-		left: 0;
+  .heading {
+    position: absolute;
+    width: 100%;
+    top: @5xl-stack;
+    left: 0;
 
     .title {
       color: @s2-red;
     }
 
-		.subtitle {
+    .subtitle {
       color: @s2-white;
-			margin-top: 0.5em;
-		}
+      margin-top: 0.5em;
+    }
 
-	}
+  }
 
-	.container {
-		padding-top: @6xl-stack;
-		padding-bottom: @4xl-stack;
-	}
+  .container {
+    padding-top: @6xl-stack;
+    padding-bottom: @4xl-stack;
+  }
 
 }
 
 .searchbar {
   margin-top: @4xl-stack;
-	padding-bottom: @xl-stack;
+  padding-bottom: @xl-stack;
   padding-top: @l-stack;
-	text-align: center;
+  text-align: center;
 
   .search-container {
     display: flex;
-		position: relative;
+    position: relative;
 
     .input-container {
       display: flex;
@@ -53,7 +53,7 @@
       width: 100%;
       border-radius: 0;
       border-bottom: @base-border;
-			padding-right: 60px;
+      padding-right: 60px;
       float: left;
 
       input {
@@ -63,35 +63,35 @@
         flex: 2 1 auto;
         border: none;
         border-radius: 0;
-				color: @s2-white;
-				z-index: 4;
+        color: @s2-white;
+        z-index: 4;
 
-				&::placeholder {
-					color: white;
-					transition: color 0.1s ease-in;
-				}
+        &::placeholder {
+          color: white;
+          transition: color 0.1s ease-in;
+        }
 
-				&:focus::placeholder {
-					color: @s2-border-color;
-				}
+        &:focus::placeholder {
+          color: @s2-border-color;
+        }
 
         &:focus {
           outline: none;
-					-webkit-appearance: none;
+          -webkit-appearance: none;
         }
 
-				&::-webkit-search-decoration,
-				&::-webkit-search-cancel-button {
-					-webkit-appearance: none;
-				}
+        &::-webkit-search-decoration,
+        &::-webkit-search-cancel-button {
+          -webkit-appearance: none;
+        }
 
       }
 
       .search-term {
         display: inline-block;
-				position: relative;
+        position: relative;
         border: 1px solid rgba(255,255,255, 0.5);
-				color: @s2-white;
+        color: @s2-white;
         padding: @s-stack;
         padding-right: @xl-inline;
         margin: @xs-inline @s-inline @xs-inline 0;
@@ -100,46 +100,46 @@
         &:hover {
 
             a {
-							transition: opacity 0.1s ease-in;
+              transition: opacity 0.1s ease-in;
               opacity: 0.8;
             }
         }
 
         a {
-					position: absolute;
-					right: 2px;
-					bottom: 6px;
-					display: block;
-					overflow: hidden;
-					width: 12px;
-					height: 10px;
+          position: absolute;
+          right: 2px;
+          bottom: 6px;
+          display: block;
+          overflow: hidden;
+          width: 12px;
+          height: 10px;
           margin-left: @s-inline;
           cursor: pointer;
-					text-indent: -9999px;
+          text-indent: -9999px;
           opacity: 0.5;
-					border: 10px solid transparent;
-					background-image: data-uri("@{image-path}/x.svg");
-					background-repeat: no-repeat;
-					background-position: right center;
+          border: 10px solid transparent;
+          background-image: data-uri("@{image-path}/x.svg");
+          background-repeat: no-repeat;
+          background-position: right center;
 
-					&:hover {
-						transition: none;
-						opacity: 1;
-					}
+          &:hover {
+            transition: none;
+            opacity: 1;
+          }
         }
       }
     }
 
     button {
-			position: absolute;
-			bottom: @xs-stack;
-			right: 0;
-			z-index: 5;
+      position: absolute;
+      bottom: @xs-stack;
+      right: 0;
+      z-index: 5;
       width: 5%;
       max-width: 21px;
       min-height: 42px;
       margin-left: 5px;
-			margin-right: @m-stack;
+      margin-right: @m-stack;
       background-color: transparent;
       border: none;
       cursor: pointer;
@@ -163,10 +163,10 @@
     }
   }
 
-	.dropdown {
-		min-width: 140px;
-		margin-bottom: @xl-stack;
-	}
+  .dropdown {
+    min-width: 140px;
+    margin-bottom: @xl-stack;
+  }
 
   .info-text {
     display: inline-block;

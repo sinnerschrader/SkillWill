@@ -1,59 +1,57 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-		position: relative;
-		background-color: @s2-black;
-    // overflow: hidden;
-    // height: 100%;
-		&.layer-open {
-        overflow-y: hidden;
-        max-height: 100vh;
-    }
+  position: relative;
+  background-color: @s2-black;
+  &.layer-open {
+    overflow-y: hidden;
+    max-height: 100vh;
+  }
 }
 
 body {
-    background-color: @s2-white;
-    position: relative; //is needed both in body and html to hide overflow in Safari
-    overflow-x: hidden;
-    min-height: 100vh;
+  background-color: @s2-white;
+  position: relative; //is needed both in body and html to hide overflow in Safari
+  overflow-x: hidden;
+  min-height: 100vh;
 
-    &.layer-open {
-        overflow-y: hidden;
-        max-height: 100vh;
-    }
+  &.layer-open {
+    overflow-y: hidden;
+    max-height: 100vh;
+  }
 }
 
 html, input, textarea, keygen, select, button, p , a  {
-    font-family: @base-font;
-    font-size: @base-font-size;
-    line-height: 1;
-		letter-spacing: 0.03em;
-    color: @base-font-color;
+  font-family: @base-font;
+  font-size: @base-font-size;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: @base-font-color;
 }
 
 ul {
-    list-style: none;
-    padding-left: 0;
+  list-style: none;
+  padding-left: 0;
 }
 
 a {
-    text-decoration: none;
-    color: @s2-black;
+  text-decoration: none;
+  color: @s2-black;
 }
 
 &.hidden {
-    display: none;
+  display: none;
 }
 
 .container {
-    margin: 0 @tower;
+  margin: 0 @tower;
 
-    @media (min-width: @tablet-portrait-up) {
-        margin: 0 @tower-desktop;
-    }
+  @media (min-width: @tablet-portrait-up) {
+    margin: 0 @tower-desktop;
+  }
 }
 
 .title {
@@ -69,34 +67,33 @@ a {
 }
 
 .subtitle {
-		text-align: center;
-		font-size: 1rem;
-    font-weight: 400;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 400;
 
-		@media (min-width: @tablet-portrait-up) {
-				font-size: @s-title-font-size;
-		    line-height: @s-title-font-size;
-		}
-
+  @media (min-width: @tablet-portrait-up) {
+    font-size: @s-title-font-size;
+    line-height: @s-title-font-size;
+  }
 }
 
 .error {
-    color: @s2-red;
+  color: @s2-red;
 }
 
 .btn,
 .submit-btn {
-	min-width: 140px;
-	margin: @m-stack 0;
-	padding: @m-stack @l-stack;
-	cursor: pointer;
-	transition: all 0.2s ease-out;
-	color: @s2-verydarkblue;
-	border: 2px solid @s2-verydarkblue;
-	background-color: @s2-white;
+  min-width: 140px;
+  margin: @m-stack 0;
+  padding: @m-stack @l-stack;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  color: @s2-verydarkblue;
+  border: 2px solid @s2-verydarkblue;
+  background-color: @s2-white;
 
-	&:hover {
-		color: @s2-white;
-		background-color: @s2-verydarkblue;
-	}
+  &:hover {
+    color: @s2-white;
+    background-color: @s2-verydarkblue;
+  }
 }
