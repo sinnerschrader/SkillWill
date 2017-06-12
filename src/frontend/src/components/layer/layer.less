@@ -33,8 +33,8 @@
     width: 22px;
     content:data-uri("@{image-path}/close.svg");
     position: absolute;
-    top: @3xl-stack;
-    transform: translateX(((@layer-width / 2) + @xl-stack + 10px));
+    top: calc(@navigation-height + @l-stack);
+    transform: translateX(((@layer-width / 2) - @xl-stack));
     right: 50%;
     z-index: 1000;
     cursor: pointer;
