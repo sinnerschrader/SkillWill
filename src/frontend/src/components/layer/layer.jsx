@@ -11,11 +11,7 @@ class Layer extends React.Component {
 
 	handleClose() {
 		//return to home if current page is login
-		if (this.props.location.pathname.startsWith('/my-profile')) {
-			browserHistory.push("/")
-		} else {
-			browserHistory.goBack()
-		}
+		browserHistory.push("/")
 		document.body.classList.remove('layer-open')
 		this.props.exitSkillsEditMode()
 	}
