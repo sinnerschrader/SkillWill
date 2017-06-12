@@ -2,7 +2,7 @@ import React from 'react'
 import SearchBar from './search-bar.jsx'
 import Dropdown from '../dropdown/dropdown.jsx'
 import SearchSuggestions from './search-suggestion/search-suggestions.jsx'
-import { getUserBySearchTerms, filterUserList } from '../../actions'
+import { getUserBySearchTerms, setLocationFilter } from '../../actions'
 import { connect } from 'react-redux'
 
 class UserSearch extends React.Component {
@@ -23,7 +23,7 @@ class UserSearch extends React.Component {
 	}
 
 	handleDropdownSelect(location) {
-			this.props.filterUserList(location)
+			this.props.setLocationFilter(location)
 	}
 
 	render() {
@@ -52,4 +52,4 @@ function mapStateToProps(state) {
 	}
 }
 
-export default connect(mapStateToProps, { getUserBySearchTerms, filterUserList })(UserSearch)
+export default connect(mapStateToProps, { getUserBySearchTerms, setLocationFilter })(UserSearch)
