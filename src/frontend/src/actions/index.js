@@ -24,6 +24,14 @@ export function setLocationFilter(locationFilter) {
 	}
 }
 
+export const SET_DIRECTION_FILTER = 'SET_DIRECTION_FILTER'
+export function setDirectionFilter(directionFilter) {
+	return {
+		type: SET_DIRECTION_FILTER,
+		payload: directionFilter
+	}
+}
+
 export const SET_LAST_SORTED_BY = 'SET_LAST_SORTED_BY'
 export function setLastSortedBy(sortFilter, lastSortedBy) {
 	return {

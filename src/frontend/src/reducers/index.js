@@ -14,7 +14,8 @@ import {
 	TOGGLE_SKILLS_EDIT_MODE,
 	EDIT_SKILL,
 	EXIT_SKILLS_EDIT_MODE,
-	CLEAR_USER_DATA
+	CLEAR_USER_DATA,
+	SET_DIRECTION_FILTER
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -105,6 +106,14 @@ function locationFilter(state = '', action) {
 			return state
 	}
 }
+function directionFilter(state = '', action) {
+	switch (action.type) {
+		case SET_DIRECTION_FILTER:
+			return action.payload
+		default:
+			return state
+	}
+}
 
 function setSkillsEditMode(state = false, action) {
 	switch (action.type) {
@@ -142,5 +151,6 @@ export default {
 	editSkill,
 	shouldSkillsAnimate,
 	lastSortedBy,
-	locationFilter
+	locationFilter,
+	directionFilter
 };
