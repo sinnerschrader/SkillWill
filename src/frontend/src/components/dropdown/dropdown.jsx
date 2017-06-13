@@ -5,42 +5,46 @@ export default class Dropdown extends React.Component {
 		super(props)
 
 		this.handleDropdownChange = this.handleDropdownChange.bind(this)
-		this.setDropdownValue = this.setDropdownValue.bind(this)
 		this.setDropdownLabel = this.setDropdownLabel.bind(this)
+		this.renderOptions = this.renderOptions.bind(this)
 	}
 
 	handleDropdownChange(e) {
-		const location = e.target.value
-		this.props.onDropdownSelect(location)
+		const value = e.target.value
+		this.props.onDropdownSelect(value)
 	}
 
-	setDropdownValue() {
-		const { dropdownLabel } = this.props
-		if (dropdownLabel !== 'all') {
-			return dropdownLabel
-		} else {
-			return 'all'
-		}
-	}
 	setDropdownLabel() {
-		const { dropdownLabel } = this.props
-		if (dropdownLabel !== 'all') {
-			return dropdownLabel
-		} else {
-			return 'Alle Standorte'
-		}
+		console.log(dropdownLabel, options)
+		const { dropdownLabel, options } = this.props
+		const findOption = options.find(option => {
+			return option['value'] === dropdownLabel
+		})
+		return findOption['display']
+
+	}
+
+	renderOptions() {
+		const { options, dropdownLabel } = this.props
+		return options.map(option => {
+			return (
+				<option
+					key={`${option["value"]}`}
+					value={`${option["value"]}`}
+				>{`${option["display"]}`}</option>
+			)
+		})
 	}
 
 	render() {
+		const { options } = this.props
 		return (
 			<div className="dropdown">
 				<span className="dropdown-label">{this.setDropdownLabel()}</span>
-				<select onChange={this.handleDropdownChange}
-					value={this.setDropdownValue()}>
-					<option value="all">Alle Standorte</option>
-					<option value="Hamburg">Hamburg</option>
-					<option value="Frankfurt">Frankfurt</option>
-					<option value="München">München</option>
+				<select
+					onChange={this.handleDropdownChange}
+					value={this.props.dropdownLabel}>
+					{this.renderOptions()}
 				</select>
 			</div>
 		)
