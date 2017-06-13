@@ -15,7 +15,6 @@ export default class Dropdown extends React.Component {
 	}
 
 	setDropdownLabel() {
-		console.log(dropdownLabel, options)
 		const { dropdownLabel, options } = this.props
 		const findOption = options.find(option => {
 			return option['value'] === dropdownLabel
