@@ -117,15 +117,34 @@
   }
   .show-more-link {
     color: @s2-red;
-    margin: @m-stack auto;
+    margin: @xl-stack auto;
     text-transform: capitalize;
+    position: relative;
+    &::before {
+      position: absolute;
+      width: 19px;
+      height: 11px;
+      top: 22px;
+      left: 50%;
+      transform: translateX(calc(-50% - 3px));
+      content: "";
+      background: data-uri("@{image-path}/chevron-down.svg");
+      background-size: 100% 100%;
+    }
     &::after {
       content: @more-label;
     }
     &.open {
+      &::before {
+        transform: translateX(calc(-50% - 3px)) rotate(180deg);
+        top: -18px;
+      }
       &::after {
         content: @less-label;
       }
+    }
+    &:hover {
+      filter: grayscale(1);
     }
   }
   .info-layer {
@@ -163,24 +182,24 @@
       cursor: pointer;
     }
   }
-    .edit {
-      background: data-uri("@{image-path}/edit.svg");
+  .edit {
+    background: data-uri("@{image-path}/edit.svg");
+  }
+  .delete {
+    background: data-uri("@{image-path}/delete.svg");
+    &:hover {
+      filter: grayscale(1);
     }
-    .delete {
-      background: data-uri("@{image-path}/delete.svg");
-      &:hover {
-        filter: grayscale(1);
-      }
-    }
-    .edit,
-    .delete {
-      display: inline-block;
-      background-size: contain;
-      background-repeat: no-repeat;
-      height: 17px;
-      width: 17px;
-      cursor: pointer;
-    }
+  }
+  .edit,
+  .delete {
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 17px;
+    width: 17px;
+    cursor: pointer;
+  }
   @media (min-width: @tablet-portrait-up) {
     .info-layer {
       width: auto;
