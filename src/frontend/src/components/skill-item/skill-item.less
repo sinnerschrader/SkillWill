@@ -1,27 +1,27 @@
 .skills-list {
-	width: 100%;
+  width: 100%;
 }
 
 .skill-item {
-	position: relative;
-	display: flex;
-	padding-bottom: 16px;
-	justify-content: space-between;
+  position: relative;
+  display: flex;
+  padding-bottom: 16px;
+  justify-content: space-between;
 
-	&[data-edited="true"]::after {
-		position: absolute;
-		top: -2px;
-		right: -70px;
-		width: 20px;
-		height: 18px;
-		content: "";
+  &[data-edited="true"]::after {
+    position: absolute;
+    top: -2px;
+    right: -70px;
+    width: 20px;
+    height: 18px;
+    content: "";
     animation-name: skillEdited;
     animation-duration: 3s;
     animation-delay: 0.5s;
     opacity: 0;
     background: data-uri("@{image-path}/check-black.svg");
     background-size: 100% 100%;
-	}
+  }
 }
 
 @keyframes skillEdited {
@@ -40,107 +40,107 @@
 }
 
 .skill-name {
-	position: relative;
-	display: flex;
-	margin-bottom: @xxs-stack;
-	flex-basis: 48%;
+  position: relative;
+  display: flex;
+  margin-bottom: @xxs-stack;
+  flex-basis: 48%;
   
-	span {
-		padding-right: @s-inline;
-	}
+  span {
+    padding-right: @s-inline;
+  }
 
-	&:after {
-		bottom: 0;
-		display: flex;
-		width: 100%;
-		margin-right: @m-stack;
-		content: "";
-		background-image: linear-gradient(to right, @s2-darkgrey3 12%, rgba(255,255,255,0) 0%);
-		background-repeat: repeat-x;
-		background-position: 100% 80%;
-		background-size: 16px 2px;
-	}
+  &:after {
+    bottom: 0;
+    display: flex;
+    width: 100%;
+    margin-right: @m-stack;
+    content: "";
+    background-image: linear-gradient(to right, @s2-darkgrey3 12%, rgba(255,255,255,0) 0%);
+    background-repeat: repeat-x;
+    background-position: 100% 80%;
+    background-size: 16px 2px;
+  }
 }
 .skill-level {
-	position: relative;
-	display: flex;
-	flex-basis: 50%;
+  position: relative;
+  display: flex;
+  flex-basis: 50%;
 }
 .level {
-	position: relative;
-	display: inline-block;
-	width: 50%;
-	height: 16px;
-	padding-right: @m-inline;
-	background-color: hsl(0,0%,90%);
+  position: relative;
+  display: inline-block;
+  width: 50%;
+  height: 16px;
+  padding-right: @m-inline;
+  background-color: hsl(0,0%,90%);
 }
 .levelBar {
-	position: absolute;
-	display: inline-block;
-	height: 100%;
-	text-align: end;
-	font-size: 24px;
+  position: absolute;
+  display: inline-block;
+  height: 100%;
+  text-align: end;
+  font-size: 24px;
 
-	&--0 {
-		width: 0;
-	}
-	.animateable &--1,
-	.animateable &--2,
-	.animateable &--3 {
-		animation-duration: 1s;
-		animation-timing-function: ease-in;
-		animation-delay: 0.3ms;
-		animation-fill-mode: forwards;
-		will-change: width;
-	}
-	.animateable &--1 {
-		animation-name: fillBars-33;
-	}
-	.animateable &--2 {
-		animation-name: fillBars-66;
-	}
-	.animateable &--3 {
-		animation-name: fillBars-100;
-	}
-	&--1 {width: 33%;}
-	&--2 {width: 66%;}
-	&--3 {width: 100%;}
+  &--0 {
+    width: 0;
+  }
+  .animateable &--1,
+  .animateable &--2,
+  .animateable &--3 {
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-delay: 0.3ms;
+    animation-fill-mode: forwards;
+    will-change: width;
+  }
+  .animateable &--1 {
+    animation-name: fillBars-33;
+  }
+  .animateable &--2 {
+    animation-name: fillBars-66;
+  }
+  .animateable &--3 {
+    animation-name: fillBars-100;
+  }
+  &--1 {width: 33%;}
+  &--2 {width: 66%;}
+  &--3 {width: 100%;}
 }
 
 
 
 .skillBar {
-	right: 0;
-	text-align: start;
-	text-indent: -10px;
-	background: @skillBarColor;
+  right: 0;
+  text-align: start;
+  text-indent: -10px;
+  background: @skillBarColor;
 }
 .willBar {
-	text-indent: 100%;
-	background: @willBarColor;
+  text-indent: 100%;
+  background: @willBarColor;
 }
 
 @keyframes fillBars-33 {
-	from {
-		width: 0;
-	}
-	to {
-		width: 33%;
-	}
+  from {
+    width: 0;
+  }
+  to {
+    width: 33%;
+  }
 }
 @keyframes fillBars-66 {
-	from {
-		width: 0;
-	}
-	to {
-		width: 66%;
-	}
+  from {
+    width: 0;
+  }
+  to {
+    width: 66%;
+  }
 }
 @keyframes fillBars-100 {
-	from {
-		width: 0;
-	}
-	to {
-		width: 100%;
-	}
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
