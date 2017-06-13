@@ -301,6 +301,7 @@
     left: -5px;
     top: 4px;
   }
+  
   .profile-actions[data-skilledit="true"] & {
     filter: grayscale(1);
     opacity: 0.5;
@@ -317,6 +318,11 @@
     position: absolute;
     left: -5px;
     top: 3px;
+    
+    .profile-actions[data-skilledit="true"] & {
+      background: data-uri("@{image-path}/check-red.svg");
+      height: 18px;
+    }
   }
 }
 
