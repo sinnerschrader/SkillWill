@@ -94,6 +94,10 @@
 			}
 		}
 	}
+  
+  .my-profile-open & {
+    padding-bottom: @xxl-stack;
+  }
 }
 
 .skill-listing {
@@ -242,18 +246,78 @@
 	}
 }
 
-// content: data-uri("@{image-path}/cross_white.svg");
+.profile-actions {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  box-sizing: border-box;
+  width: 100%;
+  padding: @s-stack;
+  text-align: center;
+  border-top: 1px solid @s2-grey2;
+  background-color: @s2-white;
+  
+  @media (min-width: 980px) {
+    display: inline-block;
+    width: auto;
+    border-top: 0;
+    bottom: @l-stack;
+    right: @l-stack;
+  }
+}
 
-// @media (min-width: @tablet-portrait-up) {
-//   transform: translateX(((@layer-width / 2) + @l-inline )) translateY(-80px);
-//   right: 60%;
-// }
+.add-skill-btn,
+.edit-skill-btn {
+  display: inline-block;
+  padding: @xs-stack @l-stack @xs-stack @l-stack;
+  color: @s2-red;
+  cursor: pointer;
+  position: relative;
+  border: 0;
+  background-color: transparent;
+  
+  &:hover {
+    filter: grayscale(1);
+  }
+  
+  &:focus {
+    outline: none;
+  }
 
+  @media (min-width: 980px) {
+    display: block;
+    text-align: left;
+    margin: 0 @xs-stack @xs-stack;
+  }
+}
 .add-skill-btn {
-
+  &::before {
+    content: "";
+    background: data-uri("@{image-path}/cross-red.svg");
+    background-size: 100% 100%;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    left: -5px;
+    top: 4px;
+  }
+  .profile-actions[data-skilledit="true"] & {
+    filter: grayscale(1);
+    opacity: 0.5;
+    cursor: default;
+  } 
 }
 .edit-skill-btn {
-
+  &::before {
+    content: "";
+    background: data-uri("@{image-path}/edit-red.svg");
+    background-size: 100% 100%;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: -5px;
+    top: 3px;
+  }
 }
 
 .back-btn {

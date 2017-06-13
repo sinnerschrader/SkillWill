@@ -19,7 +19,8 @@ class MyProfile extends React.Component {
 			editLayerOpen: false,
 			openLayerAt: -1,
 			shouldShowAllSkills: false,
-			skillSearchOpen: false
+			skillSearchOpen: false,
+			skillEditOpen: false
 		}
 		this.checkAndOpenLogin = this.checkAndOpenLogin.bind(this)
 		this.toggleSkillsSearch = this.toggleSkillsSearch.bind(this)
@@ -84,9 +85,11 @@ class MyProfile extends React.Component {
 	}
 
 	toggleSkillsEdit() {
-
 		this.props.getUserProfileData(this.state.userId)
 		this.props.toggleSkillsEditMode()
+		this.setState({
+      skillEditOpen: !this.state.skillEditOpen
+    });
 	}
 
 	editSkill(skill, skillLevel, willLevel) {
@@ -157,9 +160,13 @@ class MyProfile extends React.Component {
 							deleteSkill={this.deleteSkill}
 							setLastSortedBy={this.props.setLastSortedBy}
 							lastSortedBy={this.props.lastSortedBy} />
-						<div className="profile-actions">
-							<div className="add-skill-btn" onClick={this.toggleSkillsSearch}></div>
-							<div className="edit-skill-btn" onClick={this.toggleSkillsEdit}></div>
+						<div className="profile-actions" data-skilledit={this.state.skillEditOpen}>
+							<button className="edit-skill-btn" onClick={this.toggleSkillsEdit}>
+								{this.state.skillEditOpen ? 'Fertig' : 'Skills anpassen'}
+							</button>
+							<button className="add-skill-btn" onClick={this.toggleSkillsSearch} disabled={this.state.skillEditOpen}>
+								Skill hinzufügen
+							</button>
 						</div>
 					</div>
 				: null
