@@ -2,9 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import config from '../../config.json'
 import User from '../user/user'
+import Dropdown from '../dropdown/dropdown.jsx'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { setLocationFilter, setSortFilter } from '../../actions'
+import { setLocationFilter, setSortFilter, setDirectionFilter } from '../../actions'
 import sortAndFilter from '../../utils/sortAndFilter.js'
 
 class Results extends React.Component {
@@ -37,47 +38,39 @@ class Results extends React.Component {
 
 	render() {
 		const {
+			directionFilter,
 			locationFilter,
-			lastSortedBy : {sortFilter, lastSortedBy},
+			lastSortedBy: { sortFilter, lastSortedBy },
 			results: { searched, users },
-			setSortFilter
+			setSortFilter,
+			setDirectionFilter
 		} = this.props
+		const directionFilterOptions = [
+			{ value: "ascending", display: "aufsteigend" },
+			{ value: "descending", display: "absteigend" }
+		]
+		const sortFilterOptions = [
+			{ value: "fitness", display: "Match" },
+			{ value: "lastName", display: "Name" },
+			{ value: "location", display: "Standort" }
+		]
 		if (users && users.length > 0) {
-		const sortedUserList = sortAndFilter(users, sortFilter, 'desc', locationFilter)
+			const sortedUserList = sortAndFilter(users, sortFilter, directionFilter, locationFilter)
 			return (
 				<div className="results-container animateable">
 					<div className="counter">
 						{sortedUserList.length} Ergebnisse, sortiert
-						<div className="dropdown">
-							<span className="dropdown-label">aufsteigend</span>
-							<select>
-								<option value="all">???</option>
-							</select>
-						</div>
+							<Dropdown
+							onDropdownSelect={setDirectionFilter}
+							dropdownLabel={directionFilter}
+							options={directionFilterOptions} />
 						nach
-						<div className="dropdown">
-							<span className="dropdown-label">Match</span>
-							<select>
-								<option value="all">???</option>
-							</select>
-						</div>
+							<Dropdown
+							onDropdownSelect={setSortFilter}
+							dropdownLabel={sortFilter}
+							options={sortFilterOptions} />
 					</div>
 					<div className="results">
-						<div className="sort-buttons-wrapper">
-							<div className="container">
-								<ul className="sort-buttons">
-									<li className="sort-button sort-button-name" onClick={() => setSortFilter('lastName')}>
-										<span className="sort-button-label">Sort by Name</span>
-									</li>
-									<li className="sort-button sort-button-location" onClick={() => setSortFilter('location')}>
-										<span className="sort-button-label">Sort by Location</span>
-									</li>
-									<li className="sort-button sort-button-fitness" onClick={() => setSortFilter('fitness')}>
-										<span className="sort-button-label">Sort by Fitness</span>
-									</li>
-								</ul>
-							</div>
-						</div>
 						<ul className="results-list container">
 							{sortedUserList.map((user, i) => {
 								return (
@@ -104,7 +97,8 @@ function mapStateToProps(state) {
 		results: state.results,
 		searchTerms: state.searchTerms,
 		locationFilter: state.locationFilter,
-		lastSortedBy: state.lastSortedBy
+		lastSortedBy: state.lastSortedBy,
+		directionFilter: state.directionFilter
 	}
 }
-export default connect(mapStateToProps, { setLocationFilter, setSortFilter })(Results)
+export default connect(mapStateToProps, { setLocationFilter, setSortFilter, setDirectionFilter })(Results)
