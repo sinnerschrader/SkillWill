@@ -89,7 +89,7 @@ class MyProfile extends React.Component {
 		this.props.toggleSkillsEditMode()
 		this.setState({
       skillEditOpen: !this.state.skillEditOpen
-    });
+    })
 	}
 
 	editSkill(skill, skillLevel, willLevel) {

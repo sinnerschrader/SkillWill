@@ -3,15 +3,53 @@
 }
 
 .skill-item {
+	position: relative;
+
 	display: flex;
-	justify-content: space-between;
+
 	padding-bottom: 16px;
+
+	justify-content: space-between;
+
+	&[data-edited="true"]::after {
+		position: absolute;
+		top: -2px;
+		right: -70px;
+		width: 20px;
+		height: 18px;
+		content: "";
+    animation-name: skillEdited;
+    animation-duration: 3s;
+    animation-delay: 0.5s;
+    opacity: 0;
+    background: data-uri("@{image-path}/check-black.svg");
+    background-size: 100% 100%;
+	}
 }
+
+@keyframes skillEdited {
+  0% { 
+    opacity: 0; 
+  }
+  10% { 
+    opacity: 1; 
+  }
+  90% { 
+    opacity: 1; 
+  }
+  100% { 
+    opacity: 0; 
+  }
+}
+
 
 .skill-name {
 	position: relative;
+
 	display: flex;
+
 	margin-bottom: @xxs-stack;
+
 	flex-basis: 48%;
 
 	span {
@@ -20,10 +58,14 @@
 
 	&:after {
 		bottom: 0;
+
 		display: flex;
+
 		width: 100%;
 		margin-right: @m-stack;
+
 		content: "";
+
 		background-image: linear-gradient(to right, @s2-darkgrey3 12%, rgba(255,255,255,0) 0%);
 		background-repeat: repeat-x;
 		background-position: 100% 80%;
@@ -32,23 +74,32 @@
 }
 .skill-level {
 	position: relative;
+
 	display: flex;
+
 	flex-basis: 50%;
 }
 .level {
+	position: relative;
+
+	display: inline-block;
+
 	width: 50%;
 	height: 16px;
-	position: relative;
-	display: inline-block;
-	background-color: hsl(0,0%,90%);
 	padding-right: @m-inline;
+
+	background-color: hsl(0,0%,90%);
 }
 .levelBar {
-	display: inline-block;
-	text-align: end;
 	position: absolute;
-	font-size: 24px;
+
+	display: inline-block;
+
 	height: 100%;
+
+	text-align: end;
+
+	font-size: 24px;
 
 	&--0 {
 		width: 0;
@@ -57,9 +108,10 @@
 	.animateable &--2,
 	.animateable &--3 {
 		animation-duration: 1s;
-		animation-delay: 0.3ms;
-		animation-fill-mode: forwards;
 		animation-timing-function: ease-in;
+		animation-delay: 0.3ms;
+
+		animation-fill-mode: forwards;
 		will-change: width;
 	}
 	.animateable &--1 {
@@ -80,14 +132,17 @@
 
 
 .skillBar {
-	background: @skillBarColor;
 	right: 0;
+
 	text-align: start;
 	text-indent: -10px;
+
+	background: @skillBarColor;
 }
 .willBar {
-	background: @willBarColor;
 	text-indent: 100%;
+
+	background: @willBarColor;
 }
 
 @keyframes fillBars-33 {

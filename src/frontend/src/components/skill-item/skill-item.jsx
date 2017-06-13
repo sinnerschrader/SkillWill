@@ -40,7 +40,8 @@ class SkillItem extends React.Component {
 		this.state = {
 			skillLevel: this.props.skill.skillLevel,
 			willLevel: this.props.skill.willLevel,
-			renderSkill: true
+			renderSkill: true,
+			hasEdited: false
 		}
 		this.editSkill = this.editSkill.bind(this)
 		this.deleteSkill = this.deleteSkill.bind(this)
@@ -52,6 +53,18 @@ class SkillItem extends React.Component {
 			willLevel
 		})
 		this.props.editSkill(name, skillLevel, willLevel)
+
+		//trigger CSS animation
+		if(!this.state.hasEdited) {
+			this.setState({
+				hasEdited: true
+			})
+			setTimeout(function() {
+				this.setState({
+					hasEdited: false
+				})
+			}.bind(this), 3500);
+		}
 	}
 
 	deleteSkill(name) {
@@ -74,7 +87,7 @@ class SkillItem extends React.Component {
 		} = this.state
 		return (
 			this.state.renderSkill ?
-			<li key={key} className="skill-item">
+			<li key={key} className="skill-item" data-edited={this.state.hasEdited}>
 				<p className="skill-name"><span>{name}</span></p>
 				<div className="skill-level">
 					<div className="level">
