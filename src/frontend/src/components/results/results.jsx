@@ -66,13 +66,13 @@ class Results extends React.Component {
 						<div className="sort-buttons-wrapper">
 							<div className="container">
 								<ul className="sort-buttons">
-									<li className="sort-button sort-button-name" onClick={() => this.setSortFilter('lastName')}>
+									<li className="sort-button sort-button-name" onClick={() => setSortFilter('lastName')}>
 										<span className="sort-button-label">Sort by Name</span>
 									</li>
-									<li className="sort-button sort-button-location" onClick={() => this.setSortFilter('location')}>
+									<li className="sort-button sort-button-location" onClick={() => setSortFilter('location')}>
 										<span className="sort-button-label">Sort by Location</span>
 									</li>
-									<li className="sort-button sort-button-fitness" onClick={() => this.setSortFilter('fitness')}>
+									<li className="sort-button sort-button-fitness" onClick={() => setSortFilter('fitness')}>
 										<span className="sort-button-label">Sort by Fitness</span>
 									</li>
 								</ul>
