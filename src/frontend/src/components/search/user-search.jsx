@@ -23,16 +23,24 @@ class UserSearch extends React.Component {
 	}
 
 	handleDropdownSelect(location) {
-			this.props.setLocationFilter(location)
+		this.props.setLocationFilter(location)
 	}
 
 	render() {
-		const { searchTerms, locationFilter } = this.props
+		const locationFilterOptions = [
+			{value: "all", display: "Alle Standorte"},
+			{value: "Hamburg", display: "Hamburg"},
+			{value: "Frankfurt", display: "Frankfurt"},
+			{value: "München", display: "München"}
+		]
+		const { searchTerms, locationFilter, setLocationFilter } = this.props
+
 		return (
 			<div className="searchbar">
 				<Dropdown
-					onDropdownSelect={this.handleDropdownSelect}
-					dropdownLabel={locationFilter} />
+					onDropdownSelect={setLocationFilter}
+					dropdownLabel={locationFilter}
+					options={locationFilterOptions}	/>
 				<SearchBar
 					onInputChange={this.handleSearchBarInput}
 					onInputDelete={this.handleSearchBarDelete}
