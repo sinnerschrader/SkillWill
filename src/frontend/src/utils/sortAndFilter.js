@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function sortAndFilter(list, sort, direction, filter) {
-	if (direction === 'asc') {
+	if (direction === 'ascending') {
 		list.sort((a, b) => {
 			return a[sort] < b[sort] ? -1 : 1
 		})
