@@ -4,11 +4,8 @@
 
 .skill-item {
 	position: relative;
-
 	display: flex;
-
 	padding-bottom: 16px;
-
 	justify-content: space-between;
 
 	&[data-edited="true"]::after {
@@ -42,30 +39,22 @@
   }
 }
 
-
 .skill-name {
 	position: relative;
-
 	display: flex;
-
 	margin-bottom: @xxs-stack;
-
 	flex-basis: 48%;
-
+  
 	span {
 		padding-right: @s-inline;
 	}
 
 	&:after {
 		bottom: 0;
-
 		display: flex;
-
 		width: 100%;
 		margin-right: @m-stack;
-
 		content: "";
-
 		background-image: linear-gradient(to right, @s2-darkgrey3 12%, rgba(255,255,255,0) 0%);
 		background-repeat: repeat-x;
 		background-position: 100% 80%;
@@ -74,31 +63,22 @@
 }
 .skill-level {
 	position: relative;
-
 	display: flex;
-
 	flex-basis: 50%;
 }
 .level {
 	position: relative;
-
 	display: inline-block;
-
 	width: 50%;
 	height: 16px;
 	padding-right: @m-inline;
-
 	background-color: hsl(0,0%,90%);
 }
 .levelBar {
 	position: absolute;
-
 	display: inline-block;
-
 	height: 100%;
-
 	text-align: end;
-
 	font-size: 24px;
 
 	&--0 {
@@ -110,7 +90,6 @@
 		animation-duration: 1s;
 		animation-timing-function: ease-in;
 		animation-delay: 0.3ms;
-
 		animation-fill-mode: forwards;
 		will-change: width;
 	}
@@ -123,7 +102,6 @@
 	.animateable &--3 {
 		animation-name: fillBars-100;
 	}
-
 	&--1 {width: 33%;}
 	&--2 {width: 66%;}
 	&--3 {width: 100%;}
@@ -133,15 +111,12 @@
 
 .skillBar {
 	right: 0;
-
 	text-align: start;
 	text-indent: -10px;
-
 	background: @skillBarColor;
 }
 .willBar {
 	text-indent: 100%;
-
 	background: @willBarColor;
 }
 
