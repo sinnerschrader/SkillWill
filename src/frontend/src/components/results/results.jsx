@@ -16,6 +16,7 @@ class Results extends React.Component {
 		}
 		this.filterUserByLocation = this.filterUserByLocation.bind(this)
 		this.removeAnimationClass = this.removeAnimationClass.bind(this)
+		this.showUnavailableSearchTerms = this.showUnavailableSearchTerms.bind(this)
 	}
 
 	componentDidMount() {
@@ -37,8 +38,14 @@ class Results extends React.Component {
 		}
 	}
 
+	showUnavailableSearchTerms(){
+		const {searchTerms, results: {input}} = this.props
+		return searchTerms.filter(term => input.indexOf(term) === -1)
+	}
+
 	render() {
 		const {
+			searchTerms,
 			directionFilter,
 			locationFilter,
 			lastSortedBy: { sortFilter, lastSortedBy },
@@ -47,7 +54,8 @@ class Results extends React.Component {
 			setDirectionFilter
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
-		if (users && users.length > 0) {
+		if (users && users.length >= 0) {
+			const notFound = this.showUnavailableSearchTerms()
 			const sortedUserList = sortAndFilter(users, sortFilter, directionFilter, locationFilter)
 			return (
 				<div className="results-container animateable">
@@ -62,6 +70,7 @@ class Results extends React.Component {
 							onDropdownSelect={setSortFilter}
 							dropdownLabel={sortFilter}
 							options={sortFilterOptions} />
+							{notFound && notFound.length > 0 ? <div> {notFound} konnte nicht gefunden werden	</div> : ""}
 					</div>
 					<div className="results-legend-wrapper">
 						<div className="results-legend container">
