@@ -18,7 +18,7 @@ public class SkillStemUtils {
     if (name == null) {
       throw new IllegalArgumentException("cannot generate stem from null");
     }
-    return name.replaceAll("[^A-Za-z0-9]", "").toUpperCase();
+    return name.replaceAll("[^A-Za-z0-9+]", "").toUpperCase();
   }
 
 }
