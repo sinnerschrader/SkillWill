@@ -35,7 +35,7 @@ export default class Header extends React.Component {
 						onClick={this.handleClick}
 						className="nav-link"
 						to={`/my-profile/logout`}>
-						Logout
+						<Icon name="open-lock" size={20} />
 					</Link>
 				</li>
 			)
@@ -63,13 +63,15 @@ export default class Header extends React.Component {
 					<nav className="nav">
 						<ul className="nav-list">
 							<li className="nav-item">
-								<a className="nav-link" href={config.slackChannelUrl}>Slack channel</a>
+								<a className="nav-link" href={config.slackChannelUrl}>
+									<Icon name="slack" size={20} />
+								</a>
 							</li>
 							<li className="nav-item">
 								<Link
 									className="nav-link nav-link--profile"
 									to={`/my-profile/${this.returnMyProfileLink()}`}>
-									Your profile
+									<Icon name="user" size={20} />
 								</Link>
 							</li>
 							{this.renderLogOut()}
