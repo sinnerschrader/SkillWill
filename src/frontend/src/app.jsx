@@ -10,9 +10,10 @@ import { connect } from 'react-redux'
 
 class App extends React.Component {
 	render() {
-		const { isResultsLoaded, isSkillAnimated } = this.props
+		const { isResultsLoaded, isSkillAnimated, searchTerms } = this.props
+		const searchTermsNotEmpty = (searchTerms || []).length > 0
 		return (
-			<div className={isResultsLoaded ? 'results-loaded' : ''}>
+			<div className={isResultsLoaded && searchTermsNotEmpty ? 'results-loaded' : ''}>
 				<IconSymbols />
 				<Header />
 				<div className="search">
@@ -38,6 +39,7 @@ function mapStateToProps(state) {
 	return {
 		isResultsLoaded: state.isResultsLoaded,
 		isSkillAnimated: state.isSkillAnimated,
+		searchTerms: state.searchTerms
 	}
 }
 export default connect(mapStateToProps)(App)
