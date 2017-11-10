@@ -43,6 +43,9 @@ function isResultsLoaded(state = false, action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
 			return true
+		case ADD_SEARCH_TERMS:
+		case DELETE_SEARCH_TERM:
+			return false
 		default:
 			return state
 	}

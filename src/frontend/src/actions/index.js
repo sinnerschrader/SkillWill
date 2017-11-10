@@ -50,16 +50,24 @@ export function setSortFilter(criterion) {
 
 export const FETCH_RESULTS = 'FETCH_RESULTS'
 export function fetchResults(searchTerms) {
-	const requestURL = `${apiServer}/users?skills=${encodeURIComponent(
-		searchTerms
-	)}`
-	const options = {
-		credentials: 'same-origin',
+	var payload
+	if(searchTerms.length > 0) {
+		const requestURL = `${apiServer}/users?skills=${encodeURIComponent(
+			searchTerms
+		)}`
+		const options = {
+			credentials: 'same-origin',
+		}
+		payload = fetch(requestURL, options).then(response => response.json())
+	} else {
+		payload = {
+			searched: searchTerms,
+			results: []
+		}
 	}
-	const request = fetch(requestURL, options).then(response => response.json())
 	return {
 		type: FETCH_RESULTS,
-		payload: request,
+		payload
 	}
 }
 

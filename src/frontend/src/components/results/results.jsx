@@ -48,6 +48,7 @@ class Results extends React.Component {
 			animated,
 			setSortFilter,
 			setDirectionFilter,
+			searchTerms
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
 		if (users && users.length > 0) {
@@ -97,7 +98,7 @@ class Results extends React.Component {
 					</div>
 				</div>
 			)
-		} else if (!users) {
+		} else if (!users || searchTerms.length == 0) {
 			return (
 				<div
 					className="no-results-container-border"
