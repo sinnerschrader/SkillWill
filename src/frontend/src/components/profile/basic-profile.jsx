@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { Link } from 'react-router'
 import SkillItem from '../skill-item/skill-item.jsx'
 import TopWills from '../profile/top-wills'
@@ -36,7 +35,7 @@ class BasicProfile extends React.Component {
 	}
 
 	componentDidMount() {
-		ReactDOM.findDOMNode(this).addEventListener(
+		this.node.addEventListener(
 			'animationend',
 			this.removeAnimationClass
 		)
@@ -52,8 +51,8 @@ class BasicProfile extends React.Component {
 	}
 
 	removeAnimationClass() {
-		ReactDOM.findDOMNode(this).classList.remove('animateable')
-		ReactDOM.findDOMNode(this).removeEventListener(
+		this.node.classList.remove('animateable')
+		this.node.removeEventListener(
 			'animationend',
 			this.removeAnimationClass
 		)
@@ -151,6 +150,7 @@ class BasicProfile extends React.Component {
 
 		return (
 			<ul
+				ref={(ref) => { this.node = ref }}
 				className={`basic-profile ${this.props.shouldSkillsAnimate
 					? 'animateable'
 					: ''}`}>
