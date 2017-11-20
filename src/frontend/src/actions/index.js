@@ -73,6 +73,7 @@ export function fetchResults(searchTerms) {
 
 export function getUserBySearchTerms(term, method) {
 	return function(dispatch, getState) {
+		dispatch(loadResults())
 		if (method === 'delete') {
 			dispatch(deleteSearchTerms(term))
 		} else {
@@ -190,5 +191,12 @@ export const STOP_ANIMATING = 'STOP_ANIMATING'
 export function stopAnimating() {
 	return {
 		type: STOP_ANIMATING,
+	}
+}
+
+export const LOAD_RESULTS = 'LOAD_RESULTS'
+export function loadResults() {
+	return {
+		type: LOAD_RESULTS
 	}
 }

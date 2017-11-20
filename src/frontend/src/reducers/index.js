@@ -15,6 +15,7 @@ import {
 	SET_DIRECTION_FILTER,
 	START_ANIMATING,
 	STOP_ANIMATING,
+	LOAD_RESULTS
 } from '../actions'
 
 function setSearchTerms(state = [], action) {
@@ -43,8 +44,7 @@ function isResultsLoaded(state = false, action) {
 	switch (action.type) {
 		case FETCH_RESULTS:
 			return true
-		case ADD_SEARCH_TERMS:
-		case DELETE_SEARCH_TERM:
+		case LOAD_RESULTS:
 			return false
 		default:
 			return state

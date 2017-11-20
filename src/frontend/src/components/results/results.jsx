@@ -47,10 +47,11 @@ class Results extends React.Component {
 			animated,
 			setSortFilter,
 			setDirectionFilter,
-			searchTerms
+			searchTerms,
+			isResultsLoaded
 		} = this.props
 		const { directionFilterOptions, sortFilterOptions } = config
-		if (users && users.length > 0) {
+		if (isResultsLoaded && users && users.length > 0) {
 			const sortedUserList = sortAndFilter(
 				users,
 				sortFilter,
@@ -97,6 +98,13 @@ class Results extends React.Component {
 					</div>
 				</div>
 			)
+		} else if (!isResultsLoaded && searchTerms.length != 0) {
+			return <div
+				className="no-results-container">
+					<div className="container">
+						<h2>Searching for matching colleagues...</h2>
+					</div>
+				</div>
 		} else if (!users || searchTerms.length == 0) {
 			return (
 				<div
@@ -131,6 +139,7 @@ function mapStateToProps(state) {
 		lastSortedBy: state.lastSortedBy,
 		directionFilter: state.directionFilter,
 		isSkillAnimated: state.isSkillAnimated,
+		isResultsLoaded: state.isResultsLoaded
 	}
 }
 export default connect(mapStateToProps, {
