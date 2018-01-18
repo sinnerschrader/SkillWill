@@ -83,7 +83,7 @@ class Layer extends React.Component {
 	}
 
 	render() {
-		const { results: { users }} = this.props
+		// const { results: { users }} = this.props
 
 		return (
 			<div className="layer-container" name="containerid">
