@@ -145,6 +145,30 @@ export function getUserProfileData(profile) {
 	}
 }
 
+export const SORT_USER_SKILLS_DESC = 'SORT_USER_SKILLS_DESC'
+export function sortUserSkillsDesc(user) {
+	return {
+		type: SORT_USER_SKILLS_DESC,
+		payload: user
+	}
+}
+
+export const SORT_USER_WILLS_DESC = 'SORT_USER_WILLS_DESC'
+export function sortUserWillsDesc(user) {
+	return {
+		type: SORT_USER_WILLS_DESC,
+		payload: user
+	}
+}
+
+export const SORT_USER_SKILLS_BY_NAME = 'SORT_USER_SKILLS_BY_NAME'
+export function sortUserSkillsByName(user) {
+	return {
+		type: SORT_USER_SKILLS_BY_NAME,
+		payload: user
+	}
+}
+
 export const CLEAR_USER_DATA = 'CLEAR_USER_DATA'
 export function clearUserData() {
 	return {

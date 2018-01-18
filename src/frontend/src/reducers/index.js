@@ -14,12 +14,40 @@ import {
 	SET_DIRECTION_FILTER,
 	START_ANIMATING,
 	STOP_ANIMATING,
+	SORT_USER_SKILLS_DESC,
+	SORT_USER_WILLS_DESC,
+	SORT_USER_SKILLS_BY_NAME,
 	REQUEST_CURRENT_USER,
 	RECEIVE_CURRENT_USER,
 	SET_COMPANY_FILTER,
 	REQUEST_PROFILE_DATA,
 	RECEIVE_PROFILE_DATA
 } from '../actions'
+
+function sortSkillsUserHelper(user, criterion, order = 'asc') {
+	let skills = {}
+	if (user.lastSortedBy === criterion) {
+		skills = [...user.sortedSkills]
+		skills.reverse()
+	} else {
+		skills = [...user.skills]
+		skills.sort((a, b) => {
+			if (order === 'asc') {
+				return a[criterion].toString().toUpperCase() <
+				b[criterion].toString().toUpperCase()
+					? -1
+					: 1
+			} else {
+				return a[criterion].toString().toUpperCase() <
+				b[criterion].toString().toUpperCase()
+					? 1
+					: -1
+			}
+		})
+	}
+
+	return skills
+}
 
 function setSearchTerms(state = [], action) {
 	switch (action.type) {
@@ -81,8 +109,26 @@ function getUserProfileData(state = {}, action) {
 			return {
 				...state,
 				...action.payload,
-				loaded: true
+				loaded: true,
+				topWills: sortSkillsUserHelper(action.payload, 'willLevel', 'desc'),
+				sortedSkills: sortSkillsUserHelper(action.payload, 'skillLevel', 'desc'),
+				lastSortedBy: 'skillLevel'
 			}
+		case SORT_USER_SKILLS_DESC:
+			return Object.assign({}, state, action.payload, {
+				sortedSkills: sortSkillsUserHelper(action.payload, 'skillLevel', 'desc'),
+				lastSortedBy: 'skillLevel'
+			})
+		case SORT_USER_WILLS_DESC:
+			return Object.assign({}, state, action.payload, {
+				sortedSkills: sortSkillsUserHelper(action.payload, 'willLevel', 'desc'),
+				lastSortedBy: 'willLevel'
+			})
+		case SORT_USER_SKILLS_BY_NAME:
+			return Object.assign({}, state, action.payload, {
+				sortedSkills: sortSkillsUserHelper(action.payload, 'name', 'asc'),
+				lastSortedBy: 'name'
+			})
 		case CLEAR_USER_DATA:
 		case REQUEST_PROFILE_DATA:
 			return {
