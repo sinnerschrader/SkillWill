@@ -62,7 +62,7 @@ class Layer extends React.Component {
 
 	profileChecker(users) {
 		const inMyProfile = this.props.location.pathname.indexOf('my-profile')
-		
+
 		if (inMyProfile < 0 && users !== undefined) {
 			return true
 		}
