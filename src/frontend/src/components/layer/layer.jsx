@@ -60,7 +60,7 @@ class Layer extends React.Component {
 		return prevProfile
 	}
 
-	profileChecker(users) {
+	shouldArrowsBeShown(users) {
 		const inMyProfile = this.props.location.pathname.indexOf('my-profile')
 
 		if (inMyProfile < 0 && users !== undefined) {
@@ -77,7 +77,7 @@ class Layer extends React.Component {
 				<Link onClick={this.handleClose} className="close-layer" />
 
 				<div className="btn-wrapper">
-					<div className={this.profileChecker(users) ? "layer-btns" : "no-btns"}>
+					<div className={this.shouldArrowsBeShown(users) ? "layer-btns" : "no-btns"}>
 						<Link className="previous-arrow" to={`/profile/${this.getPrevUserId(users)}`} />
 						<Link className="next-arrow" to={`/profile/${this.getNextUserId(users)}`} />
 					</div>
