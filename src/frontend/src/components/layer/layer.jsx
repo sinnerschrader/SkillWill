@@ -8,11 +8,6 @@ class Layer extends React.Component {
 	constructor(props) {
 		super(props)
 		this.handleClose = this.handleClose.bind(this)
-
-		this.state = {
-			userId: this.props.params.id || "id"
-		}
-		this.props.getUserProfileData(this.state.userId)
 	}
 
 	componentDidMount() {
@@ -21,15 +16,6 @@ class Layer extends React.Component {
 
 	componentWillUnmount() {
 		document.body.classList.remove('layer-open')
-	}
-
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			userId: nextProps.params.id
-		})
-		if (nextProps.params.id !== nextProps.user.id) {
-			this.props.getUserProfileData(this.state.userId)
-		}
 	}
 
 	handleClose() {
@@ -48,7 +34,7 @@ class Layer extends React.Component {
 			arr.push(users[x].id)
 		}
 
-		let counter = arr.indexOf(this.state.userId)
+		let counter = arr.indexOf(this.props.params.id)
 
 		let nextProfile = arr[counter + 1]
 		if (nextProfile === undefined) {
@@ -64,7 +50,7 @@ class Layer extends React.Component {
 			arr.push(users[x].id)
 		}
 
-		let counter = arr.indexOf(this.state.userId)
+		let counter = arr.indexOf(this.props.params.id)
 
 		let prevProfile = arr[counter - 1]
 		if (prevProfile === undefined) {
@@ -74,23 +60,24 @@ class Layer extends React.Component {
 		return prevProfile
 	}
 
-	profileChecker() {
+	profileChecker(users) {
 		const inMyProfile = this.props.location.pathname.indexOf('my-profile')
-
-		if (inMyProfile < 0) {
+		
+		if (inMyProfile < 0 && users !== undefined) {
 			return true
 		}
+		return false
 	}
 
 	render() {
-		// const { results: { users }} = this.props
+		const { results: { users }} = this.props
 
 		return (
 			<div className="layer-container" name="containerid">
 				<Link onClick={this.handleClose} className="close-layer" />
 
 				<div className="btn-wrapper">
-					<div className={this.profileChecker() ? "layer-btns" : "no-btns"}>
+					<div className={this.profileChecker(users) ? "layer-btns" : "no-btns"}>
 						<Link className="previous-arrow" to={`/profile/${this.getPrevUserId(users)}`} />
 						<Link className="next-arrow" to={`/profile/${this.getNextUserId(users)}`} />
 					</div>
