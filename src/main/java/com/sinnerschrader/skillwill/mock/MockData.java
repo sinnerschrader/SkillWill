@@ -1,21 +1,26 @@
 package com.sinnerschrader.skillwill.mock;
 
-import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.jobs.LdapSyncJob;
-import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import javax.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,14 +34,11 @@ public class MockData {
 
   private static final Logger logger = LoggerFactory.getLogger(MockData.class);
 
-  @Autowired
-  private SkillRepository skillRepo;
+  private final SkillRepository skillRepo;
 
-  @Autowired
-  private UserRepository personRepo;
+  private final UserRepository userRepo;
 
-  @Autowired
-  private LdapSyncJob ldapSyncJob;
+  private final LdapSyncJob ldapSyncJob;
 
   @Value("${mockInit}")
   private boolean initmock;
@@ -47,34 +49,41 @@ public class MockData {
   @Value("${mockPersonsFilePath}")
   private String personsPath;
 
+  @Autowired
+  public MockData(SkillRepository skillRepo, UserRepository userRepo, LdapSyncJob ldapSyncJob) {
+    this.skillRepo = skillRepo;
+    this.userRepo = userRepo;
+    this.ldapSyncJob = ldapSyncJob;
+  }
+
   private JSONArray readMockFileToJsonArray(String path) throws IOException {
     InputStreamReader reader = new InputStreamReader(getClass()
       .getResourceAsStream("/mockdata/" + path));
 
     BufferedReader bufferedReader = new BufferedReader(reader);
-    String jsonString = "";
+    StringBuilder jsonString = new StringBuilder();
 
     String line = "";
     while ((line = bufferedReader.readLine()) != null) {
-      jsonString += line;
+      jsonString.append(line);
     }
 
-    return new JSONArray(jsonString);
+    return new JSONArray(jsonString.toString());
   }
 
-  private void mockPersons() throws IOException {
-    logger.warn("Deleting all persons in DB");
-    personRepo.deleteAll();
+  private void mockUsers() throws IOException {
+    logger.warn("Deleting all users in DB");
+    userRepo.deleteAll();
 
-    JSONArray persons = readMockFileToJsonArray(personsPath);
-    for (int i = 0; i < persons.length(); i++) {
-      JSONObject personJson = persons.getJSONObject(i);
-      User user = new User(personJson.getString("id"));
-      user.setRole(Role.valueOf(personJson.getString("role")));
+    var usersJsonArray = readMockFileToJsonArray(personsPath);
+    for (int i = 0; i < usersJsonArray.length(); i++) {
+      var userJson = usersJsonArray.getJSONObject(i);
+      var user = new User(userJson.getString("id"));
+      user.setRole(Role.valueOf(userJson.getString("role")));
 
-      JSONArray skills = personJson.getJSONArray("skills");
-      for (int j = 0; j < skills.length(); j++) {
-        JSONObject skillJson = skills.getJSONObject(j);
+      var skillsJsonArray = userJson.getJSONArray("skills");
+      for (int j = 0; j < skillsJsonArray.length(); j++) {
+        var skillJson = skillsJsonArray.getJSONObject(j);
         user.addUpdateSkill(
           skillJson.getString("name"),
           skillJson.getInt("skillLevel"),
@@ -85,23 +94,23 @@ public class MockData {
       }
 
       logger.info("Inserting user " + user.getId());
-      personRepo.save(user);
+      userRepo.save(user);
     }
   }
 
   private void mockSkills() throws IOException {
     logger.warn("Deleting all skills in DB");
     skillRepo.deleteAll();
-    JSONArray skills = readMockFileToJsonArray(skillsPath);
+    var skillsJsonArray = readMockFileToJsonArray(skillsPath);
 
-    for (int i = 0; i < skills.length(); i++) {
-      JSONObject skillJson = skills.getJSONObject(i);
-      KnownSkill skill = new KnownSkill(skillJson.getString("name"));
+    for (int i = 0; i < skillsJsonArray.length(); i++) {
+      var skillJson = skillsJsonArray.getJSONObject(i);
+      var skill = new Skill(skillJson.getString("name"));
       skill.setHidden(skillJson.getBoolean("hidden"));
 
-      JSONArray subskillJson = skillJson.getJSONArray("subskills");
-      for (int j = 0; j < subskillJson.length(); j++) {
-        skill.addSubSkillName(subskillJson.getString(j));
+      var subskillsJsonArray = skillJson.getJSONArray("subskills");
+      for (int j = 0; j < subskillsJsonArray.length(); j++) {
+        skill.addSubSkillName(subskillsJsonArray.getString(j));
       }
 
       logger.info("Inserting skill " + skill.getName());
@@ -109,7 +118,7 @@ public class MockData {
     }
   }
 
-  @PostConstruct
+  @EventListener(ApplicationStartedEvent.class)
   public void init() throws IOException {
     if (!initmock) {
       return;
@@ -117,7 +126,7 @@ public class MockData {
 
     logger.warn("Mocking is enabled, this will overwrite all data in your DB");
     mockSkills();
-    mockPersons();
+    mockUsers();
 
     logger.info("Syncing mocked users with LDAP");
     ldapSyncJob.run();

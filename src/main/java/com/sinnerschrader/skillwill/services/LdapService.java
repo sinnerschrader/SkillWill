@@ -2,33 +2,29 @@ package com.sinnerschrader.skillwill.services;
 
 
 import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.domain.user.UserLdapDetails;
 import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
-import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.util.ssl.SSLUtil;
 import com.unboundid.util.ssl.TrustAllTrustManager;
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.net.ssl.SSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
@@ -74,14 +70,18 @@ public class LdapService {
   @Value("${ldapLookupPassword}")
   private String ldapLookupPassword;
 
-  @Autowired
-  private UserRepository userRepo;
+  private final UserRepository userRepo;
+
+  private final EmbeddedLdap embeddedLdap;
+
+  private final UserLdapDetailsFactory userLdapDetailsFactory;
 
   @Autowired
-  private EmbeddedLdap embeddedLdap;
-
-  @Autowired
-  private UserLdapDetailsFactory userLdapDetailsFactory;
+  public LdapService(UserRepository userRepo, EmbeddedLdap embeddedLdap, UserLdapDetailsFactory userLdapDetailsFactory) {
+    this.userRepo = userRepo;
+    this.embeddedLdap = embeddedLdap;
+    this.userLdapDetailsFactory = userLdapDetailsFactory;
+  }
 
   private void tryStartEmbeddedLdap() {
     if (!ldapEmbedded) {
@@ -90,19 +90,18 @@ public class LdapService {
 
     try {
       embeddedLdap.startup();
-    } catch (LDAPException | IOException e) {
+    } catch (LDAPException e) {
       logger.error("Failed to start embedded LDAP");
     }
   }
 
-  @PostConstruct
-  private void openConnection() {
+  @EventListener(ContextStartedEvent.class)
+  public void openConnection() {
     tryStartEmbeddedLdap();
-
     try {
       if (ldapSsl) {
-        SSLUtil sslUtil = new SSLUtil(new TrustAllTrustManager());
-        SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+        var sslUtil = new SSLUtil(new TrustAllTrustManager());
+        var sslSocketFactory = sslUtil.createSSLSocketFactory();
         ldapConnection = new LDAPConnection(sslSocketFactory);
       } else {
         ldapConnection = new LDAPConnection();
@@ -114,15 +113,16 @@ public class LdapService {
     }
   }
 
-  @PreDestroy
-  private void closeConnection() {
-    if (ldapConnection != null) {
-      ldapConnection.close();
+  @EventListener(ContextStoppedEvent.class)
+  public void closeConnection() {
+    if (ldapConnection == null || !ldapConnection.isConnected()) {
+      logger.debug("Failed to disconnect LDAP: No open connection");
     }
+    ldapConnection.close();
   }
 
   private void ensureConnection() {
-    if (!ldapConnection.isConnected()) {
+    if (ldapConnection == null || !ldapConnection.isConnected()) {
       openConnection();
     }
   }
@@ -137,50 +137,30 @@ public class LdapService {
       .collect(Collectors.toList());
   }
 
-  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public User syncUser(User user) {
-    List<User> lst = new ArrayList<>();
-    lst.add(user);
-    return syncUsers(lst, false).get(0);
-  }
+  private SearchResultEntry getEntry(String filter) {
+    try {
+      for (String ou : allOUs()) {
+        var dn = ldapUserBaseDN.replace("{}", ou);
+        var ldapRequest = new SearchRequest(dn, SearchScope.SUB, filter);
+        var ldapResult = ldapConnection.search(ldapRequest);
 
-  private List<User> getNoDetailsUsers(Collection<User> users) {
-    return users.stream().filter(u -> u.getLdapDetails() == null).collect(Collectors.toList());
+        if (ldapResult.getEntryCount() > 0) {
+          return ldapResult.getSearchEntries().get(0);
+        }
+      }
+
+      return null;
+    } catch (LDAPException e) {
+      return null;
+    }
   }
 
   private SearchResultEntry getEntryByMail(String mail) {
-    try {
-      for (String ou : allOUs()) {
-        String dn = ldapUserBaseDN.replace("{}", ou);
-        SearchRequest ldapRequest = new SearchRequest(dn, SearchScope.SUB, "(mail=" + mail + ")");
-        SearchResult ldapResult = ldapConnection.search(ldapRequest);
-
-        if (ldapResult.getEntryCount() > 0) {
-          return ldapResult.getSearchEntries().get(0);
-        }
-      }
-
-      return null;
-    } catch (LDAPException e) {
-      return null;
-    }
+   return getEntry("(mail=" + mail + ")");
   }
 
   private SearchResultEntry getEntryById(String id) {
-    try {
-      for (String ou : allOUs()) {
-        String dn = ldapUserBaseDN.replace("{}", ou);
-        SearchRequest ldapRequest = new SearchRequest(dn, SearchScope.SUB, "(uid=" + id + ")");
-        SearchResult ldapResult = ldapConnection.search(ldapRequest);
-
-        if (ldapResult.getEntryCount() > 0) {
-          return ldapResult.getSearchEntries().get(0);
-        }
-      }
-      return null;
-    } catch (LDAPException e) {
-      return null;
-    }
+    return getEntry("(uid=" + id + ")");
   }
 
   public User createUserByMail(String mail) {
@@ -191,25 +171,31 @@ public class LdapService {
         logger.error("Failed to bind ldap as tech user", e);
       }
 
-      SearchResultEntry ldapEntry = getEntryByMail(mail);
+      var ldapEntry = getEntryByMail(mail);
       if (ldapEntry == null) {
         logger.warn("Failed to sync user {} with LDAP: no result", mail);
         return null;
       }
 
-      UserLdapDetails ldapDetails = userLdapDetailsFactory.get(ldapEntry);
+      var ldapDetails = userLdapDetailsFactory.get(ldapEntry);
       String dn = null;
       try {
         dn = ldapEntry.getParentDNString();
       } catch (LDAPException e) {
         e.printStackTrace();
       }
-      String id = ldapEntry.getAttributeValue("uid");
 
-      User newUser = new User(id);
+      var id = ldapEntry.getAttributeValue("uid");
+      var newUser = new User(id);
       newUser.setLdapDN(dn);
       newUser.setLdapDetails(ldapDetails);
+
       return newUser;
+  }
+
+  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+  public User syncUser(User user) {
+    return syncUsers(List.of(user), false).get(0);
   }
 
   public List<User> syncUsers(List<User> users, boolean forceUpdate) {
@@ -222,12 +208,11 @@ public class LdapService {
       return users;
     }
 
-    List<User> updated = new ArrayList<>();
-
+    var updated = new ArrayList<User>();
     for (User user : users) {
       SearchRequest ldapRequest;
       SearchResultEntry ldapEntry;
-      boolean isRemoved = false;
+      var isRemoved = false;
 
       try {
         // user does not need to update, irgnore
@@ -243,7 +228,7 @@ public class LdapService {
           }
         } else {
           ldapRequest = new SearchRequest(user.getLdapDN(), SearchScope.SUB, "(uid=" + user.getId() + ")");
-          List<SearchResultEntry> entries = ldapConnection.search(ldapRequest).getSearchEntries();
+          var entries = ldapConnection.search(ldapRequest).getSearchEntries();
           ldapEntry = entries.size() < 1 ? null : entries.get(0);
         }
 

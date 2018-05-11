@@ -15,19 +15,23 @@ import org.springframework.data.annotation.Version;
  *
  * @author torree
  */
-public class KnownSkill {
+public class Skill {
 
   private String name;
+
   @Id
   private String nameStem;
+
   private List<SuggestionSkill> suggestions;
+
   private Set<String> subSkillNames;
+
   private boolean hidden;
 
   @Version
   private Long version;
 
-  public KnownSkill(String name, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
+  public Skill(String name, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
     this.name = name;
     this.nameStem = SkillUtils.toStem(name);
     this.suggestions = suggestions;
@@ -35,11 +39,11 @@ public class KnownSkill {
     this.hidden = hidden;
   }
 
-  public KnownSkill(String name) {
+  public Skill(String name) {
     this(name, new ArrayList<>(), false, new HashSet<>());
   }
 
-  public KnownSkill() {
+  public Skill() {
     this("", new ArrayList<>(), false, new HashSet<>());
   }
 
@@ -149,7 +153,7 @@ public class KnownSkill {
       return false;
     }
 
-    KnownSkill that = (KnownSkill) o;
+    Skill that = (Skill) o;
 
     if (hidden != that.hidden) {
       return false;

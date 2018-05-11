@@ -1,6 +1,6 @@
 package com.sinnerschrader.skillwill.repositories;
 
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -12,23 +12,23 @@ import org.springframework.data.mongodb.repository.Query;
  *
  * @author torree
  */
-public interface SkillRepository extends MongoRepository<KnownSkill, String> {
+public interface SkillRepository extends MongoRepository<Skill, String> {
 
   @Query("{ 'hidden' : false }")
-  List<KnownSkill> findAllExcludeHidden();
+  List<Skill> findAllExcludeHidden();
 
-  KnownSkill findByName(String name);
+  Skill findByName(String name);
 
-  List<KnownSkill> findByNameIn(Collection<String> names);
+  List<Skill> findByNameIn(Collection<String> names);
 
   @Query("{ 'suggestions.name' : '?0' }")
-  List<KnownSkill> findBySuggestion(String suggestion);
+  List<Skill> findBySuggestion(String suggestion);
 
   @Query("{ 'subSkillNames' : '?0' }")
-  List<KnownSkill> findBySubskillName(String subskillName);
+  List<Skill> findBySubskillName(String subskillName);
 
-  KnownSkill findByNameStem(String name);
+  Skill findByNameStem(String name);
 
-  List<KnownSkill> findByNameStemLike(String name);
+  List<Skill> findByNameStemLike(String name);
 
 }

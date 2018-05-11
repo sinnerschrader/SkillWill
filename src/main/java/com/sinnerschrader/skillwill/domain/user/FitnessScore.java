@@ -1,6 +1,6 @@
 package com.sinnerschrader.skillwill.domain.user;
 
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.UserSkill;
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,11 +16,14 @@ import java.util.stream.Collectors;
 public class FitnessScore {
 
   private final FitnessScoreProperties props;
+
   private final User user;
-  private final Collection<KnownSkill> searchedSkills;
+
+  private final Collection<Skill> searchedSkills;
+
   private final double value;
 
-  public FitnessScore(User user, Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
+  public FitnessScore(User user, Collection<Skill> searchedSkills, FitnessScoreProperties props) {
     this.user = user;
     this.searchedSkills = searchedSkills;
     this.props = props;
@@ -31,18 +34,18 @@ public class FitnessScore {
     return this.value;
   }
 
-  private Set<String> getSearchedSkillNames(Collection<KnownSkill> searchedSkills) {
-    return searchedSkills.stream().map(KnownSkill::getName).collect(Collectors.toSet());
+  private Set<String> getSearchedSkillNames(Collection<Skill> searchedSkills) {
+    return searchedSkills.stream().map(Skill::getName).collect(Collectors.toSet());
   }
 
   private Set<UserSkill> getSearchedPersonalSkills() {
-    return this.user.getSkillsExcludeHidden().stream()
+    return this.user.getSkills(true).stream()
         .filter(s -> getSearchedSkillNames(this.searchedSkills).contains(s.getName()))
         .collect(Collectors.toSet());
   }
 
   private Set<UserSkill> getUnsearchedPersonalSkills() {
-    HashSet<UserSkill> skillset = new HashSet<>(this.user.getSkillsExcludeHidden());
+    var skillset = new HashSet<>(this.user.getSkills(true));
     skillset.removeAll(getSearchedPersonalSkills());
     return skillset;
   }

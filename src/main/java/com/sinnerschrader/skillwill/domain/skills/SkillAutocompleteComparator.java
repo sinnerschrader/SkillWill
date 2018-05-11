@@ -7,16 +7,16 @@ import java.util.Comparator;
  *
  * @author torree
  */
-public class KnownSkillSuggestionComparator implements Comparator<KnownSkill> {
+public class SkillAutocompleteComparator implements Comparator<Skill> {
 
   private final String userinput;
 
-  public KnownSkillSuggestionComparator(String userinput) {
+  public SkillAutocompleteComparator(String userinput) {
     this.userinput = userinput;
   }
 
   @Override
-  public int compare(KnownSkill a, KnownSkill b) {
+  public int compare(Skill a, Skill b) {
     boolean aStartsWith = a.getName().toLowerCase().startsWith(userinput.toLowerCase());
     boolean bStartsWith = b.getName().toLowerCase().startsWith(userinput.toLowerCase());
 

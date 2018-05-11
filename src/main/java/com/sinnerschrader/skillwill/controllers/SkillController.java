@@ -1,11 +1,11 @@
 package com.sinnerschrader.skillwill.controllers;
 
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.exceptions.DuplicateSkillException;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
-import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.misc.StatusResponseEntity;
 import com.sinnerschrader.skillwill.services.SessionService;
 import com.sinnerschrader.skillwill.services.SkillService;
 import io.swagger.annotations.Api;
@@ -14,16 +14,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +49,15 @@ public class SkillController {
 
   private static final Logger logger = LoggerFactory.getLogger(SkillController.class);
 
-  @Autowired
-  private SkillService skillService;
+  private final SkillService skillService;
+
+  private final SessionService sessionService;
 
   @Autowired
-  private SessionService sessionService;
+  public SkillController(SkillService skillService, SessionService sessionService) {
+    this.skillService = skillService;
+    this.sessionService = sessionService;
+  }
 
   /**
    * get/suggest skills based on search query -> can be used for autocompletion when user started
@@ -77,10 +78,10 @@ public class SkillController {
     @RequestParam(required = false, defaultValue = "true") boolean exclude_hidden,
     @RequestParam(required = false, defaultValue = "-1") int count) {
 
-    JSONArray skillsArr = new JSONArray(
-      skillService.getSkills(search, exclude_hidden, count)
+    var skillsArr = new JSONArray(
+      skillService.findSkill(search, exclude_hidden, count)
         .stream()
-        .map(KnownSkill::toJSON)
+        .map(Skill::toJSON)
         .collect(Collectors.toList())
     );
     return new ResponseEntity<>(skillsArr.toString(), HttpStatus.OK);
@@ -97,12 +98,10 @@ public class SkillController {
   })
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.GET)
   public ResponseEntity<String> getSkill(@PathVariable(value = "skill") String name) {
-    KnownSkill skill = skillService.getSkillByName(name);
-
+    var skill = skillService.getSkillByName(name);
     if (skill == null) {
       logger.debug("Failed to get skill {}: not found", name);
-      return new ResponseEntity<>(new StatusJSON("skill not found").toString(),
-        HttpStatus.NOT_FOUND);
+      return new StatusResponseEntity("skill not found", HttpStatus.NOT_FOUND);
     }
 
     logger.debug("Successfully got skill {}", name);
@@ -111,7 +110,7 @@ public class SkillController {
 
   /**
    * suggest next skill to enter -> This is not the autocomplete for skill search (see
-   * getSkillsExcludeHidden for that) -> Recommender System: "Users who searched this also searched
+   * getSkills(true) for that) -> Recommender System: "Users who searched this also searched
    * for that"
    */
   @ApiOperation(value = "suggest next skill", nickname = "suggest next skill", notes = "suggest next skill")
@@ -129,26 +128,21 @@ public class SkillController {
 
     if (count < 1) {
       logger.debug("Failed to get suggestions for skills {}: count less than zero", search);
-      return new ResponseEntity<>(
-        new StatusJSON("count must be a positive integer (or zero)").toString(),
-        HttpStatus.BAD_REQUEST);
+      return new StatusResponseEntity("count must be a positive integer (or zero)", HttpStatus.BAD_REQUEST);
     }
 
     try {
-      List<String> searchItems = StringUtils.isEmpty(search)
-        ? new ArrayList<>()
-        : Arrays.asList(search.split("\\s*,\\s*"));
-      List<KnownSkill> suggestionSkills = skillService.getSuggestionSkills(searchItems, count);
-      List<JSONObject> suggestionJsons = suggestionSkills.stream()
-        .map(KnownSkill::toJSON)
+      List<String> searchItems = StringUtils.isEmpty(search) ? Collections.emptyList() : List.of(search.split("\\s*,\\s*"));
+      var suggestionSkills = skillService.getSuggestionSkills(searchItems, count);
+      var suggestionJsons = suggestionSkills.stream()
+        .map(Skill::toJSON)
         .collect(Collectors.toList());
 
       logger.debug("Successfully got {} suggestions for search [{}]", suggestionJsons.size(), search);
       return new ResponseEntity<>(new JSONArray(suggestionJsons).toString(), HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to get suggestions for skills {}: serach contains inkown skill", search);
-      return new ResponseEntity<>(new StatusJSON("search contains unknown skill").toString(),
-        HttpStatus.BAD_REQUEST);
+      return new StatusResponseEntity("search contains unknown skill", HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -175,21 +169,19 @@ public class SkillController {
     @CookieValue("_oauth2_proxy") String oAuthToken) {
 
     if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      return new ResponseEntity<>(new StatusJSON("invalid session token or user is not admin").toString(), HttpStatus.FORBIDDEN);
+      return new StatusResponseEntity("invalid session token or user is not admin", HttpStatus.FORBIDDEN);
     }
 
     try {
       skillService.createSkill(name, hidden, createSubSkillSet(subSkills));
       logger.info("Successfully created new skill {}", name);
-      return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+      return new StatusResponseEntity("success", HttpStatus.OK);
     } catch (EmptyArgumentException | DuplicateSkillException e) {
       logger.debug("Failed to create skill {}: argument empty or skill already exists", name);
-      return new ResponseEntity<>(new StatusJSON(e.getMessage()).toString(),
-        HttpStatus.BAD_REQUEST);
+      return new StatusResponseEntity("argument empty or skill already existing", HttpStatus.BAD_REQUEST);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to add skill {}, subskill not found", name);
-      return new ResponseEntity<>(new StatusJSON(e.getMessage()).toString(),
-        HttpStatus.BAD_REQUEST);
+      return new StatusResponseEntity("subskill not found", HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -210,19 +202,19 @@ public class SkillController {
   @RequestMapping(path = "/skills/{skill}", method = RequestMethod.DELETE)
   public ResponseEntity<String> deleteSkill(@PathVariable String skill, @CookieValue("_oauth2_proxy") String oAuthToken, @RequestParam(required = false) String migrateTo) {
     if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      return new ResponseEntity<>(new StatusJSON("invalid session token or user is not admin").toString(), HttpStatus.FORBIDDEN);
+      return new StatusResponseEntity("invalid session token or user is not admin", HttpStatus.FORBIDDEN);
     }
 
     try {
       skillService.deleteSkill(skill, migrateTo);
       logger.info("Successfully deleted skill {}", skill);
-      return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+      return new StatusResponseEntity("success", HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to delete skill {}: not found", skill);
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+      return new StatusResponseEntity("skill not found", HttpStatus.NOT_FOUND);
     } catch (IllegalArgumentException e) {
       logger.debug("Failed to delete skill {}: illegal argument");
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      return new StatusResponseEntity("illegal argument", HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -250,25 +242,23 @@ public class SkillController {
     @CookieValue("_oauth2_proxy") String oAuthToken) {
 
     if (!sessionService.checkTokenRole(oAuthToken, Role.ADMIN)) {
-      return new ResponseEntity<>(new StatusJSON("invalid session token or user is not admin").toString(), HttpStatus.FORBIDDEN);
+      return new StatusResponseEntity("invalid session or not admin", HttpStatus.FORBIDDEN);
     }
 
     try {
       skillService.updateSkill(skill, name, hidden, createSubSkillSet(subskills));
-      return new ResponseEntity<>(new StatusJSON("success").toString(), HttpStatus.OK);
+      return new StatusResponseEntity("success", HttpStatus.OK);
     } catch (SkillNotFoundException e) {
       logger.debug("Failed to update skill {}: not found", skill);
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+      return new StatusResponseEntity("skill not found", HttpStatus.NOT_FOUND);
     } catch (DuplicateSkillException | IllegalArgumentException e) {
       logger.debug("Failed to update skill {}: illegal argument or skill already exists", skill);
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      return new StatusResponseEntity("skill already existing or invalid", HttpStatus.BAD_REQUEST);
     }
   }
 
   private Set<String> createSubSkillSet(String s) {
-    return StringUtils.isEmpty(s)
-      ? new HashSet<>()
-      : new HashSet<>(Arrays.asList(StringUtils.tokenizeToStringArray(s, ",")));
+    return new HashSet<>(Arrays.asList(StringUtils.tokenizeToStringArray(s, ",")));
   }
 
 }

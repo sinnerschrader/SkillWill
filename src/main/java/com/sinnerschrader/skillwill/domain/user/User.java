@@ -1,14 +1,12 @@
 package com.sinnerschrader.skillwill.domain.user;
 
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.UserSkill;
-import com.sinnerschrader.skillwill.domain.skills.SkillUtils;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,8 +23,11 @@ public class User {
 
   @Id
   private String id;
+
   private List<UserSkill> skills;
+
   private Role role;
+
   private String ldapDN;
 
   @Transient
@@ -35,7 +36,7 @@ public class User {
   @Version
   private Long version;
 
-  // LDAP Details will be updates regularly
+  // LDAP Details will be updated regularly
   private UserLdapDetails ldapDetails;
 
   public User(String id) {
@@ -51,30 +52,22 @@ public class User {
     return this.id;
   }
 
-  public List<UserSkill> getSkillsExcludeHidden() {
+  public List<UserSkill>  getSkills(boolean excludeHidden) {
     return this.skills.stream()
-      .filter(s -> !s.isHidden())
+      .filter(skill -> !excludeHidden || !skill.isHidden())
       .collect(Collectors.toList());
   }
 
-  public List<UserSkill>  getSkills() {
-    return this.skills;
-  }
-
-  public UserSkill getSkill(String name) {
+  public UserSkill getSkill(String name, boolean excludeHidden) {
     return this.skills.stream()
         .filter(s -> s.getName().equals(name))
+        .filter(s -> !excludeHidden || !s.isHidden())
         .findFirst()
         .orElse(null);
   }
 
   public boolean hasSkill(String skill) {
-    return this.getSkill(skill) != null;
-  }
-
-  public UserSkill getSkillExcludeHidden(String name) {
-    UserSkill skill = this.getSkill(name);
-    return skill == null || skill.isHidden() ? null : skill;
+    return this.getSkill(skill, true) != null;
   }
 
   public UserLdapDetails getLdapDetails() {
@@ -86,29 +79,23 @@ public class User {
   }
 
   public void addUpdateSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
-    // Remove old skill if existing...
-    Optional<UserSkill> existing = skills.stream()
-        .filter(s -> s.getName().equals(SkillUtils.sanitizeName(name)))
-        .findFirst();
-    if (existing.isPresent()) {
-      existing.get().setSkillLevel(skillLevel);
-      existing.get().setWillLevel(willLevel);
-      existing.get().setMentor(mentor);
-      existing.get().setHidden(hidden);
-    } else {
-      this.skills.add(new UserSkill(name, skillLevel, willLevel, hidden, mentor));
+    try {
+      removeSkill(name);
+    } catch (SkillNotFoundException e) {
+      // user doesn't have skill yet -> add new skill
     }
+    this.skills.add(new UserSkill(name, skillLevel, willLevel, hidden, mentor));
   }
 
   public void removeSkill(String name) throws SkillNotFoundException {
-    UserSkill skill = skills.stream()
+    var toRemove = skills.stream()
         .filter(s -> s.getName().equals(name))
         .findAny()
         .orElseThrow(() -> new SkillNotFoundException("user does not have skill"));
-    skills.remove(skill);
+    skills.remove(toRemove);
   }
 
-  public void setFitnessScore(Collection<KnownSkill> searchedSkills, FitnessScoreProperties props) {
+  public void setFitnessScore(Collection<Skill> searchedSkills, FitnessScoreProperties props) {
     this.fitnessScore = new FitnessScore(this, searchedSkills, props);
   }
 
@@ -121,33 +108,33 @@ public class User {
   }
 
   public JSONObject toJSON() {
-    JSONObject obj = new JSONObject();
-    obj.put("id", this.id);
-    obj.put("role", this.role.toString());
+    var json = new JSONObject();
+    json.put("id", this.id);
+    json.put("role", this.role.toString());
 
     if (this.ldapDetails != null) {
-      obj.put("firstName", ldapDetails.getFirstName());
-      obj.put("lastName", ldapDetails.getLastName());
-      obj.put("mail", ldapDetails.getMail());
-      obj.put("phone", ldapDetails.getPhone());
-      obj.put("location", ldapDetails.getLocation());
-      obj.put("title", ldapDetails.getTitle());
-      obj.put("company", ldapDetails.getCompany());
+      json.put("firstName", ldapDetails.getFirstName());
+      json.put("lastName", ldapDetails.getLastName());
+      json.put("mail", ldapDetails.getMail());
+      json.put("phone", ldapDetails.getPhone());
+      json.put("location", ldapDetails.getLocation());
+      json.put("title", ldapDetails.getTitle());
+      json.put("company", ldapDetails.getCompany());
     }
 
     if (this.fitnessScore != null) {
-      obj.put("fitness", this.fitnessScore.getValue());
+      json.put("fitness", this.fitnessScore.getValue());
     }
 
-    JSONArray skillsArr = new JSONArray();
+    var skillsArr = new JSONArray();
     this.skills.stream()
       .filter(s -> !s.isHidden())
       .sorted(Comparator.comparing(UserSkill::getName))
       .map(UserSkill::toJSON)
       .forEach(skillsArr::put);
 
-    obj.put("skills", skillsArr);
-    return obj;
+    json.put("skills", skillsArr);
+    return json;
   }
 
   public Role getRole() {

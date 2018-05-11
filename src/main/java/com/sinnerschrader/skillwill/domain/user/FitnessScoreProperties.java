@@ -25,23 +25,23 @@ public class FitnessScoreProperties {
   @Value("${maxLevelValue}")
   private int maxLevelValue;
 
-  public double getWeightAverageSkills() {
+  double getWeightAverageSkills() {
     return weightAverageSkills;
   }
 
-  public double getWeightAverageWills() {
+  double getWeightAverageWills() {
     return weightAverageWills;
   }
 
-  public double getWeightSpecializationSkills() {
+  double getWeightSpecializationSkills() {
     return weightSpecializationSkills;
   }
 
-  public double getWeightSpecializationWills() {
+  double getWeightSpecializationWills() {
     return weightSpecializationWills;
   }
 
-  public int getMaxLevelValue() {
+  int getMaxLevelValue() {
     return maxLevelValue;
   }
 

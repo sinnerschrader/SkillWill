@@ -14,19 +14,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Partial unit tests for KnownSkill
+ * Partial unit tests for Skill
  *
  * @author torree
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class KnownSkillTest {
+public class SkillTest {
 
-  private KnownSkill skill;
+  private Skill skill;
 
   @Before
   public void setUp() {
-    skill = new KnownSkill("Java");
+    skill = new Skill("Java");
     skill.incrementSuggestion("COBOL");
   }
 

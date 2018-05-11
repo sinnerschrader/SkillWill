@@ -5,9 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
@@ -15,7 +15,6 @@ import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.json.JSONArray;
@@ -27,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -43,7 +41,7 @@ public class UserControllerTest {
   private UserController userController;
 
   @Autowired
-  private UserRepository personRepo;
+  private UserRepository userRepo;
 
   @Autowired
   private SkillRepository skillRepo;
@@ -58,46 +56,46 @@ public class UserControllerTest {
   private LdapService ldapService;
 
   @Before
-  public void setUp() throws LDAPException, IOException {
+  public void setUp() throws LDAPException {
     embeddedLdap.reset();
     skillRepo.deleteAll();
-    personRepo.deleteAll();
+    userRepo.deleteAll();
     sessionRepo.deleteAll();
 
-    skillRepo.insert(new KnownSkill("Java"));
-    skillRepo.insert(new KnownSkill("hidden", new ArrayList<>(), true, new HashSet<>()));
+    skillRepo.insert(new Skill("Java"));
+    skillRepo.insert(new Skill("hidden", new ArrayList<>(), true, new HashSet<>()));
 
-    User userUser = new User("aaaaaa");
+    var userUser = new User("aaaaaa");
     userUser.addUpdateSkill("Java", 2, 3, false, false);
     userUser.addUpdateSkill("hidden", 0, 1, true, false);
-    personRepo.insert(userUser);
+    userRepo.insert(userUser);
 
-    User adminUser = new User("bbbbbb");
+    var adminUser = new User("bbbbbb");
     adminUser.setRole(Role.ADMIN);
-    personRepo.insert(adminUser);
+    userRepo.insert(adminUser);
 
-    ldapService.syncUsers(personRepo.findAll(), true);
+    ldapService.syncUsers(userRepo.findAll(), true);
 
-    Session userSession = new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    var userSession = new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     sessionRepo.insert(userSession);
 
-    Session adminSession = new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
+    var adminSession = new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
     sessionRepo.insert(adminSession);
   }
 
   @Test
   public void testGetUserValid() throws JSONException {
-    ResponseEntity<String> res = userController.getUser("aaaaaa");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
+    var response = userController.getUser("aaaaaa");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    assertTrue(new JSONObject(res.getBody()).has("id"));
-    assertTrue(new JSONObject(res.getBody()).get("id").equals("aaaaaa"));
+    assertTrue(new JSONObject(response.getBody()).has("id"));
+    assertTrue(new JSONObject(response.getBody()).get("id").equals("aaaaaa"));
 
-    assertTrue(new JSONObject(res.getBody()).has("firstName"));
-    assertTrue(new JSONObject(res.getBody()).get("firstName").equals("Fooberius"));
+    assertTrue(new JSONObject(response.getBody()).has("firstName"));
+    assertTrue(new JSONObject(response.getBody()).get("firstName").equals("Fooberius"));
 
-    assertTrue(new JSONObject(res.getBody()).has("lastName"));
-    assertTrue(new JSONObject(res.getBody()).get("lastName").equals("Barblub"));
+    assertTrue(new JSONObject(response.getBody()).has("lastName"));
+    assertTrue(new JSONObject(response.getBody()).get("lastName").equals("Barblub"));
   }
 
   @Test
@@ -107,191 +105,191 @@ public class UserControllerTest {
 
   @Test
   public void testGetUsersValid() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", null, "Hamburg");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
-    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("Java", null, "Hamburg");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(response.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
+    assertEquals(1, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersHideHidden() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", null, "");
-    JSONArray skillJson = new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getJSONArray("skills");
-    assertEquals(1, skillJson.length());
-    assertEquals("Java", skillJson.getJSONObject(0).getString("name"));
+    var response = userController.getUsers("Java", null, "");
+    var skillJsonArray = new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getJSONArray("skills");
+    assertEquals(1, skillJsonArray.length());
+    assertEquals("Java", skillJsonArray.getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetUsersSkillsEmpty() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("", null, "Hamburg");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals(2, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("", null, "Hamburg");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals(2, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersSkillsNull() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers(null, null, "Hamburg");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals(2, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers(null, null, "Hamburg");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals(2, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersSkillUnknownOnly() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Unknown, More unknown", null, "");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals(0, new JSONObject(res.getBody()).getJSONArray("searched").length());
-    assertTrue(new JSONObject(res.getBody()).has("results"));
-    assertEquals(0, new JSONObject(res.getBody()).getJSONArray("results").length());
+    var response = userController.getUsers("Unknown, More unknown", null, "");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals(0, new JSONObject(response.getBody()).getJSONArray("searched").length());
+    assertTrue(new JSONObject(response.getBody()).has("results"));
+     assertEquals(0, new JSONObject(response.getBody()).getJSONArray("results").length());
   }
 
   @Test
   public void testGetUsersSkillUnknown() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Unknown,Java", null, "");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("searched").length());
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
-    assertTrue(new JSONObject(res.getBody()).has("results"));
-    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    var response = userController.getUsers("Unknown,Java", null, "");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals(1, new JSONObject(response.getBody()).getJSONArray("searched").length());
+    assertEquals("Java", new JSONObject(response.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
+    assertTrue(new JSONObject(response.getBody()).has("results"));
+    assertEquals(1, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
   }
 
   @Test
   public void testGetUsersNoFitnessInEmptySearch() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("", null, "Hamburg");
-    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("", null, "Hamburg");
+    assertFalse(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersLocationEmpty() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", null, "");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
-    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("Java", null, "");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(response.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
+    assertEquals(1, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersSkillsEmptyLocationEmpty() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("", null, "");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals(2, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertFalse(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("", null, "");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals(2, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertFalse(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersIgnoreSkillCase() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("JaVa", null, "Hamburg");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
-    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("JaVa", null, "Hamburg");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(response.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
+    assertEquals(1, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersIgnoreNonAlphanumerics() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("j#a)_V®a", null, "Hamburg");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertTrue(new JSONObject(res.getBody()).has("searched"));
-    assertEquals("Java", new JSONObject(res.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
-    assertEquals(1, new JSONObject(res.getBody()).getJSONArray("results").length());
-    assertEquals("aaaaaa", new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
-    assertTrue(new JSONObject(res.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
+    var response = userController.getUsers("j#a)_V®a", null, "Hamburg");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(new JSONObject(response.getBody()).has("searched"));
+    assertEquals("Java", new JSONObject(response.getBody()).getJSONArray("searched").getJSONObject(0).getString("found"));
+    assertEquals(1, new JSONObject(response.getBody()).getJSONArray("results").length());
+    assertEquals("aaaaaa", new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).getString("id"));
+    assertTrue(new JSONObject(response.getBody()).getJSONArray("results").getJSONObject(0).has("fitness"));
   }
 
   @Test
   public void testGetUsersLocationUnknown() throws JSONException {
-    ResponseEntity<String> res = userController.getUsers("Java", null, "IAmUnknown");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(0, new JSONObject(res.getBody()).getJSONArray("results").length());
+    var response = userController.getUsers("Java", null, "IAmUnknown");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(0, new JSONObject(response.getBody()).getJSONArray("results").length());
   }
 
   @Test
   public void testModifySkillsValid() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "3", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(0, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
+    var response = userController.updateSkills("aaaaaa", "Java", "3", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(3, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getSkillLevel());
+    assertEquals(0, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsLevelsZero() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    var response = userController.updateSkills("aaaaaa", "Java", "0", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void testModifySkillsLevelOverMax() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "4", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    var response = userController.updateSkills("aaaaaa", "Java", "0", "4", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void testModifySkillsSessionInvalid() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "0", false, "InvalidSession");
-    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
-    assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
+    var response = userController.updateSkills("aaaaaa", "Java", "0", "0", false, "InvalidSession");
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals(2, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getSkillLevel());
+    assertEquals(3, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsUserUnknown() {
     sessionRepo.deleteAll();
-    Session session = new Session("2342");
+    var session = new Session("2342");
     sessionRepo.insert(session);
 
-    ResponseEntity<String> res = userController.updateSkills("IAmUnknown", "Java", "0", "0", false, "2342");
-    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
-    assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
+    var response = userController.updateSkills("IAmUnknown", "Java", "0", "0", false, "2342");
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals(2, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getSkillLevel());
+    assertEquals(3, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsSkillUnknown() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "UnknownSkill", "0", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
+    var response = userController.updateSkills("aaaaaa", "UnknownSkill", "0", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(2, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getSkillLevel());
+    assertEquals(3, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsSkillLevelOutOfRange() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "5", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
+    var response = userController.updateSkills("aaaaaa", "Java", "5", "0", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(2, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getSkillLevel());
+    assertEquals(3, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsWillLevelOutOfRange() {
-    ResponseEntity<String> res = userController.updateSkills("aaaaaa", "Java", "0", "5", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(2, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(3, personRepo.findByIdIgnoreCase("aaaaaa").getSkillsExcludeHidden().get(0).getWillLevel());
+    var response = userController.updateSkills("aaaaaa", "Java", "0", "5", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(2, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getSkillLevel());
+    assertEquals(3, userRepo.findByIdIgnoreCase("aaaaaa").getSkills(true).get(0).getWillLevel());
   }
 
   @Test
   public void testModifySkillsHidden() {
     assertEquals(HttpStatus.BAD_REQUEST, userController.updateSkills("aaaaaa", "hidden", "0", "3", false, "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar").getStatusCode());
-    assertNull(personRepo.findByIdIgnoreCase("aaaaaa").getSkillExcludeHidden("hidden"));
+    assertNull(userRepo.findByIdIgnoreCase("aaaaaa").getSkill("hidden", true));
   }
 
   @Test
@@ -332,106 +330,101 @@ public class UserControllerTest {
 
   @Test
   public void testRemoveSkill() {
-    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
+    var response = userController.removeSkill("aaaaaa", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillSkillUnknown() {
-    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "UNKNOWN", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    var response = userController.removeSkill("aaaaaa", "UNKNOWN", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserUnknown() {
-    ResponseEntity<String> res = userController.removeSkill("IAmUnknown", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
+    var response = userController.removeSkill("IAmUnknown", "Java", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }
 
   @Test
   public void testRemoveSkillUserForbidden() {
-    ResponseEntity<String> res = userController.removeSkill("aaaaaa", "Java", "IAmUnknown");
-    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
-  }
-  
-  @Test
-  public void setRoleValid() {
-    
+    var response = userController.removeSkill("aaaaaa", "Java", "IAmUnknown");
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }
 
   @Test
   public void testGetSimilarUser() throws JSONException {
-    User p1 = new User("abc");
-    p1.addUpdateSkill("Java", 1, 2, false, false);
-    p1.addUpdateSkill(".NET", 3, 2, false, false);
-    p1.addUpdateSkill("Text", 1, 3, false, false);
-    personRepo.insert(p1);
+    var user1 = new User("abc");
+    user1.addUpdateSkill("Java", 1, 2, false, false);
+    user1.addUpdateSkill(".NET", 3, 2, false, false);
+    user1.addUpdateSkill("Text", 1, 3, false, false);
+    userRepo.insert(user1);
 
-    User p2 = new User("def");
-    p2.addUpdateSkill("Java", 3, 2, false, false);
-    personRepo.insert(p2);
+    var user2 = new User("def");
+    user2.addUpdateSkill("Java", 3, 2, false, false);
+    userRepo.insert(user2);
 
-    User p3 = new User("ghi");
-    p3.addUpdateSkill("Java", 1, 0, false, false);
-    p3.addUpdateSkill(".NET", 3, 2, false, false);
-    personRepo.insert(p3);
+    var user3 = new User("ghi");
+    user3.addUpdateSkill("Java", 1, 0, false, false);
+    user3.addUpdateSkill(".NET", 3, 2, false, false);
+    userRepo.insert(user3);
 
-    ResponseEntity<String> res = userController.getSimilar("abc", 1);
-    assertEquals(1, new JSONArray(res.getBody()).length());
-    assertEquals("ghi", new JSONArray(res.getBody()).getJSONObject(0).getString("id"));
+    var response = userController.getSimilar("abc", 1);
+    assertEquals(1, new JSONArray(response.getBody()).length());
+    assertEquals("ghi", new JSONArray(response.getBody()).getJSONObject(0).getString("id"));
   }
 
   @Test
   public void testGetSimilarUserNotFound() {
-    ResponseEntity<String> res = userController.getSimilar("IAmUnknown", 42);
-    assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
+    var response = userController.getSimilar("IAmUnknown", 42);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
   @Test
   public void testGetSimilarUserCountNegative() {
-    ResponseEntity<String> res = userController.getSimilar("aaaaaa", -1);
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    var response = userController.getSimilar("aaaaaa", -1);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void testSetRoleValid() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(Role.ADMIN, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
+    var response = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(Role.ADMIN, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleValidIgnoreCase() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "aDmiN");
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(Role.ADMIN, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
+    var response = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "aDmiN");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(Role.ADMIN, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleInvalid() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "unicorn");
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
-    assertEquals(Role.USER, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
+    var response = userController.updateRole("aaaaaa", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "unicorn");
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(Role.USER, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleNotAdmin() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
-    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
-    assertEquals(Role.USER, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
+    var response = userController.updateRole("aaaaaa", "YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals(Role.USER, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleInvalidSession() {
-    ResponseEntity<String> res = userController.updateRole("aaaaaa", "fleischkremistkeinesession", "ADMIN");
-    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
-    assertEquals(Role.USER, personRepo.findByIdIgnoreCase("aaaaaa").getRole());
+    var response = userController.updateRole("aaaaaa", "fleischkremistkeinesession", "ADMIN");
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals(Role.USER, userRepo.findByIdIgnoreCase("aaaaaa").getRole());
   }
 
   @Test
   public void testSetRoleUnknonwUser() {
-    ResponseEntity<String> res = userController.updateRole("dermönchmitderpeitsche", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
-    assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
+    var response = userController.updateRole("dermönchmitderpeitsche", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "ADMIN");
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
 
 }

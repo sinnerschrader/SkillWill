@@ -10,11 +10,17 @@ import java.util.Objects;
 public class UserLdapDetails {
 
   private final String firstName;
+
   private final String lastName;
+
   private final String mail;
+
   private final String phone;
+
   private final String location;
+
   private final String title;
+
   private final String company;
 
   public UserLdapDetails(String firstName, String lastName, String mail, String phone,
@@ -76,7 +82,7 @@ public class UserLdapDetails {
 
   @Override
   public int hashCode() {
-
     return Objects.hash(firstName, lastName, mail, phone, location, title, company);
   }
+
 }

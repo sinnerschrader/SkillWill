@@ -7,9 +7,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SessionRepository;
@@ -17,7 +17,6 @@ import com.sinnerschrader.skillwill.repositories.SkillRepository;
 import com.sinnerschrader.skillwill.services.LdapService;
 import com.sinnerschrader.skillwill.session.Session;
 import com.unboundid.ldap.sdk.LDAPException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.json.JSONArray;
@@ -28,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -47,7 +45,7 @@ public class SkillControllerTest {
   private SkillRepository skillRepo;
 
   @Autowired
-  private UserRepository personRepo;
+  private UserRepository userRepo;
 
   @Autowired
   private SessionRepository sessionRepo;
@@ -59,167 +57,170 @@ public class SkillControllerTest {
   private EmbeddedLdap embeddedLdap;
 
   @Before
-  public void setUp() throws LDAPException, IOException {
+  public void setUp() throws LDAPException {
     embeddedLdap.reset();
     skillRepo.deleteAll();
     sessionRepo.deleteAll();
-    personRepo.deleteAll();
+    userRepo.deleteAll();
 
-    KnownSkill hiddenSkill = new KnownSkill("hidden skill", new ArrayList<>(), true, new HashSet<>());
+    var hiddenSkill = new Skill("hidden skill", new ArrayList<>(), true, new HashSet<>());
     skillRepo.insert(hiddenSkill);
 
-    KnownSkill javaSkill = new KnownSkill("Java");
+    var javaSkill = new Skill("Java");
     javaSkill.incrementSuggestion("COBOL");
     javaSkill.incrementSuggestion("hidden skill");
     skillRepo.insert(javaSkill);
 
-    KnownSkill cobolSkill = new KnownSkill("COBOL");
+    var cobolSkill = new Skill("COBOL");
     cobolSkill.incrementSuggestion("Java");
     skillRepo.insert(cobolSkill);
 
-    User userUser = new User("aaaaaa");
-    personRepo.insert(userUser);
+    var userUser = new User("aaaaaa");
+    userRepo.insert(userUser);
 
-    User adminUser = new User("bbbbbb");
+    var adminUser = new User("bbbbbb");
     adminUser.setRole(Role.ADMIN);
-    personRepo.insert(adminUser);
+    userRepo.insert(adminUser);
 
-    ldapService.syncUsers(personRepo.findAll(), true);
+    ldapService.syncUsers(userRepo.findAll(), true);
 
-    Session userSession = new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
+    var userSession = new Session("YWFhLmFhYUBleGFtcGxlLmNvbQ==|foo|bar");
     sessionRepo.insert(userSession);
 
-    Session adminSession = new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
+    var adminSession = new Session("YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
     sessionRepo.insert(adminSession);
   }
 
   @Test
   public void testGetSkillsValidQuery() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("COB", true, -1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    JSONArray resJSON = new JSONArray(res.getBody());
-    assertEquals(1, resJSON.length());
-    assertEquals("COBOL", resJSON.getJSONObject(0).getString("name"));
+    var response = skillController.getSkills("COB", true, -1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    var responseJSON = new JSONArray(response.getBody());
+    assertEquals(1, responseJSON.length());
+    assertEquals("COBOL", responseJSON.getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetSkillsEmptyQuery() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("", true, -1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    JSONArray resJSON = new JSONArray(res.getBody());
-    assertEquals(2, resJSON.length());
-    assertEquals("Java", resJSON.getJSONObject(0).getString("name"));
-    assertEquals("COBOL", resJSON.getJSONObject(1).getString("name"));
+    var response = skillController.getSkills("", true, -1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    var responseJson = new JSONArray(response.getBody());
+    assertEquals(2, responseJson.length());
+    assertEquals("Java", responseJson.getJSONObject(0).getString("name"));
+    assertEquals("COBOL", responseJson.getJSONObject(1).getString("name"));
   }
 
   @Test
   public void testGetSkillsUnknownSkill() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("glibberish", true, -1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    JSONArray resJSON = new JSONArray(res.getBody());
-    assertEquals(0, resJSON.length());
+    var response = skillController.getSkills("glibberish", true, -1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    var responseJson = new JSONArray(response.getBody());
+    assertEquals(0, responseJson.length());
   }
 
   @Test
   public void testGetSkillsHidden() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("hidden", true, -1);
-    assertEquals(0, new JSONArray(res.getBody()).length());
-    res = skillController.getSkills("hidden", false, -1);
-    assertEquals(1, new JSONArray(res.getBody()).length());
-    assertEquals("hidden skill", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+    // test getSkills with excluded hidden skills => no results
+    var response = skillController.getSkills("hidden", true, -1);
+    assertEquals(0, new JSONArray(response.getBody()).length());
+
+    // do not exclude hidden => one result
+    response = skillController.getSkills("hidden", false, -1);
+    assertEquals(1, new JSONArray(response.getBody()).length());
+    assertEquals("hidden skill", new JSONArray(response.getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetSkillsCountNegative() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("", true, -1);
-    assertEquals(2, new JSONArray(res.getBody()).length());
+    var response = skillController.getSkills("", true, -1);
+    assertEquals(2, new JSONArray(response.getBody()).length());
   }
 
   @Test
   public void testGetSkillsCountZero() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("", true, 0);
-    assertEquals(0, new JSONArray(res.getBody()).length());
+    var response = skillController.getSkills("", true, 0);
+    assertEquals(2, new JSONArray(response.getBody()).length());
   }
 
   @Test
   public void testGetSkillsCountPositive() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("", true, 1);
-    assertEquals(1, new JSONArray(res.getBody()).length());
+    var response = skillController.getSkills("", true, 1);
+    assertEquals(1, new JSONArray(response.getBody()).length());
   }
 
   @Test
   public void testGetSkillsCountHigherThanFound() throws JSONException {
-    ResponseEntity<String> res = skillController.getSkills("", true, 42);
-    assertEquals(2, new JSONArray(res.getBody()).length());
+    var response = skillController.getSkills("", true, 42);
+    assertEquals(2, new JSONArray(response.getBody()).length());
   }
 
   @Test
   public void testGetNextValid() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("Java", 1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+    var response = skillController.getNext("Java", 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("COBOL", new JSONArray(response.getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetNextIgnoreCase() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("JaVa", 1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+    var response = skillController.getNext("JaVa", 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("COBOL", new JSONArray(response.getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetNextStemminng() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("j#a)_V®a", 1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).getString("name"));
+    var response = skillController.getNext("j#a)_V®a", 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("COBOL", new JSONArray(response.getBody()).getJSONObject(0).getString("name"));
   }
 
   @Test
   public void testGetNextCountZero() {
-    ResponseEntity<String> res = skillController.getNext("Java", 0);
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    var response = skillController.getNext("Java", 0);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void testGetNextCountNegative() {
-    ResponseEntity<String> res = skillController.getNext("Java", -1);
-    assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    var response = skillController.getNext("Java", -1);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   public void testGetNextCountMoreThanSkills() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("Java", 42);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(1, new JSONArray(res.getBody()).length());
-    assertEquals("COBOL", new JSONArray(res.getBody()).getJSONObject(0).get("name"));
+    var response = skillController.getNext("Java", 42);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, new JSONArray(response.getBody()).length());
+    assertEquals("COBOL", new JSONArray(response.getBody()).getJSONObject(0).get("name"));
   }
 
   @Test
   public void testGetNextExcludeHidden() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("Java", 2);
-    assertEquals(1, new JSONArray(res.getBody()).length());
-    assertNotEquals("hidden skill", new JSONArray(res.getBody()).getString(0));
+    var response = skillController.getNext("Java", 2);
+    assertEquals(1, new JSONArray(response.getBody()).length());
+    assertNotEquals("hidden skill", new JSONArray(response.getBody()).getString(0));
   }
 
 
   @Test
   public void testgetNextDoubleSearch() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("Java, COBOL", 1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(0, new JSONArray(res.getBody()).length());
+    var response = skillController.getNext("Java, COBOL", 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(0, new JSONArray(response.getBody()).length());
   }
 
   @Test
   public void testGetNextEmptySearch() {
-    ResponseEntity<String> res = skillController.getNext("", 1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
+    var response = skillController.getNext("", 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
   public void testGetNextUnknownSearch() throws JSONException {
-    ResponseEntity<String> res = skillController.getNext("IAmUnknown", 1);
-    assertEquals(HttpStatus.OK, res.getStatusCode());
-    assertEquals(0, new JSONArray(res.getBody()).length());
+    var response = skillController.getNext("IAmUnknown", 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(0, new JSONArray(response.getBody()).length());
   }
 
   @Test
@@ -295,54 +296,54 @@ public class SkillControllerTest {
 
   @Test
   public void testDeleteMigrate() {
-    User aUser = personRepo.findByIdIgnoreCase("aaaaaa");
-    aUser.addUpdateSkill("Java", 1, 3, false, true);
-    personRepo.save(aUser);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 1, 3, false, true);
+    userRepo.save(user);
 
     assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "COBOL").getStatusCode());
     assertNull(skillRepo.findByName("Java"));
 
-    aUser = personRepo.findByIdIgnoreCase("aaaaaa");
-    assertEquals(1, aUser.getSkill("COBOL").getSkillLevel());
-    assertEquals(3, aUser.getSkill("COBOL").getWillLevel());
-    assertTrue(aUser.getSkill("COBOL").isMentor());
-    assertFalse(aUser.getSkill("COBOL").isHidden());
-    assertNull(aUser.getSkill("Java"));
+    user = userRepo.findByIdIgnoreCase("aaaaaa");
+    assertEquals(1, user.getSkill("COBOL", true).getSkillLevel());
+    assertEquals(3, user.getSkill("COBOL", true).getWillLevel());
+    assertTrue(user.getSkill("COBOL", true).isMentor());
+    assertFalse(user.getSkill("COBOL", true).isHidden());
+    assertNull(user.getSkill("Java", true));
   }
 
   @Test
   public void testDeleteMigrateAlreadyHavingTarget() {
-    User aUser = personRepo.findByIdIgnoreCase("aaaaaa");
-    aUser.addUpdateSkill("Java", 1, 3, false, true);
-    aUser.addUpdateSkill("COBOL", 2, 0, false, false);
-    personRepo.save(aUser);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 1, 3, false, true);
+    user.addUpdateSkill("COBOL", 2, 0, false, false);
+    userRepo.save(user);
 
     assertEquals(HttpStatus.OK, skillController.deleteSkill("Java", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "COBOL").getStatusCode());
     assertNull(skillRepo.findByName("Java"));
 
-    aUser = personRepo.findByIdIgnoreCase("aaaaaa");
-    assertEquals(2, aUser.getSkill("COBOL").getSkillLevel());
-    assertEquals(0, aUser.getSkill("COBOL").getWillLevel());
-    assertFalse(aUser.getSkill("COBOL").isMentor());
-    assertFalse(aUser.getSkill("COBOL").isHidden());
-    assertNull(aUser.getSkill("Java"));
+    user = userRepo.findByIdIgnoreCase("aaaaaa");
+    assertEquals(2, user.getSkill("COBOL", true).getSkillLevel());
+    assertEquals(0, user.getSkill("COBOL", true).getWillLevel());
+    assertFalse(user.getSkill("COBOL", true).isMentor());
+    assertFalse(user.getSkill("COBOL", true).isHidden());
+    assertNull(user.getSkill("Java", true));
   }
 
   @Test
   public void testDeleteMigrateNoSkill() {
-    User aUser = personRepo.findByIdIgnoreCase("aaaaaa");
-    aUser.addUpdateSkill("Java", 1, 3, false, true);
-    personRepo.save(aUser);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 1, 3, false, true);
+    userRepo.save(user);
 
     assertEquals(HttpStatus.OK, skillController.deleteSkill("COBOL", "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar", "Java").getStatusCode());
     assertNull(skillRepo.findByName("COBOL"));
 
-    aUser = personRepo.findByIdIgnoreCase("aaaaaa");
-    assertEquals(1, aUser.getSkill("Java").getSkillLevel());
-    assertEquals(3, aUser.getSkill("Java").getWillLevel());
-    assertTrue(aUser.getSkill("Java").isMentor());
-    assertFalse(aUser.getSkill("Java").isHidden());
-    assertNull(aUser.getSkill("COBOL"));
+    user = userRepo.findByIdIgnoreCase("aaaaaa");
+    assertEquals(1, user.getSkill("Java", true).getSkillLevel());
+    assertEquals(3, user.getSkill("Java", true).getWillLevel());
+    assertTrue(user.getSkill("Java", true).isMentor());
+    assertFalse(user.getSkill("Java", true).isHidden());
+    assertNull(user.getSkill("COBOL", true));
   }
 
   @Test
@@ -429,62 +430,62 @@ public class SkillControllerTest {
 
   @Test
   public void testEditKeepPersonalSkillsWithNull() {
-    User p = personRepo.findByIdIgnoreCase("aaaaaa");
-    p.addUpdateSkill("Java", 3, 3, false, true);
-    personRepo.save(p);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 3, 3, false, true);
+    userRepo.save(user);
 
     skillController.updateSkill("Java", null, null, null, "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals("aaaaaa", personRepo.findBySkill("Java").get(0).getId());
+    assertEquals("aaaaaa", userRepo.findBySkill("Java").get(0).getId());
   }
 
   @Test
-  public void testEditKeepPersonalSkillsWithEmptyl() {
-    User p = personRepo.findByIdIgnoreCase("aaaaaa");
-    p.addUpdateSkill("Java", 3, 3, false, true);
-    personRepo.save(p);
+  public void testEditKeepPersonalSkillsWithEmpty() {
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 3, 3, false, true);
+    userRepo.save(user);
 
     skillController.updateSkill("Java", "", null, null, "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals("aaaaaa", personRepo.findBySkill("Java").get(0).getId());
+    assertEquals("aaaaaa", userRepo.findBySkill("Java").get(0).getId());
   }
 
   @Test
   public void testEditRenamePersonalSkills() {
-    User p = personRepo.findByIdIgnoreCase("aaaaaa");
-    p.addUpdateSkill("Java", 3, 3, false, true);
-    personRepo.save(p);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 3, 3, false, true);
+    userRepo.save(user);
 
     skillController.updateSkill("Java", "Foobar", null, null, "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals("aaaaaa", personRepo.findBySkill("Foobar").get(0).getId());
+    assertEquals("aaaaaa", userRepo.findBySkill("Foobar").get(0).getId());
   }
 
   @Test
   public void testEditRenamePersonalSkillsWithSpace() {
-    User p = personRepo.findByIdIgnoreCase("aaaaaa");
-    p.addUpdateSkill("Java", 3, 3, false, true);
-    personRepo.save(p);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 3, 3, false, true);
+    userRepo.save(user);
 
     skillController.updateSkill("Java", "Foobar ", null, null, "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    assertEquals("aaaaaa", personRepo.findBySkill("Foobar").get(0).getId());
+    assertEquals("aaaaaa", userRepo.findBySkill("Foobar").get(0).getId());
   }
 
   @Test
   public void testEditKeepPersonalSkillsVisibility() {
-    User p = personRepo.findByIdIgnoreCase("aaaaaa");
-    p.addUpdateSkill("Java", 3, 3, false, true);
-    personRepo.save(p);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 3, 3, false, true);
+    userRepo.save(user);
 
     skillController.updateSkill("Java", "", null, null, "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    assertFalse(personRepo.findBySkill("Java").get(0).getSkill("Java").isHidden());
+    assertFalse(userRepo.findBySkill("Java").get(0).getSkill("Java", true).isHidden());
   }
 
   @Test
   public void testEditPersonalSkillsHide() {
-    User p = personRepo.findByIdIgnoreCase("aaaaaa");
-    p.addUpdateSkill("Java", 3, 3, false, true);
-    personRepo.save(p);
+    var user = userRepo.findByIdIgnoreCase("aaaaaa");
+    user.addUpdateSkill("Java", 3, 3, false, true);
+    userRepo.save(user);
 
     skillController.updateSkill("Java", "", true, null, "YmJiLmJiYkBleGFtcGxlLmNvbQ==|foo|bar");
-    assertTrue(personRepo.findBySkill("Java").get(0).getSkill("Java").isHidden());
+    assertTrue(userRepo.findBySkill("Java").get(0).getSkill("Java", false).isHidden());
   }
 
   @Test

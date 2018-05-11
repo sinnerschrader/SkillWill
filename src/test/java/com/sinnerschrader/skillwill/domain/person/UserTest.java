@@ -34,15 +34,15 @@ public class UserTest {
   @Test
   public void testAddUpdateNewSkill() {
     user.addUpdateSkill("new skill", 2, 3, false, false);
-    assertEquals(2, user.getSkillsExcludeHidden().size());
+    assertEquals(2, user.getSkills(true).size());
   }
 
   @Test
   public void testAddUpdateKnownSkill() {
     user.addUpdateSkill("skillname", 0, 1, false, false);
-    assertEquals(1, user.getSkillsExcludeHidden().size());
-    assertEquals(0, user.getSkillsExcludeHidden().get(0).getSkillLevel());
-    assertEquals(1, user.getSkillsExcludeHidden().get(0).getWillLevel());
+    assertEquals(1, user.getSkills(true).size());
+    assertEquals(0, user.getSkills(true).get(0).getSkillLevel());
+    assertEquals(1, user.getSkills(true).get(0).getWillLevel());
   }
 
   @Test

@@ -41,27 +41,31 @@ public class SessionService {
   @Value("${oAuthUrl}")
   private String oAuthUrl;
 
-  @Autowired
-  private SessionRepository sessionRepo;
+  private final SessionRepository sessionRepo;
+
+  private final UserRepository UserRepository;
+
+  private final LdapService ldapService;
 
   @Autowired
-  private UserRepository UserRepository;
-
-  @Autowired
-  private LdapService ldapService;
+  public SessionService(SessionRepository sessionRepo, UserRepository UserRepository, LdapService ldapService) {
+    this.sessionRepo = sessionRepo;
+    this.UserRepository = UserRepository;
+    this.ldapService = ldapService;
+  }
 
   private boolean isTokenInProxy(String token) {
     try {
-      URL authUrl = new URL(oAuthUrl);
-      HttpURLConnection connection = (HttpURLConnection) authUrl.openConnection();
+      var authUrl = new URL(oAuthUrl);
+      var connection = (HttpURLConnection) authUrl.openConnection();
       connection.addRequestProperty("Cookie", "_oauth2_proxy=" + token);
       connection.connect();
 
-      int resonseCode = connection.getResponseCode();
+      var responseCode = connection.getResponseCode();
       connection.disconnect();
 
-      logger.debug("Successfully checked token with oauth proxy, result {}", resonseCode);
-      return resonseCode == HttpStatus.ACCEPTED.value();
+      logger.debug("Successfully checked token with oauth proxy, result {}", responseCode);
+      return responseCode == HttpStatus.ACCEPTED.value();
     } catch (IOException e) {
       logger.error("Failed to check session token at oauth Proxy");
       return false;
@@ -79,12 +83,12 @@ public class SessionService {
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public User getUserByToken(String token) {
-    Session session = getSession(token);
+    var session = getSession(token);
     if (session == null) {
       return null;
     }
 
-    User user = UserRepository.findByMail(session.getMail());
+    var user = UserRepository.findByMail(session.getMail());
     if (user == null) {
       user = ldapService.createUserByMail(extractMail(token));
     }
@@ -105,14 +109,14 @@ public class SessionService {
       logger.debug("Successfully validated token {} with proxy", token);
       if (UserRepository.findByMail(extractMail(token)) == null) {
         // user not in db yet, will create
-        User newUser = ldapService.createUserByMail(extractMail(token));
+        var newUser = ldapService.createUserByMail(extractMail(token));
         UserRepository.insert(newUser);
         logger.info("Successfully created new user {}", newUser.getId());
       }
 
       // session not in DB, but in proxy -> create new session and revalidate old ones
       refreshUserSessions(extractMail(token));
-      Session newSession = new Session(token);
+      var newSession = new Session(token);
       sessionRepo.insert(newSession);
       return newSession;
     }
@@ -123,7 +127,7 @@ public class SessionService {
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   private void refreshUserSessions(String mail) {
-    List<Session> cleanables = sessionRepo.findByMail(mail).stream()
+    var cleanables = sessionRepo.findByMail(mail).stream()
       .filter(session -> !isTokenInProxy(session.getToken()))
       .collect(Collectors.toList());
 
@@ -145,7 +149,7 @@ public class SessionService {
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
   public void cleanUp() {
-    List<Session> cleanables = sessionRepo.findAll()
+    var cleanables = sessionRepo.findAll()
       .stream()
       .filter(session -> !isTokenInProxy(session.getToken()) || UserRepository.findByMail(session.getMail()) == null)
       .collect(Collectors.toList());

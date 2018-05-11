@@ -1,7 +1,6 @@
 package com.sinnerschrader.skillwill.controllers;
 
-import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.misc.StatusJSON;
+import com.sinnerschrader.skillwill.misc.StatusResponseEntity;
 import com.sinnerschrader.skillwill.services.SessionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,8 +28,12 @@ public class SessionController {
 
   private static final Logger logger = LoggerFactory.getLogger(SkillController.class);
 
+  private final SessionService sessionService;
+
   @Autowired
-  private SessionService sessionService;
+  public SessionController(SessionService sessionService) {
+    this.sessionService = sessionService;
+  }
 
   @ApiOperation(value = "session/user", nickname = "get session user", notes = "get session user")
   @ApiResponses({
@@ -46,9 +49,9 @@ public class SessionController {
   @RequestMapping(path = "/session/user", method = RequestMethod.GET)
   public ResponseEntity<String> getCurrentUser(@CookieValue("_oauth2_proxy") String oAuthToken) {
     logger.debug("Getting user from session {}", oAuthToken);
-    User user = sessionService.getUserByToken(oAuthToken);
+    var user = sessionService.getUserByToken(oAuthToken);
     if (user == null) {
-      return new ResponseEntity<>(new StatusJSON("no current session").toString(), HttpStatus.UNAUTHORIZED);
+      return new StatusResponseEntity("no current session", HttpStatus.UNAUTHORIZED);
     }
     return new ResponseEntity<>(user.toJSON().toString(), HttpStatus.OK);
   }

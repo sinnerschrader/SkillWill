@@ -1,7 +1,7 @@
 package com.sinnerschrader.skillwill.misc;
 
 import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
+import com.sinnerschrader.skillwill.domain.skills.Skill;
 import com.sinnerschrader.skillwill.domain.skills.UserSkill;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
@@ -17,11 +17,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatisticsInfoContributor implements InfoContributor {
 
-  @Autowired
-  private UserRepository UserRepository;
+  private final UserRepository UserRepository;
+
+  private final SkillRepository skillRepository;
 
   @Autowired
-  private SkillRepository skillRepository;
+  public StatisticsInfoContributor(UserRepository UserRepository, SkillRepository skillRepository) {
+    this.UserRepository = UserRepository;
+    this.skillRepository = skillRepository;
+  }
 
   private void contributeUserCount(Info.Builder builder) {
     builder.withDetail("users_total", UserRepository.count());
@@ -32,8 +36,8 @@ public class StatisticsInfoContributor implements InfoContributor {
   }
 
   private void contributeUsedSkillCount(List<User> users, Info.Builder builder) {
-    int usedSkillCount = (int) users.stream()
-      .flatMap(p -> p.getSkillsExcludeHidden().stream())
+    var usedSkillCount = (int) users.stream()
+      .flatMap(user -> user.getSkills(true).stream())
       .map(UserSkill::getName)
       .distinct()
       .count();
@@ -41,13 +45,18 @@ public class StatisticsInfoContributor implements InfoContributor {
   }
 
   private void contributeHiddenSkillCount(Info.Builder builder) {
-    builder.withDetail("skills_hidden", skillRepository.findAll().stream().filter(KnownSkill::isHidden).count());
+    builder.withDetail(
+      "skills_hidden",
+      skillRepository.findAll().stream().filter(Skill::isHidden).count()
+    );
   }
 
   private void contributeUserSkills(List<User> users, Info.Builder builder) {
-    IntSummaryStatistics stats = users.stream().mapToInt(u -> u.getSkillsExcludeHidden().size()).summaryStatistics();
+    var stats = users.stream()
+      .mapToInt(user -> user.getSkills(true).size())
+      .summaryStatistics();
+    var details = new HashMap<String, Double>();
 
-    Map<String, Double> details = new HashMap<>();
     details.put("total", (double) stats.getSum());
     details.put("min", (double) stats.getMin());
     details.put("max", (double) stats.getMax());
@@ -58,7 +67,7 @@ public class StatisticsInfoContributor implements InfoContributor {
 
   @Override
   public void contribute(Info.Builder builder) {
-    List<User> users = UserRepository.findAll();
+    var users = UserRepository.findAll();
 
     contributeUserCount(builder);
     contributeSkillCount(builder);

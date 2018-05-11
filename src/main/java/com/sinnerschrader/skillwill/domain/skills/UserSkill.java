@@ -13,9 +13,13 @@ public class UserSkill {
 
   @Id
   private String name;
+
   private int skillLevel;
+
   private int willLevel;
+
   private boolean hidden;
+
   private boolean mentor;
 
   public UserSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
@@ -63,12 +67,12 @@ public class UserSkill {
   }
 
   public JSONObject toJSON() {
-    JSONObject o = new JSONObject();
-    o.put("name", this.name);
-    o.put("skillLevel", this.skillLevel);
-    o.put("willLevel", this.willLevel);
-    o.put("mentor", this.mentor);
-    return o;
+    var json = new JSONObject();
+    json.put("name", this.name);
+    json.put("skillLevel", this.skillLevel);
+    json.put("willLevel", this.willLevel);
+    json.put("mentor", this.mentor);
+    return json;
   }
 
 }

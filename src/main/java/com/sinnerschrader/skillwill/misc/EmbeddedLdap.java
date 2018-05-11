@@ -6,7 +6,6 @@ import com.unboundid.ldap.listener.InMemoryListenerConfig;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldif.LDIFReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,26 +24,28 @@ public class EmbeddedLdap {
 
   private InMemoryDirectoryServer dirServer = null;
 
-  public void startup() throws LDAPException, IOException {
+  public void startup() throws LDAPException {
     logger.warn("Starting embedded LDAP");
 
-    InMemoryDirectoryServerConfig serverconfig = new InMemoryDirectoryServerConfig("dc=example,dc=com");
+    var serverconfig = new InMemoryDirectoryServerConfig("dc=example,dc=com");
     serverconfig.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig(
         "default",
-        InetAddress.getLoopbackAddress(), 1338, null));
+        InetAddress.getLoopbackAddress(), 1338, null
+    ));
     serverconfig.setSchema(null);
-
     dirServer = new InMemoryDirectoryServer(serverconfig);
     dirServer.startListening();
-
     reset();
   }
 
-  public void reset() throws LDAPException, IOException {
-    logger.warn("Resetting embedded LDAP");
+  public void reset() throws LDAPException {
+    if (dirServer == null) {
+      startup();
+    }
 
-    InputStream ldifStream = getClass().getResourceAsStream("/testuser.ldif");
-    dirServer.importFromLDIF(true, new LDIFReader(ldifStream));
+    logger.warn("Resetting embedded LDAP");
+    var ldifInputStream = getClass().getResourceAsStream("/testuser.ldif");
+    dirServer.importFromLDIF(true, new LDIFReader(ldifInputStream));
   }
 
 }

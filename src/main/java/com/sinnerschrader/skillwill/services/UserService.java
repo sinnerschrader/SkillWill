@@ -1,20 +1,19 @@
 package com.sinnerschrader.skillwill.services;
 
+import com.sinnerschrader.skillwill.domain.skills.Skill;
+import com.sinnerschrader.skillwill.domain.skills.SkillSearchResult;
 import com.sinnerschrader.skillwill.domain.user.FitnessScoreProperties;
-import com.sinnerschrader.skillwill.domain.user.JaccardFilter;
+import com.sinnerschrader.skillwill.domain.user.UserSimilarityUtils;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.domain.skills.KnownSkill;
 import com.sinnerschrader.skillwill.exceptions.EmptyArgumentException;
 import com.sinnerschrader.skillwill.exceptions.IllegalLevelConfigurationException;
 import com.sinnerschrader.skillwill.exceptions.SkillNotFoundException;
 import com.sinnerschrader.skillwill.exceptions.UserNotFoundException;
 import com.sinnerschrader.skillwill.repositories.UserRepository;
 import com.sinnerschrader.skillwill.repositories.SkillRepository;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -38,35 +36,39 @@ public class UserService {
 
   private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-  @Autowired
-  private UserRepository UserRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  private LdapService ldapService;
+  private final LdapService ldapService;
 
-  @Autowired
-  private SkillService skillService;
+  private final SkillService skillService;
 
-  @Autowired
-  private SkillRepository skillRepository;
+  private final SkillRepository skillRepository;
 
-  @Autowired
-  private FitnessScoreProperties fitnessScoreProperties;
+  private final FitnessScoreProperties fitnessScoreProperties;
 
   @Value("${maxLevelValue}")
   private int maxLevelValue;
 
-  public List<User> getUsers(Collection<KnownSkill> skills, String company, String location)
+  @Autowired
+  public UserService(UserRepository userRepository, LdapService ldapService, SkillService skillService, SkillRepository skillRepository, FitnessScoreProperties fitnessScoreProperties) {
+    this.userRepository = userRepository;
+    this.ldapService = ldapService;
+    this.skillService = skillService;
+    this.skillRepository = skillRepository;
+    this.fitnessScoreProperties = fitnessScoreProperties;
+  }
+
+  public List<User> getUsers(SkillSearchResult skillSearch, String company, String location)
       throws IllegalArgumentException {
 
     List<User> candidates;
 
-    if (CollectionUtils.isEmpty(skills)) {
-      candidates = UserRepository.findAll();
+    if (skillSearch.isInputEmpty()) {
+      candidates = userRepository.findAll();
     } else {
-      List<String> skillNames = skills.stream().map(KnownSkill::getName).collect(Collectors.toList());
-      candidates = UserRepository.findBySkills(skillNames).stream()
-          .peek(p -> p.setFitnessScore(skills, fitnessScoreProperties))
+      var skillNames = skillSearch.mappedSkills().stream().map(Skill::getName).collect(Collectors.toList());
+      candidates = userRepository.findBySkills(skillNames).stream()
+          .peek(p -> p.setFitnessScore(skillSearch.mappedSkills(), fitnessScoreProperties))
           .sorted(Comparator.comparingDouble(User::getFitnessScoreValue).reversed())
           .collect(Collectors.toList());
     }
@@ -79,7 +81,7 @@ public class UserService {
     }
 
     logger.debug("Successfully found {} users for search [{}]", candidates.size(),
-        skills.stream().map(KnownSkill::getName).collect(Collectors.joining(", ")));
+        skillSearch.mappedSkills().stream().map(Skill::getName).collect(Collectors.joining(", ")));
 
     return candidates;
   }
@@ -103,19 +105,19 @@ public class UserService {
   }
 
   public User getUser(String id) {
-    User p = UserRepository.findByIdIgnoreCase(id);
+    var user = userRepository.findByIdIgnoreCase(id);
 
-    if (p == null) {
+    if (user == null) {
       logger.debug("Failed to find user {}: not found", id);
       throw new UserNotFoundException("user not found");
     }
 
-    if (p.getLdapDetails() == null) {
-      ldapService.syncUser(p);
+    if (user.getLdapDetails() == null) {
+      ldapService.syncUser(user);
     }
 
     logger.debug("Successfully found user {}", id);
-    return p;
+    return user;
   }
 
   @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
@@ -127,14 +129,13 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    User user = UserRepository.findByIdIgnoreCase(username);
-
+    var user = userRepository.findByIdIgnoreCase(username);
     if (user == null) {
       logger.debug("Failed to add/modify {}'s skills: user not found", username);
       throw new UserNotFoundException("user not found");
     }
 
-    KnownSkill skill = skillRepository.findByName(skillName);
+    var skill = skillRepository.findByName(skillName);
     if (skill == null || skill.isHidden()) {
       logger.debug("Failed to add/modify {}'s skill {}: skill not found or hidden", username, skillName);
       throw new SkillNotFoundException("skill not found/hidden");
@@ -147,7 +148,7 @@ public class UserService {
     }
 
     user.addUpdateSkill(skillName, skillLevel, willLevel, skillService.isHidden(skillName), mentor);
-    UserRepository.save(user);
+    userRepository.save(user);
 
     logger.info("Successfully updated {}'s skill {}", username, skillName);
   }
@@ -161,8 +162,7 @@ public class UserService {
       throw new EmptyArgumentException("arguments must not be empty or null");
     }
 
-    User user = UserRepository.findByIdIgnoreCase(username);
-
+    var user = userRepository.findByIdIgnoreCase(username);
     if (user == null) {
       logger.debug("Failed to remove {}'s skills: user not found", username);
       throw new UserNotFoundException("user not found");
@@ -174,7 +174,7 @@ public class UserService {
     }
 
     user.removeSkill(skillName);
-    UserRepository.save(user);
+    userRepository.save(user);
   }
 
   private boolean isValidLevelConfiguration(int skillLevel, int willLevel) {
@@ -186,25 +186,23 @@ public class UserService {
     return isValidSkillLevel && isValidWillLevel && isOneGreaterZero;
   }
 
-  public List<User> getSimilar(String username, int count) throws UserNotFoundException {
-    if (count < 0) {
-      throw new IllegalArgumentException("count must be a positive integer");
-    }
+  public List<User> getSimilar(String username, Integer count) throws UserNotFoundException {
+    var toSearch = userRepository.findAll();
+    var user = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
 
-    List<User> toSearch = UserRepository.findAll();
-    Optional<User> person = toSearch.stream().filter(p -> p.getId().equals(username)).findAny();
-
-    if (!person.isPresent()) {
+    if (!user.isPresent()) {
       logger.debug("Failed to get users similar to {}: user not found", username);
       throw new UserNotFoundException("user not found");
     }
 
-    toSearch.remove(person.get());
-    return ldapService.syncUsers(new JaccardFilter(person.get()).getFrom(toSearch, count), false);
+    return ldapService.syncUsers(
+      UserSimilarityUtils.findSimilar(user.get(), toSearch, count),
+      false
+    );
   }
 
   public Role getRole(String userId) {
-    User user = UserRepository.findByIdIgnoreCase(userId);
+    var user = userRepository.findByIdIgnoreCase(userId);
     if (user == null) {
       throw new UserNotFoundException("user not found");
     }
@@ -213,7 +211,7 @@ public class UserService {
   }
 
   public void updateRole(String userId, Role role) {
-    User user = UserRepository.findByIdIgnoreCase(userId);
+    var user = userRepository.findByIdIgnoreCase(userId);
     if (user == null) {
       throw new UserNotFoundException("user not found");
     }
@@ -223,12 +221,11 @@ public class UserService {
     }
 
     user.setRole(role);
-    UserRepository.save(user);
+    userRepository.save(user);
   }
 
   public void updateRole(String userId, String roleName) throws IllegalArgumentException {
-    roleName = roleName.toUpperCase();
-    Role role = Role.valueOf(roleName);
+    var role = Role.valueOf(roleName.toUpperCase());
     this.updateRole(userId, role);
   }
 
