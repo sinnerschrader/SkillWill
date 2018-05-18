@@ -33,13 +33,13 @@ class MyProfile extends React.Component {
 	}
 
 	componentWillMount() {
-		document.body.classList.add('my-profile-open')
+		document.body.classList.add('layer-full-open')
 		this.props.fetchCurrentUser()
 	}
 
 	componentWillUnmount() {
 		this.props.exitSkillsEditMode()
-		document.body.classList.remove('my-profile-open')
+		document.body.classList.remove('layer-full-open')
 	}
 
 	toggleSkillsSearch() {

@@ -1,0 +1,28 @@
+.textfield {
+  border: 1px solid @s2-grey2;
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: @base-font-size;
+  line-height: 1;
+  margin-bottom: @l-inline;
+  padding: @m-inline;
+  width: 100%;
+
+  &:focus {
+    border-color: @s2-red;
+    outline: 0;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &textarea {
+    height: initial;
+  }
+
+  &--xlarge {
+    font-size: @xl-base-font-size;
+  }
+}

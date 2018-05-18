@@ -1,0 +1,50 @@
+.admin {
+
+  .layer-full-open & {
+    @media (min-width: @tablet-portrait-up) {
+      max-width: @layer-width;
+      margin: 0 auto;
+    }
+  }
+
+  &__control,
+  &__add {
+    text-align: center;
+  }
+
+  &__add {
+    margin: @3xl-inline 0;
+    text-align: center;
+
+    &-title {
+      font-size: @xs-title-font-size;
+      margin-bottom: @l-inline;
+    }
+  }
+
+  &__button {
+    background: transparent;
+    border: none;
+    color: @s2-red;
+    cursor: pointer;
+
+    &:focus,
+    &:hover {
+      filter: grayscale(1)
+    }
+
+    & + & {
+      margin-left: @l-inline;
+    }
+
+    &--has-label {
+      .icon {
+        margin-right: @s-inline;
+      }
+    }
+
+    &--xlarge {
+      font-size: @xl-base-font-size;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+.admin-list {
+  list-style: none;
+
+  &__item {
+    border-bottom: 1px solid @s2-grey2;
+    padding: @l-inline 0;
+
+    > h3,
+    > p {
+      margin-bottom: @l-inline;
+    }
+
+    &-header {
+      display: flex;
+      margin-bottom: @l-inline;
+
+      &__left {
+        margin-right: auto;
+      }
+
+      &__title {
+        font-size: @xs-title-font-size;
+      }
+
+      .admin__button + .admin__button {
+        margin-left: @m-inline;
+      }
+    }
+  }
+
+  &__linked {
+    > li {
+      display: inline;
+
+      &:not(:last-child)::after {
+        content: ', ';
+      }
+    }
+  }
+}

@@ -26,11 +26,13 @@ export default class Header extends React.Component {
 					</NavigationItem>
 					<NavigationItem>
 						<NavigationList>
+							<NavigationListItem target={'/admin'}>
+								<Icon name="options" width={20} height={20} />
+							</NavigationListItem>
 							<NavigationListItem target={config.slackChannelUrl}>
 								<Icon name="slack" width={20} height={20} />
 							</NavigationListItem>
-							<NavigationListItem
-								target={'/my-profile'}>
+							<NavigationListItem target={'/my-profile'}>
 								<Icon name="user" width={20} height={20} />
 							</NavigationListItem>
 						</NavigationList>
@@ -39,5 +41,4 @@ export default class Header extends React.Component {
 			</header>
 		)
 	}
-
 }

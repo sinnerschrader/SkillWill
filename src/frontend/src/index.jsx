@@ -15,6 +15,7 @@ import SkillSearch from './components/search/skill-search.jsx'
 import Layer from './components/layer/layer.jsx'
 import MyProfile from './components/profile/my-profile.jsx'
 import OthersProfile from './components/profile/others-profile.jsx'
+import Admin from './components/admin/admin.jsx'
 
 const store = createStore(
 	combineReducers(Object.assign({}, reducers, { routing: routerReducer })),
@@ -44,6 +45,7 @@ const renderApp = Application => {
 						<Route path="my-profile" component={MyProfile}>
 							<Route path="add-skill" component={SkillSearch} />
 						</Route>
+						<Route path="admin" component={Admin} />
 					</Route>
 				</Router>
 			</Provider>
