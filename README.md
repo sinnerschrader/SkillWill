@@ -32,6 +32,7 @@ SkillWill creates more transparency about the collective knowledge and needs at 
   * you can use the built-in maven wrapper
 
 ## Building
+* make sure you're using Java 10 
 * ```mvn clean install```
 * if there isn't any maven installed locally, use the wrapper
  * ```./mvnw clean install```
