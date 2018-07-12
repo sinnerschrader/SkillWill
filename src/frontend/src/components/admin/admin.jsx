@@ -34,6 +34,10 @@ class Admin extends React.Component {
 		this.setState({ isAddNewActive: false })
 	}
 
+	handleSaveNew() {
+		console.log('I would like to add a new skill');
+	}
+
 	handleSearchBarInput(newSearchTerms) {
 		this.handleAbortNew()
 		this.props.getSkillsBySearchTerm(newSearchTerms)
@@ -66,7 +70,7 @@ class Admin extends React.Component {
 					</div>
 
 					{isAddNewActive ? (
-						<AdminEditor handleAbort={this.handleAbortNew} />
+						<AdminEditor handleAbort={this.handleAbortNew} handleSave={this.handleSaveNew}/>
 					) : (
 						<div>
 							<AdminList searchTerms={skillSearchTerms} />

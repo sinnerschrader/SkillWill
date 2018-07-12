@@ -18,7 +18,7 @@ export default class AdminListItem extends React.Component {
 	}
 
 	handleSave() {
-		console.log('save')
+		console.log('I\'m saving something!!')
 	}
 
 	handleEdit() {
