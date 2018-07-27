@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { getSkillsBySearchTerm } from '../../actions'
+import { getSkillsBySearchTerm, adminSkillAdd, adminSkillEdit, adminSkillDelete } from '../../actions'
 import AdminList from '../../components/admin/admin-list/admin-list'
 import AdminEditor from '../../components/admin/admin-editor/admin-editor'
 import Layer from '../layer/layer'
@@ -16,6 +16,7 @@ class Admin extends React.Component {
 		this.handleSearchBarDelete = this.handleSearchBarDelete.bind(this)
 		this.handleSetNew = this.handleSetNew.bind(this)
 		this.handleAbortNew = this.handleAbortNew.bind(this)
+		this.handleSaveNew = this.handleSaveNew.bind(this)
 	}
 
 	componentWillMount() {
@@ -35,7 +36,8 @@ class Admin extends React.Component {
 	}
 
 	handleSaveNew() {
-		console.log('I would like to add a new skill');
+		console.log('Adding a new skill');
+		this.props.adminSkillAdd()
 	}
 
 	handleSearchBarInput(newSearchTerms) {
@@ -95,4 +97,7 @@ function mapStateToProps(state) {
 	return { skillSearchTerms: state.skillSearchTerms }
 }
 
-export default connect(mapStateToProps, { getSkillsBySearchTerm })(Admin)
+export default connect(mapStateToProps, {
+	getSkillsBySearchTerm,
+	adminSkillAdd
+})(Admin)

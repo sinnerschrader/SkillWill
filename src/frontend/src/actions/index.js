@@ -256,3 +256,24 @@ export function fetchCurrentUser() {
 		})
 	}
 }
+
+export const ADMIN_SKILL_EDIT = 'ADMIN_SKILL_EDIT'
+export function adminSkillEdit() {
+	return {
+		type: ADMIN_SKILL_EDIT
+	}
+}
+
+export const ADMIN_SKILL_ADD = 'ADMIN_SKILL_ADD'
+export function adminSkillAdd() {
+	return {
+		type: ADMIN_SKILL_ADD
+	}
+}
+
+export const ADMIN_SKILL_DELETE = 'ADMIN_SKILL_DELETE'
+export function adminSkillDelete() {
+	return {
+		type: ADMIN_SKILL_DELETE
+	}
+}

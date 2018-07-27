@@ -1,8 +1,10 @@
 import React from 'react'
 import AdminListItemHeader from './admin-list-item-header'
 import AdminEditor from '../admin-editor/admin-editor'
+import { adminSkillAdd, adminSkillEdit, adminSkillDelete, getSkillsBySearchTerm } from '../../../actions'
+import connect from 'react-redux/es/connect/connect'
 
-export default class AdminListItem extends React.Component {
+class AdminListItem extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = { isEditActive: false }
@@ -18,7 +20,8 @@ export default class AdminListItem extends React.Component {
 	}
 
 	handleSave() {
-		console.log('I\'m saving something!!')
+		console.log('I\'m saving the edited skill')
+		this.props.adminSkillEdit()
 	}
 
 	handleEdit() {
@@ -26,7 +29,8 @@ export default class AdminListItem extends React.Component {
 	}
 
 	handleDelete() {
-		console.log('delete')
+		console.log('deleting skill')
+		this.props.adminSkillDelete()
 	}
 
 	render() {
@@ -65,3 +69,14 @@ export default class AdminListItem extends React.Component {
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	return { skillSearchTerms: state.skillSearchTerms }
+}
+
+export default connect(mapStateToProps, {
+	getSkillsBySearchTerm,
+	adminSkillAdd,
+	adminSkillEdit,
+	adminSkillDelete
+})(AdminListItem)

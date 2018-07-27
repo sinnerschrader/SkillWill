@@ -21,7 +21,10 @@ import {
 	RECEIVE_CURRENT_USER,
 	SET_COMPANY_FILTER,
 	REQUEST_PROFILE_DATA,
-	RECEIVE_PROFILE_DATA
+	RECEIVE_PROFILE_DATA,
+	ADMIN_SKILL_EDIT,
+	ADMIN_SKILL_ADD,
+	ADMIN_SKILL_DELETE
 } from '../actions'
 
 function sortSkillsUserHelper(user, criterion, order = 'asc') {
@@ -246,6 +249,36 @@ function currentUser(state = {
 	}
 }
 
+function adminSkillEdit(state = {}, action) {
+	switch (action.type) {
+		case ADMIN_SKILL_EDIT:
+			console.log('adminSkillEdit reducer triggered');
+			//return action.payload
+		default:
+			return state
+	}
+}
+
+function adminSkillAdd(state = {}, action) {
+	switch (action.type) {
+		case ADMIN_SKILL_ADD:
+			console.log('adminSkillAdd reducer triggered');
+		//return action.payload
+		default:
+			return state
+	}
+}
+
+function adminSkillDelete(state = {}, action) {
+	switch (action.type) {
+		case ADMIN_SKILL_DELETE:
+			console.log('adminSkillDelete reducer triggered');
+		//return action.payload
+		default:
+			return state
+	}
+}
+
 export default {
 	searchTerms: setSearchTerms,
 	results: fetchResultsBySearchTerms,
@@ -261,5 +294,8 @@ export default {
 	isResultsLoaded,
 	isSkillAnimated,
 	currentUser,
-	companyFilter
+	companyFilter,
+	adminSkillEdit,
+	adminSkillAdd,
+	adminSkillDelete
 }
