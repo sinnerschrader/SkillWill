@@ -1,19 +1,6 @@
 package com.sinnerschrader.skillwill.services;
 
 
-import com.sinnerschrader.skillwill.domain.user.Role;
-import com.sinnerschrader.skillwill.domain.user.User;
-import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
-import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
-import com.sinnerschrader.skillwill.repositories.UserRepository;
-import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.SearchRequest;
-import com.unboundid.ldap.sdk.SearchResultEntry;
-import com.unboundid.ldap.sdk.SearchScope;
-import com.unboundid.ldap.sdk.SimpleBindRequest;
-import com.unboundid.util.ssl.SSLUtil;
-import com.unboundid.util.ssl.TrustAllTrustManager;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +20,19 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import com.sinnerschrader.skillwill.domain.user.Role;
+import com.sinnerschrader.skillwill.domain.user.User;
+import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
+import com.sinnerschrader.skillwill.misc.EmbeddedLdap;
+import com.sinnerschrader.skillwill.repositories.UserRepository;
+import com.unboundid.ldap.sdk.LDAPConnection;
+import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.SearchRequest;
+import com.unboundid.ldap.sdk.SearchResultEntry;
+import com.unboundid.ldap.sdk.SearchScope;
+import com.unboundid.ldap.sdk.SimpleBindRequest;
+import com.unboundid.util.ssl.SSLUtil;
+import com.unboundid.util.ssl.TrustAllTrustManager;
 
 /**
  * Service handling LDAP auth and data retrieval
@@ -83,7 +83,8 @@ public class LdapService {
   private final UserLdapDetailsFactory userLdapDetailsFactory;
 
   @Autowired
-  public LdapService(UserRepository userRepo, EmbeddedLdap embeddedLdap, UserLdapDetailsFactory userLdapDetailsFactory) {
+  public LdapService(UserRepository userRepo, EmbeddedLdap embeddedLdap,
+      UserLdapDetailsFactory userLdapDetailsFactory) {
     this.userRepo = userRepo;
     this.embeddedLdap = embeddedLdap;
     this.userLdapDetailsFactory = userLdapDetailsFactory;
@@ -134,13 +135,13 @@ public class LdapService {
   }
 
   private void bindAsTechnicalUser() throws LDAPException {
-    ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
+    ldapConnection.bind(
+        new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
   }
 
   private List<String> allOUs() {
-    return Arrays.stream(ldapUserBaseOUs.split("\\|"))
-      .map(pair -> pair.split(",")[0])
-      .collect(Collectors.toList());
+    return Arrays.stream(ldapUserBaseOUs.split("\\|")).map(pair -> pair.split(",")[0])
+        .collect(Collectors.toList());
   }
 
   private SearchResultEntry getEntry(String filter) {
@@ -162,7 +163,7 @@ public class LdapService {
   }
 
   private SearchResultEntry getEntryByMail(String mail) {
-   return getEntry("(mail=" + mail + ")");
+    return getEntry("(mail=" + mail + ")");
   }
 
   private SearchResultEntry getEntryById(String id) {
@@ -170,35 +171,35 @@ public class LdapService {
   }
 
   public User createUserByMail(String mail) {
-      ensureConnection();
-      try {
-        bindAsTechnicalUser();
-      } catch (LDAPException e) {
-        logger.error("Failed to bind ldap as tech user", e);
-      }
+    ensureConnection();
+    try {
+      bindAsTechnicalUser();
+    } catch (LDAPException e) {
+      logger.error("Failed to bind ldap as tech user", e);
+    }
 
-      var ldapEntry = getEntryByMail(mail);
-      if (ldapEntry == null) {
-        logger.warn("Failed to sync user {} with LDAP: no result", mail);
-        return null;
-      }
+    var ldapEntry = getEntryByMail(mail);
+    if (ldapEntry == null) {
+      logger.warn("Failed to sync user {} with LDAP: no result", mail);
+      return null;
+    }
 
-      String dn = null;
-      try {
-        dn = ldapEntry.getParentDNString();
-      } catch (LDAPException e) {
-        e.printStackTrace();
-      }
+    String dn = null;
+    try {
+      dn = ldapEntry.getParentDNString();
+    } catch (LDAPException e) {
+      e.printStackTrace();
+    }
 
-      var id = ldapEntry.getAttributeValue("uid");
-      var role = getAdminIds().contains(id) ? Role.ADMIN : Role.USER;
-      var ldapDetails = userLdapDetailsFactory.create(ldapEntry, role);
+    var id = ldapEntry.getAttributeValue("uid");
+    var role = getAdminIds().contains(id) ? Role.ADMIN : Role.USER;
+    var ldapDetails = userLdapDetailsFactory.create(ldapEntry, role);
 
-      var newUser = new User(id);
-      newUser.setLdapDN(dn);
-      newUser.setLdapDetails(ldapDetails);
+    var newUser = new User(id);
+    newUser.setLdapDN(dn);
+    newUser.setLdapDetails(ldapDetails);
 
-      return newUser;
+    return newUser;
   }
 
   private Set<String> getAdminIds() {
@@ -254,14 +255,15 @@ public class LdapService {
             user.setLdapDN(ldapEntry.getParentDNString());
           }
         } else {
-          ldapRequest = new SearchRequest(user.getLdapDN(), SearchScope.SUB, "(uid=" + user.getId() + ")");
+          ldapRequest = new SearchRequest(user.getLdapDN(), SearchScope.SUB,
+              "(&(uid=" + user.getId() + ")(szzStatus=active))");
           var entries = ldapConnection.search(ldapRequest).getSearchEntries();
           ldapEntry = entries.size() < 1 ? null : entries.get(0);
         }
 
         if (ldapEntry == null) {
           logger.warn("Failed to sync user {}: Not found in LDAP, will remove", user.getId());
-          userRepo.delete(user);
+          // userRepo.delete(user);
           isRemoved = true;
         } else {
           var role = adminIds.contains(user.getId()) ? Role.ADMIN : Role.USER;
