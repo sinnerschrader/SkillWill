@@ -2,6 +2,7 @@ package com.sinnerschrader.skillwill.domain.user;
 
 import java.util.Objects;
 
+
 /**
  * Data Structure for Details from LDAP.
  *
@@ -9,81 +10,77 @@ import java.util.Objects;
  */
 public class UserLdapDetails {
 
-  private final String firstName;
-  private final String lastName;
-  private final String mail;
-  private final String phone;
-  private final String location;
-  private final String title;
-  private final String company;
-  private final Role role;
+	private final String company;
+	private final String firstName;
+	private final String lastName;
+	private final String location;
+	private final String mail;
+	private final String phone;
+	private final Role role;
+	private final String title;
 
-  public UserLdapDetails(String firstName, String lastName, String mail, String phone,
-      String location, String title, String company, Role role) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.mail = mail;
-    this.phone = phone;
-    this.location = location;
-    this.title = title;
-    this.company = company;
-    this.role = role;
-  }
+	public UserLdapDetails(String firstName, String lastName, String mail, String phone, String location, String title,
+		String company, Role role) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.mail = mail;
+		this.phone = phone;
+		this.location = location;
+		this.title = title;
+		this.company = company;
+		this.role = role;
+	}
 
-  public String getFirstName() {
-    return firstName;
-  }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		UserLdapDetails that = (UserLdapDetails) o;
+		return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName)
+			&& Objects.equals(mail, that.mail) && Objects.equals(phone, that.phone)
+			&& Objects.equals(location, that.location) && Objects.equals(title, that.title)
+			&& Objects.equals(company, that.company) && role == that.role;
+	}
 
-  public String getLastName() {
-    return lastName;
-  }
+	public String getCompany() {
+		return company;
+	}
 
-  public String getMail() {
-    return mail;
-  }
+	public String getFirstName() {
+		return firstName;
+	}
 
-  public String getPhone() {
-    return phone;
-  }
+	public String getLastName() {
+		return lastName;
+	}
 
-  public String getLocation() {
-    return location;
-  }
+	public String getLocation() {
+		return location;
+	}
 
-  public String getTitle() {
-    return title;
-  }
+	public String getMail() {
+		return mail;
+	}
 
-  public String getCompany() {
-    return this.company;
-  }
+	public String getPhone() {
+		return phone;
+	}
 
-  public Role getRole() {
-    return this.role;
-  }
+	public Role getRole() {
+		return role;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    UserLdapDetails that = (UserLdapDetails) o;
-    return Objects.equals(firstName, that.firstName) &&
-      Objects.equals(lastName, that.lastName) &&
-      Objects.equals(mail, that.mail) &&
-      Objects.equals(phone, that.phone) &&
-      Objects.equals(location, that.location) &&
-      Objects.equals(title, that.title) &&
-      Objects.equals(company, that.company) &&
-      role == that.role;
-  }
+	public String getTitle() {
+		return title;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(firstName, lastName, mail, phone, location, title, company, role);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstName, lastName, mail, phone, location, title, company, role);
+	}
 
 }

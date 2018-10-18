@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+
 /**
  * Unit tests for StatusJson
  *
@@ -20,26 +21,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest
 public class StatusResponseEntityTest {
 
-  @Test
-  public void testNormalStrings() throws JSONException {
-    var response = new StatusResponseEntity("foo", HttpStatus.OK);
-    assertEquals("foo", extractMessage(response));
-  }
+	private String extractMessage(ResponseEntity entity) throws JSONException {
+		return new JSONObject(entity.getBody().toString()).getString("message");
+	}
 
-  @Test
-  public void testEmptyStrings() throws JSONException {
-    var response = new StatusResponseEntity("", HttpStatus.OK);
-    assertEquals("", extractMessage(response));
-  }
+	@Test
+	public void testEmptyStrings() throws JSONException {
+		var response = new StatusResponseEntity("", HttpStatus.OK);
+		assertEquals("", extractMessage(response));
+	}
 
-  @Test
-  public void testUnicodeMessage() throws JSONException {
-    var response = new StatusResponseEntity("\uD83D\uDCA9", HttpStatus.OK);
-    assertEquals("\uD83D\uDCA9", extractMessage(response));
-  }
+	@Test
+	public void testNormalStrings() throws JSONException {
+		var response = new StatusResponseEntity("foo", HttpStatus.OK);
+		assertEquals("foo", extractMessage(response));
+	}
 
-  private String extractMessage(ResponseEntity entity) throws JSONException {
-    return new JSONObject(entity.getBody().toString()).getString("message");
-  }
+	@Test
+	public void testUnicodeMessage() throws JSONException {
+		var response = new StatusResponseEntity("\uD83D\uDCA9", HttpStatus.OK);
+		assertEquals("\uD83D\uDCA9", extractMessage(response));
+	}
 
 }

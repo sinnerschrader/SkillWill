@@ -1,15 +1,17 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+
 
 /**
  * A skill known to the system including a list of suggestable skills
@@ -18,158 +20,157 @@ import org.springframework.data.annotation.Version;
  */
 public class Skill {
 
-  private String name;
+	private String description;
 
-  @Id
-  private String nameStem;
+	private boolean hidden;
 
-  private List<SuggestionSkill> suggestions;
+	private String name;
 
-  private Set<String> subSkillNames;
+	@Id
+	private String nameStem;
 
-  private boolean hidden;
+	private Set<String> subSkillNames;
 
-  private String description;
+	private List<SuggestionSkill> suggestions;
 
-  @Version
-  private Long version;
+	@Version
+	private Long version;
 
-  public Skill(String name, String description, List<SuggestionSkill> suggestions, boolean hidden, Set<String> subSkillNames) {
-    this.name = name;
-    this.description = description;
-    this.nameStem = SkillUtils.toStem(name);
-    this.suggestions = suggestions;
-    this.subSkillNames = subSkillNames;
-    this.hidden = hidden;
-  }
+	public Skill() {
+		this("", "", new ArrayList<>(), false, new HashSet<>());
+	}
 
-  public Skill(String name) {
-    this(name, "", new ArrayList<>(), false, new HashSet<>());
-  }
+	public Skill(String name) {
+		this(name, "", new ArrayList<>(), false, new HashSet<>());
+	}
 
-  public Skill() {
-    this("", "", new ArrayList<>(), false, new HashSet<>());
-  }
+	public Skill(String name, String description, List<SuggestionSkill> suggestions, boolean hidden,
+		Set<String> subSkillNames) {
+		this.name = name;
+		this.description = description;
+		nameStem = SkillUtils.toStem(name);
+		this.suggestions = suggestions;
+		this.subSkillNames = subSkillNames;
+		this.hidden = hidden;
+	}
 
-  public String getName() {
-    return this.name;
-  }
+	public void addSubSkillName(String name) {
+		subSkillNames.add(name);
+	}
 
-  public void setName(String name) {
-    this.name = name;
-    this.nameStem = SkillUtils.toStem(name);
-  }
+	public void deleteSuggestion(String name) {
+		SuggestionSkill suggestion = getSuggestionByName(name);
 
-  public List<SuggestionSkill> getSuggestions() {
-    return this.suggestions;
-  }
+		if (suggestion == null) {
+			// no suggestion to rename
+			return;
+		}
 
-  public void setSuggestions(List<SuggestionSkill> suggestions) {
-    this.suggestions = suggestions;
-  }
+		suggestions.remove(suggestion);
+	}
 
-  private SuggestionSkill getSuggestionByName(String name) {
-    return this.suggestions.stream()
-      .filter(s -> s.getName().equals(name))
-      .findFirst()
-      .orElse(null);
-  }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Skill skill = (Skill) o;
+		return hidden == skill.hidden && Objects.equals(name, skill.name) && Objects.equals(nameStem, skill.nameStem)
+			&& Objects.equals(suggestions, skill.suggestions) && Objects.equals(subSkillNames, skill.subSkillNames)
+			&& Objects.equals(description, skill.description);
+	}
 
-  public void renameSuggestion(String oldName, String newName) {
-    SuggestionSkill suggestion = getSuggestionByName(oldName);
+	public String getDescription() {
+		return description;
+	}
 
-    if (suggestion == null) {
-      // no suggestion to rename
-      return;
-    }
+	public String getName() {
+		return name;
+	}
 
-    suggestion.setName(newName);
-  }
+	public Set<String> getSubSkillNames() {
+		return subSkillNames;
+	}
 
-  public void incrementSuggestion(String name) {
-    SuggestionSkill suggestion = getSuggestionByName(name);
+	private SuggestionSkill getSuggestionByName(String name) {
+		return suggestions.stream().filter(s -> s.getName().equals(name)).findFirst().orElse(null);
+	}
 
-    if (suggestion != null) {
-      suggestion.incrementCount();
-    } else {
-      suggestions.add(new SuggestionSkill(name, 1));
-    }
-  }
+	public List<SuggestionSkill> getSuggestions() {
+		return suggestions;
+	}
 
-  public void deleteSuggestion(String name) {
-    SuggestionSkill suggestion = getSuggestionByName(name);
+	@Override
+	public int hashCode() {
 
-    if (suggestion == null) {
-      // no suggestion to rename
-      return;
-    }
+		return Objects.hash(name, nameStem, suggestions, subSkillNames, hidden, description);
+	}
 
-    this.suggestions.remove(suggestion);
-  }
+	public void incrementSuggestion(String name) {
+		SuggestionSkill suggestion = getSuggestionByName(name);
 
-  public Set<String> getSubSkillNames() {
-    return this.subSkillNames;
-  }
+		if (suggestion != null) {
+			suggestion.incrementCount();
+		} else {
+			suggestions.add(new SuggestionSkill(name, 1));
+		}
+	}
 
-  public void addSubSkillName(String name) {
-    this.subSkillNames.add(name);
-  }
+	public boolean isHidden() {
+		return hidden;
+	}
 
-  public void removeSubSkillName(String name) {
-    this.subSkillNames.remove(name);
-  }
+	public void removeSubSkillName(String name) {
+		subSkillNames.remove(name);
+	}
 
-  public void renameSubSkill(String oldName, String newName) {
-    this.removeSubSkillName(oldName);
-    this.addSubSkillName(newName);
-  }
+	public void renameSubSkill(String oldName, String newName) {
+		removeSubSkillName(oldName);
+		addSubSkillName(newName);
+	}
 
-  public boolean isHidden() {
-    return this.hidden;
-  }
+	public void renameSuggestion(String oldName, String newName) {
+		SuggestionSkill suggestion = getSuggestionByName(oldName);
 
-  public void setHidden(boolean value) {
-    this.hidden = value;
-  }
+		if (suggestion == null) {
+			// no suggestion to rename
+			return;
+		}
 
-  public String getDescription() {
-    return description;
-  }
+		suggestion.setName(newName);
+	}
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-  public JSONObject toJSON() {
-    JSONObject obj = new JSONObject();
-    obj.put("name", this.name);
-    obj.put("hidden", this.hidden);
-    obj.put("subskills", new JSONArray(this.subSkillNames));
-    obj.put("description", this.description);
-    return obj;
-  }
+	public void setHidden(boolean value) {
+		hidden = value;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Skill skill = (Skill) o;
-    return hidden == skill.hidden &&
-      Objects.equals(name, skill.name) &&
-      Objects.equals(nameStem, skill.nameStem) &&
-      Objects.equals(suggestions, skill.suggestions) &&
-      Objects.equals(subSkillNames, skill.subSkillNames) &&
-      Objects.equals(description, skill.description);
-  }
+	public void setName(String name) {
+		this.name = name;
+		nameStem = SkillUtils.toStem(name);
+	}
 
-  @Override
-  public int hashCode() {
+	public void setSuggestions(List<SuggestionSkill> suggestions) {
+		this.suggestions = suggestions;
+	}
 
-    return Objects.hash(name, nameStem, suggestions, subSkillNames, hidden, description);
-  }
+	public JSONObject toJSON() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("name", name);
+			obj.put("hidden", hidden);
+			obj.put("subskills", new JSONArray(subSkillNames));
+			obj.put("description", description);
+		} catch (JSONException exception) {
+			throw new RuntimeException(exception);
+		}
+		return obj;
+	}
 
 }
