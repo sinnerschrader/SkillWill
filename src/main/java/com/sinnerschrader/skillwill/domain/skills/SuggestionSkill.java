@@ -7,45 +7,45 @@ package com.sinnerschrader.skillwill.domain.skills;
  */
 public class SuggestionSkill {
 
-  private String name;
+	private int count;
 
-  private int count;
+	private String name;
 
-  public SuggestionSkill(String name, int count) {
-    this.name = name;
-    this.count = count;
-  }
+	public SuggestionSkill() {
+		this(null, 0);
+	}
 
-  public SuggestionSkill(String name) {
-    this(name, 0);
-  }
+	public SuggestionSkill(String name) {
+		this(name, 0);
+	}
 
-  public SuggestionSkill() {
-    this(null, 0);
-  }
+	public SuggestionSkill(String name, int count) {
+		this.name = name;
+		this.count = count;
+	}
 
-  public String getName() {
-    return this.name;
-  }
+	public int getCount() {
+		return count;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public int getCount() {
-    return this.count;
-  }
+	public void incrementCount() {
+		count += 1;
+	}
 
-  public void setCount(int count) {
-    this.count = count;
-  }
+	public void incrementCount(int add) {
+		count += add;
+	}
 
-  public void incrementCount() {
-    this.count += 1;
-  }
+	public void setCount(int count) {
+		this.count = count;
+	}
 
-  public void incrementCount(int add) {
-    this.count += add;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
 }

@@ -1,6 +1,5 @@
 package com.sinnerschrader.skillwill.services;
 
-
 import com.sinnerschrader.skillwill.domain.user.Role;
 import com.sinnerschrader.skillwill.domain.user.User;
 import com.sinnerschrader.skillwill.domain.user.UserLdapDetailsFactory;
@@ -14,6 +13,7 @@ import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.util.ssl.SSLUtil;
 import com.unboundid.util.ssl.TrustAllTrustManager;
+
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+
 /**
  * Service handling LDAP auth and data retrieval
  *
@@ -43,243 +45,242 @@ import org.springframework.util.StringUtils;
 @EnableRetry
 public class LdapService {
 
-  private static final Logger logger = LoggerFactory.getLogger(LdapService.class);
-  private static LDAPConnection ldapConnection;
+	private static LDAPConnection ldapConnection;
+	private static final Logger logger = LoggerFactory.getLogger(LdapService.class);
 
-  @Value("${ldapUrl}")
-  private String ldapUrl;
+	private final EmbeddedLdap embeddedLdap;
 
-  @Value("${ldapPort}")
-  private int ldapPort;
+	@Value("${ldapAdminGroupDN}")
+	private String ldapAdminGroupDN;
 
-  @Value("${ldapUserBaseDN}")
-  private String ldapUserBaseDN;
+	@Value("${ldapEmbedded}")
+	private boolean ldapEmbedded;
 
-  @Value("${ldapUserBaseOUs}")
-  private String ldapUserBaseOUs;
+	@Value("${ldapLookupBaseDN}")
+	private String ldapLookupBaseDN;
 
-  @Value("${ldapLookupBaseDN}")
-  private String ldapLookupBaseDN;
+	@Value("${ldapLookupPassword}")
+	private String ldapLookupPassword;
 
-  @Value("${ldapAdminGroupDN}")
-  private String ldapAdminGroupDN;
+	@Value("${ldapLookupUser}")
+	private String ldapLookupUser;
 
-  @Value("${ldapEmbedded}")
-  private boolean ldapEmbedded;
+	@Value("${ldapPort}")
+	private int ldapPort;
 
-  @Value("${ldapSsl}")
-  private boolean ldapSsl;
+	@Value("${ldapSsl}")
+	private boolean ldapSsl;
 
-  @Value("${ldapLookupUser}")
-  private String ldapLookupUser;
+	@Value("${ldapUrl}")
+	private String ldapUrl;
 
-  @Value("${ldapLookupPassword}")
-  private String ldapLookupPassword;
+	@Value("${ldapUserBaseDN}")
+	private String ldapUserBaseDN;
 
-  private final UserRepository userRepo;
+	@Value("${ldapUserBaseOUs}")
+	private String ldapUserBaseOUs;
 
-  private final EmbeddedLdap embeddedLdap;
+	private final UserLdapDetailsFactory userLdapDetailsFactory;
 
-  private final UserLdapDetailsFactory userLdapDetailsFactory;
+	private final UserRepository userRepo;
 
-  @Autowired
-  public LdapService(UserRepository userRepo, EmbeddedLdap embeddedLdap, UserLdapDetailsFactory userLdapDetailsFactory) {
-    this.userRepo = userRepo;
-    this.embeddedLdap = embeddedLdap;
-    this.userLdapDetailsFactory = userLdapDetailsFactory;
-  }
+	@Autowired
+	public LdapService(UserRepository userRepo, EmbeddedLdap embeddedLdap,
+		UserLdapDetailsFactory userLdapDetailsFactory) {
+		this.userRepo = userRepo;
+		this.embeddedLdap = embeddedLdap;
+		this.userLdapDetailsFactory = userLdapDetailsFactory;
+	}
 
-  private void tryStartEmbeddedLdap() {
-    if (!ldapEmbedded) {
-      return;
-    }
+	private List<String> allOUs() {
+		return Arrays.stream(ldapUserBaseOUs.split("\\|")).map(pair -> pair.split(",")[0]).collect(Collectors.toList());
+	}
 
-    try {
-      embeddedLdap.startup();
-    } catch (LDAPException e) {
-      logger.error("Failed to start embedded LDAP");
-    }
-  }
+	private void bindAsTechnicalUser() throws LDAPException {
+		ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
+	}
 
-  @EventListener(ContextStartedEvent.class)
-  public void openConnection() {
-    tryStartEmbeddedLdap();
-    try {
-      if (ldapSsl) {
-        var sslUtil = new SSLUtil(new TrustAllTrustManager());
-        var sslSocketFactory = sslUtil.createSSLSocketFactory();
-        ldapConnection = new LDAPConnection(sslSocketFactory);
-      } else {
-        ldapConnection = new LDAPConnection();
-      }
-      ldapConnection.connect(ldapUrl, ldapPort);
-      logger.info("Successfully connected to LDAP");
-    } catch (LDAPException | GeneralSecurityException e) {
-      logger.error("Failed to connect to LDAP", e);
-    }
-  }
+	@EventListener(ContextStoppedEvent.class)
+	public void closeConnection() {
+		if (ldapConnection == null || !ldapConnection.isConnected()) {
+			logger.debug("Failed to disconnect LDAP: No open connection");
+		}
+		ldapConnection.close();
+	}
 
-  @EventListener(ContextStoppedEvent.class)
-  public void closeConnection() {
-    if (ldapConnection == null || !ldapConnection.isConnected()) {
-      logger.debug("Failed to disconnect LDAP: No open connection");
-    }
-    ldapConnection.close();
-  }
+	public User createUserByMail(String mail) {
+		ensureConnection();
+		try {
+			bindAsTechnicalUser();
+		} catch (LDAPException e) {
+			logger.error("Failed to bind ldap as tech user", e);
+		}
 
-  private void ensureConnection() {
-    if (ldapConnection == null || !ldapConnection.isConnected()) {
-      openConnection();
-    }
-  }
+		var ldapEntry = getEntryByMail(mail);
+		if (ldapEntry == null) {
+			logger.warn("Failed to sync user {} with LDAP: no result", mail);
+			return null;
+		}
 
-  private void bindAsTechnicalUser() throws LDAPException {
-    ldapConnection.bind(new SimpleBindRequest("cn=" + ldapLookupUser + "," + ldapLookupBaseDN, ldapLookupPassword));
-  }
+		String dn = null;
+		try {
+			dn = ldapEntry.getParentDNString();
+		} catch (LDAPException e) {
+			e.printStackTrace();
+		}
 
-  private List<String> allOUs() {
-    return Arrays.stream(ldapUserBaseOUs.split("\\|"))
-      .map(pair -> pair.split(",")[0])
-      .collect(Collectors.toList());
-  }
+		var id = ldapEntry.getAttributeValue("uid");
+		var role = getAdminIds().contains(id) ? Role.ADMIN : Role.USER;
+		var ldapDetails = userLdapDetailsFactory.create(ldapEntry, role);
 
-  private SearchResultEntry getEntry(String filter) {
-    try {
-      for (String ou : allOUs()) {
-        var dn = ldapUserBaseDN.replace("{}", ou);
-        var ldapRequest = new SearchRequest(dn, SearchScope.SUB, filter);
-        var ldapResult = ldapConnection.search(ldapRequest);
+		var newUser = new User(id);
+		newUser.setLdapDN(dn);
+		newUser.setLdapDetails(ldapDetails);
 
-        if (ldapResult.getEntryCount() > 0) {
-          return ldapResult.getSearchEntries().get(0);
-        }
-      }
+		return newUser;
+	}
 
-      return null;
-    } catch (LDAPException e) {
-      return null;
-    }
-  }
+	private void ensureConnection() {
+		if (ldapConnection == null || !ldapConnection.isConnected()) {
+			openConnection();
+		}
+	}
 
-  private SearchResultEntry getEntryByMail(String mail) {
-   return getEntry("(mail=" + mail + ")");
-  }
+	private Set<String> getAdminIds() {
+		ensureConnection();
+		try {
+			bindAsTechnicalUser();
+			var ldapRequest = new SearchRequest(ldapAdminGroupDN, SearchScope.SUB, "(memberUid=*)");
+			var adminGroupResult = ldapConnection.search(ldapRequest).getSearchEntries();
 
-  private SearchResultEntry getEntryById(String id) {
-    return getEntry("(uid=" + id + ")");
-  }
+			if (adminGroupResult.size() != 1) {
+				throw new IllegalStateException("Failed to find unique admin ldap group");
+			}
 
-  public User createUserByMail(String mail) {
-      ensureConnection();
-      try {
-        bindAsTechnicalUser();
-      } catch (LDAPException e) {
-        logger.error("Failed to bind ldap as tech user", e);
-      }
+			return Set.of(adminGroupResult.get(0).getAttributeValues("memberUid"));
+		} catch (LDAPException e) {
+			return Collections.emptySet();
+		}
+	}
 
-      var ldapEntry = getEntryByMail(mail);
-      if (ldapEntry == null) {
-        logger.warn("Failed to sync user {} with LDAP: no result", mail);
-        return null;
-      }
+	private SearchResultEntry getEntry(String filter) {
+		try {
+			for (String ou : allOUs()) {
+				var dn = ldapUserBaseDN.replace("{}", ou);
+				var ldapRequest = new SearchRequest(dn, SearchScope.SUB, filter);
+				var ldapResult = ldapConnection.search(ldapRequest);
 
-      String dn = null;
-      try {
-        dn = ldapEntry.getParentDNString();
-      } catch (LDAPException e) {
-        e.printStackTrace();
-      }
+				if (ldapResult.getEntryCount() > 0) {
+					return ldapResult.getSearchEntries().get(0);
+				}
+			}
 
-      var id = ldapEntry.getAttributeValue("uid");
-      var role = getAdminIds().contains(id) ? Role.ADMIN : Role.USER;
-      var ldapDetails = userLdapDetailsFactory.create(ldapEntry, role);
+			return null;
+		} catch (LDAPException e) {
+			return null;
+		}
+	}
 
-      var newUser = new User(id);
-      newUser.setLdapDN(dn);
-      newUser.setLdapDetails(ldapDetails);
+	private SearchResultEntry getEntryById(String id) {
+		return getEntry("(uid=" + id + ")");
+	}
 
-      return newUser;
-  }
+	private SearchResultEntry getEntryByMail(String mail) {
+		return getEntry("(mail=" + mail + ")");
+	}
 
-  private Set<String> getAdminIds() {
-    ensureConnection();
-    try {
-      bindAsTechnicalUser();
-      var ldapRequest = new SearchRequest(ldapAdminGroupDN, SearchScope.SUB, "(memberUid=*)");
-      var adminGroupResult = ldapConnection.search(ldapRequest).getSearchEntries();
+	@EventListener(ContextStartedEvent.class)
+	public void openConnection() {
+		tryStartEmbeddedLdap();
+		try {
+			if (ldapSsl) {
+				var sslUtil = new SSLUtil(new TrustAllTrustManager());
+				var sslSocketFactory = sslUtil.createSSLSocketFactory();
+				ldapConnection = new LDAPConnection(sslSocketFactory);
+			} else {
+				ldapConnection = new LDAPConnection();
+			}
+			ldapConnection.connect(ldapUrl, ldapPort);
+			logger.info("Successfully connected to LDAP");
+		} catch (LDAPException | GeneralSecurityException e) {
+			logger.error("Failed to connect to LDAP", e);
+		}
+	}
 
-      if (adminGroupResult.size() != 1) {
-        throw new IllegalStateException("Failed to find unique admin ldap group");
-      }
+	@Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
+	public User syncUser(User user) {
+		return syncUsers(List.of(user), false).get(0);
+	}
 
-      return Set.of(adminGroupResult.get(0).getAttributeValues("memberUid"));
-    } catch (LDAPException e) {
-      return Collections.emptySet();
-    }
-  }
+	public List<User> syncUsers(List<User> users, boolean forceUpdate) {
+		ensureConnection();
 
-  @Retryable(include = OptimisticLockingFailureException.class, maxAttempts = 10)
-  public User syncUser(User user) {
-    return syncUsers(List.of(user), false).get(0);
-  }
+		try {
+			bindAsTechnicalUser();
+		} catch (LDAPException e) {
+			logger.error("Failed to sync users, LDAP error");
+			return users;
+		}
 
-  public List<User> syncUsers(List<User> users, boolean forceUpdate) {
-    ensureConnection();
+		var updated = new ArrayList<User>();
+		var adminIds = getAdminIds();
 
-    try {
-      bindAsTechnicalUser();
-    } catch (LDAPException e) {
-      logger.error("Failed to sync users, LDAP error");
-      return users;
-    }
+		for (User user : users) {
+			SearchRequest ldapRequest;
+			SearchResultEntry ldapEntry;
+			var isRemoved = false;
 
-    var updated = new ArrayList<User>();
-    var adminIds = getAdminIds();
+			try {
+				// user does not need to update, irgnore
+				if (!forceUpdate && user.getLdapDetails() != null) {
+					updated.add(user);
+					continue;
+				}
 
-    for (User user : users) {
-      SearchRequest ldapRequest;
-      SearchResultEntry ldapEntry;
-      var isRemoved = false;
+				if (StringUtils.isEmpty(user.getLdapDN())) {
+					ldapEntry = getEntryById(user.getId());
+					if (ldapEntry != null) {
+						user.setLdapDN(ldapEntry.getParentDNString());
+					}
+				} else {
+					ldapRequest = new SearchRequest(user.getLdapDN(), SearchScope.SUB, "(uid=" + user.getId() + ")");
+					var entries = ldapConnection.search(ldapRequest).getSearchEntries();
+					ldapEntry = entries.size() < 1 ? null : entries.get(0);
+				}
 
-      try {
-        // user does not need to update, irgnore
-        if (!forceUpdate && user.getLdapDetails() != null) {
-          updated.add(user);
-          continue;
-        }
+				if (ldapEntry == null) {
+					logger.warn("Failed to sync user {}: Not found in LDAP, will remove", user.getId());
+					userRepo.delete(user);
+					isRemoved = true;
+				} else {
+					var role = adminIds.contains(user.getId()) ? Role.ADMIN : Role.USER;
+					user.setLdapDetails(userLdapDetailsFactory.create(ldapEntry, role));
+				}
+			} catch (LDAPException e) {
+				logger.error("Failed to sync user {}: LDAP error", user.getId());
+			}
 
-        if (StringUtils.isEmpty(user.getLdapDN())) {
-          ldapEntry = getEntryById(user.getId());
-          if (ldapEntry != null) {
-            user.setLdapDN(ldapEntry.getParentDNString());
-          }
-        } else {
-          ldapRequest = new SearchRequest(user.getLdapDN(), SearchScope.SUB, "(uid=" + user.getId() + ")");
-          var entries = ldapConnection.search(ldapRequest).getSearchEntries();
-          ldapEntry = entries.size() < 1 ? null : entries.get(0);
-        }
+			if (!isRemoved) {
+				updated.add(user);
+			}
+		}
 
-        if (ldapEntry == null) {
-          logger.warn("Failed to sync user {}: Not found in LDAP, will remove", user.getId());
-          userRepo.delete(user);
-          isRemoved = true;
-        } else {
-          var role = adminIds.contains(user.getId()) ? Role.ADMIN : Role.USER;
-          user.setLdapDetails(userLdapDetailsFactory.create(ldapEntry, role));
-        }
-      } catch (LDAPException e) {
-        logger.error("Failed to sync user {}: LDAP error", user.getId());
-      }
+		userRepo.saveAll(updated);
 
-      if (!isRemoved) {
-        updated.add(user);
-      }
-    }
+		logger.info("Successfully synced {} users with LDAP", updated.size());
+		return updated;
+	}
 
-    userRepo.saveAll(updated);
+	private void tryStartEmbeddedLdap() {
+		if (!ldapEmbedded) {
+			return;
+		}
 
-    logger.info("Successfully synced {} users with LDAP", updated.size());
-    return updated;
-  }
+		try {
+			embeddedLdap.startup();
+		} catch (LDAPException e) {
+			logger.error("Failed to start embedded LDAP");
+		}
+	}
 
 }

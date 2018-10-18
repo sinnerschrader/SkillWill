@@ -1,78 +1,83 @@
 package com.sinnerschrader.skillwill.domain.skills;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 
+
 /**
- * A skill owned by a person
- * includes name, skill level and will level
+ * A skill owned by a person includes name, skill level and will level
  *
  * @author torree
  */
 public class UserSkill {
 
-  @Id
-  private String name;
+	private boolean hidden;
 
-  private int skillLevel;
+	private boolean mentor;
 
-  private int willLevel;
+	@Id
+	private String name;
 
-  private boolean hidden;
+	private int skillLevel;
 
-  private boolean mentor;
+	private int willLevel;
 
-  public UserSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
-    this.name = name;
-    this.skillLevel = skillLevel;
-    this.willLevel = willLevel;
-    this.hidden = hidden;
-    this.mentor = mentor;
-  }
+	public UserSkill(String name, int skillLevel, int willLevel, boolean hidden, boolean mentor) {
+		this.name = name;
+		this.skillLevel = skillLevel;
+		this.willLevel = willLevel;
+		this.hidden = hidden;
+		this.mentor = mentor;
+	}
 
-  public String getName() {
-    return this.name;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public int getSkillLevel() {
-    return skillLevel;
-  }
+	public int getSkillLevel() {
+		return skillLevel;
+	}
 
-  public void setSkillLevel(int skillLevel) {
-    this.skillLevel = skillLevel;
-  }
+	public int getWillLevel() {
+		return willLevel;
+	}
 
-  public int getWillLevel() {
-    return willLevel;
-  }
+	public boolean isHidden() {
+		return hidden;
+	}
 
-  public void setWillLevel(int willLevel) {
-    this.willLevel = willLevel;
-  }
+	public boolean isMentor() {
+		return mentor;
+	}
 
-  public void setHidden(boolean hidden) {
-    this.hidden = hidden;
-  }
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
 
-  public boolean isHidden() {
-    return this.hidden;
-  }
+	public void setMentor(boolean mentor) {
+		this.mentor = mentor;
+	}
 
-  public void setMentor(boolean mentor) {
-    this.mentor = mentor;
-  }
+	public void setSkillLevel(int skillLevel) {
+		this.skillLevel = skillLevel;
+	}
 
-  public boolean isMentor() {
-    return this.mentor;
-  }
+	public void setWillLevel(int willLevel) {
+		this.willLevel = willLevel;
+	}
 
-  public JSONObject toJSON() {
-    var json = new JSONObject();
-    json.put("name", this.name);
-    json.put("skillLevel", this.skillLevel);
-    json.put("willLevel", this.willLevel);
-    json.put("mentor", this.mentor);
-    return json;
-  }
+	public JSONObject toJSON() {
+		var json = new JSONObject();
+		try {
+			json.put("name", name);
+			json.put("skillLevel", skillLevel);
+			json.put("willLevel", willLevel);
+			json.put("mentor", mentor);
+		} catch (JSONException exception) {
+			throw new RuntimeException(exception);
+		}
+		return json;
+	}
 
 }
