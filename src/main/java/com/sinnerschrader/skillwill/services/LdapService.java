@@ -251,7 +251,7 @@ public class LdapService {
 
 				if (ldapEntry == null) {
 					logger.warn("Failed to sync user {}: Not found in LDAP, will remove", user.getId());
-					// userRepo.delete(user);
+					// TODO: Readd after everything works: userRepo.delete(user);
 					isRemoved = true;
 				} else {
 					var role = adminIds.contains(user.getId()) ? Role.ADMIN : Role.USER;
